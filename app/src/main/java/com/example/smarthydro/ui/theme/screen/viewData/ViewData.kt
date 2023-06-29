@@ -180,7 +180,7 @@ fun StartButton(isEnabled: Boolean, onClick: () -> Unit) {
 
         ) {
         Text(
-            text = "START",
+            text = "asd",
             modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
         )
     }
