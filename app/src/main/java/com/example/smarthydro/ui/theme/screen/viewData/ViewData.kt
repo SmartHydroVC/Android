@@ -88,6 +88,7 @@ suspend fun startAnimation(animation: Animatable<Float, AnimationVector1D>) {
         0.85f at 5000 with CubicBezierEasing(0.2f, -2f, 0f, 1f)
         0.89f at 6000 with CubicBezierEasing(0.2f, -1.2f, 0f, 1f)
         0.82f at 7500 with LinearOutSlowInEasing
+        // Helo
     })
 }
 
