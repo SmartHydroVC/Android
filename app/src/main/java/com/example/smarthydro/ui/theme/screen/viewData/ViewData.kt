@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
@@ -150,8 +151,40 @@ fun SpeedIndicator(state: UiState, onClick: () -> Unit) {
             .aspectRatio(1f)
     ) {
         CircularSpeedIndicator(state.arcValue, 240f)
-        StartButton(!state.inProgress, onClick)
         SpeedValue(state.speed)
+        Buttons(state, onClick)
+    }
+}
+
+@Composable
+fun Buttons(state: UiState, onClick: () -> Unit) {
+    Button(
+        onClick = {
+            if (state.inProgress) {
+            }
+        },
+        enabled = state.inProgress,
+        shape = RoundedCornerShape(24.dp),
+        border = BorderStroke(width = 2.dp, color = MaterialTheme.colorScheme.onSurface),
+    ) {
+        Text(
+            text = "+",
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
+        )
+    }
+    Button(
+        onClick = {
+            if (state.inProgress) {
+            }
+        },
+        enabled = state.inProgress,
+        shape = RoundedCornerShape(24.dp),
+        border = BorderStroke(width = 2.dp, color = MaterialTheme.colorScheme.onSurface),
+    ) {
+        Text(
+            text = "-",
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
+        )
     }
 }
 
