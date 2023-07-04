@@ -2,6 +2,7 @@ package com.example.smarthydro.ui.theme.screen.login
 
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -54,168 +55,32 @@ import com.example.smarthydro.ui.theme.*
 @Composable
 @Preview
 fun SigInScreen() {
-    var username by remember{ mutableStateOf("")}
-    var password by remember{ mutableStateOf("")}
-    val (focusUsername,focusPassword) = remember { FocusRequester.createRefs()}
-    val keyboardController =  LocalSoftwareKeyboardController.current
-    var isPasswordVisible by remember{mutableStateOf(false)}
+    Box(modifier = Modifier
+        .background(DeepBlue)
+        .fillMaxSize()
+    ) {
+    SignInContent()
 
+    }
+}
+@Composable
+fun SignInContent() {
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(fraction = 0.30f),
-                Alignment.TopEnd,
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_humidity), contentDescription = "",
-                    modifier = Modifier.fillMaxSize(), contentScale = ContentScale.FillBounds
-                )
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight()
-                        .padding(horizontal = 20.dp, vertical = 50.dp),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_humidity),
-                        contentDescription = "Logo App",
-                        modifier = Modifier
-                            .weight(1f)
-                            .size(100.dp),
-                        colorFilter = ColorFilter.tint(Color.White)
-                    )
-                    Text(text = "Welcome", fontSize = 20.sp, color = Color.White)
-                }
-
-            }
+            AppLogo()
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 40.dp)
             ) {
-                Text(text = "Log in", style = MaterialTheme.typography.headlineLarge)
-                OutlinedTextField(value = username, onValueChange = { username = it },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .focusRequester(focusUsername),
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                    keyboardActions = KeyboardActions(onNext = { focusPassword.requestFocus() }),
-                    singleLine = true,
-                    label = { Text(text = "Username") }
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                OutlinedTextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .focusRequester(focusPassword),
-                    value = password,
-                    onValueChange = { password = it },
-                    label = { Text(text = "Password") },
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Password,
-                        imeAction = ImeAction.Done
-                    ),
-                    keyboardActions = KeyboardActions(onDone = { keyboardController?.hide() }),
-                    visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                    trailingIcon = {
-                        IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
-                            Icon(
-                                imageVector = if (isPasswordVisible) drawable.ic_eye_open as ImageVector else drawable.ic_eye_close as ImageVector,
-                                contentDescription = "Password Toggle"
-                            )
-
-                        }
-                    }
-                )
+                LoginInFields()
                 Spacer(modifier = Modifier.height(16.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(), Arrangement.SpaceBetween
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Checkbox(checked = true, onCheckedChange = {})
-                        Text(text = "Remember me", fontSize = 12.sp)
-                    }
-                    TextButton(onClick = { /*TODO*/ }) {
-                        Text(text = "Forgot Password", fontSize = 12.sp)
-                    }
-
-                }
+                CheckBoxes()
                 Spacer(modifier = Modifier.height(16.dp))
-                Button(
-                    onClick = { /*TODO*/ },
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(16.dp)
-                ) {
-                    Text(text = "Log in")
-                }
-                Spacer(modifier = Modifier.height(16.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(), Arrangement.Center
-                ) {
-                    Text(text = "Or log in with", fontSize = 14.sp)
-                }
-                Row(modifier = Modifier.fillMaxWidth(), Arrangement.SpaceAround) {
-                    Button(
-                        onClick = { /*TODO*/ },
-                        shape = RoundedCornerShape(50),
-                        modifier = Modifier
-                            .height(45.dp)
-                            .width(45.dp),
-                        colors = ButtonDefaults.buttonColors(Color.White)
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_humidity),
-                            contentDescription = "Facebook logo",
-                            modifier = Modifier
-                                .weight(1f)
-                                .size(40.dp),
-                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.secondary)
-                        )
-                    }
-                    Button(
-                        onClick = { /*TODO*/ },
-                        shape = RoundedCornerShape(50),
-                        modifier = Modifier
-                            .height(45.dp)
-                            .width(45.dp),
-                        colors = ButtonDefaults.buttonColors(Color.White)
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_humidity),
-                            contentDescription = "Google logo",
-                            modifier = Modifier
-                                .weight(1f)
-                                .size(40.dp),
-                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.secondary)
-                        )
-                    }
-                    Button(
-                        onClick = { /*TODO*/ },
-                        shape = RoundedCornerShape(50),
-                        modifier = Modifier
-                            .height(45.dp)
-                            .width(45.dp),
-                        colors = ButtonDefaults.buttonColors(Color.White)
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_humidity),
-                            contentDescription = "Twitter logo",
-                            modifier = Modifier
-                                .weight(1f)
-                                .size(40.dp),
-                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.secondary)
-                        )
-                    }
-
-                }
+                LoginButton()
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -231,5 +96,113 @@ fun SigInScreen() {
             }
         }
     }
+
+
+@Composable
+fun LoginButton() {
+    Button(
+        onClick = { /*TODO*/ },
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp)
+    ) {
+        Text(text = "Log in")
+    }
+
+}
+
+@Composable
+fun CheckBoxes() {
+    Row(
+        modifier = Modifier.fillMaxWidth(), Arrangement.SpaceBetween
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Checkbox(checked = true, onCheckedChange = {})
+            Text(text = "Remember me", fontSize = 12.sp)
+        }
+        TextButton(onClick = { /*TODO*/ }) {
+            Text(text = "Forgot Password", fontSize = 12.sp)
+        }
+
+    }
+}
+
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
+@Composable
+fun LoginInFields() {
+    var username by remember{ mutableStateOf("")}
+    var password by remember{ mutableStateOf("")}
+    val (focusUsername,focusPassword) = remember { FocusRequester.createRefs()}
+    val keyboardController =  LocalSoftwareKeyboardController.current
+    var isPasswordVisible by remember{mutableStateOf(false)}
+    Text(text = "Log in", style = MaterialTheme.typography.headlineLarge)
+    OutlinedTextField(value = username, onValueChange = { username = it },
+        modifier = Modifier
+            .fillMaxWidth()
+            .focusRequester(focusUsername),
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+        keyboardActions = KeyboardActions(onNext = { focusPassword.requestFocus() }),
+        singleLine = true,
+        label = { Text(text = "Username") }
+    )
+    Spacer(modifier = Modifier.height(8.dp))
+    OutlinedTextField(
+        modifier = Modifier
+            .fillMaxWidth()
+            .focusRequester(focusPassword),
+        value = password,
+        onValueChange = { password = it },
+        label = { Text(text = "Password") },
+        singleLine = true,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Password,
+            imeAction = ImeAction.Done
+        ),
+        keyboardActions = KeyboardActions(onDone = { keyboardController?.hide() }),
+        visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+        trailingIcon = {
+            IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
+                Icon(
+                    imageVector = if (isPasswordVisible) drawable.ic_eye_open as ImageVector else drawable.ic_eye_close as ImageVector,
+                    contentDescription = "Password Toggle"
+                )
+
+            }
+        }
+    )
+}
+
+@Composable
+fun AppLogo() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight(fraction = 0.30f),
+        Alignment.TopEnd,
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.ic_humidity), contentDescription = "",
+            modifier = Modifier.fillMaxSize(), contentScale = ContentScale.FillBounds
+        )
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .padding(horizontal = 20.dp, vertical = 50.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.ic_humidity),
+                contentDescription = "Logo App",
+                modifier = Modifier
+                    .weight(1f)
+                    .size(100.dp),
+                colorFilter = ColorFilter.tint(Color.White)
+            )
+            Text(text = "Welcome", fontSize = 20.sp, color = Color.White)
+        }
+
+    }
+}
 
 
