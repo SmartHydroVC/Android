@@ -49,108 +49,192 @@ import com.example.smarthydro.R
 import com.example.smarthydro.R.*
 import com.example.smarthydro.ui.theme.*
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignInScreen() {
-    var username by remember {
-        mutableStateOf("")
+@Preview
+fun LoginScreen() {
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var isPasswordOpen by remember { mutableStateOf(false) }
+    Box(contentAlignment = Alignment.TopCenter) {
+        Image(
+            painter = painterResource(id = R.drawable.login_illustration), contentDescription = "",
+            modifier = Modifier.fillMaxWidth()
+        )
     }
-    var password by remember {
-        mutableStateOf("")
-    }
-    var isPasswordVisible by remember {
-        mutableStateOf(false)
-    }
-    val isFormValid by derivedStateOf {
-        username.isNotBlank() && password.length >= 7
-    }
-
-    Scaffold(backgroundColor = MaterialTheme.colors.primary) {
-        Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Top) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_visa),
-                contentDescription = "App Logo",
+    Box(contentAlignment = Alignment.BottomCenter) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+                text = "WELCOME TO SMARTHYDRO",
+                fontSize = 28.sp,
+                color = Color.White,
                 modifier = Modifier
-                    .weight(1f)
-                    .size(200.dp),
-                colorFilter = ColorFilter.tint(Color.White)
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp)
+                    .padding(top = 80.dp),
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Bold,
+                fontFamily = gothicA1
             )
-            Card(
-                Modifier
-                    .weight(2f)
-                    .padding(8.dp),
-                shape = RoundedCornerShape(32.dp)
+
+            Button(
+                onClick = { },
+                colors = ButtonDefaults.buttonColors(
+                    Color.White
+                ),
+                contentPadding = PaddingValues(horizontal = 20.dp, vertical = 10.dp),
+                modifier = Modifier.padding(top = 60.dp)
             ) {
-                Column(
-                    Modifier
-                        .fillMaxSize()
-                        .padding(32.dp)
-                ) {
-                    Text(text = "Welcome Back!", fontWeight = FontWeight.Bold, fontSize = 32.sp)
-                    Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-                        Spacer(modifier = Modifier.weight(1f))
-                        OutlinedTextField(
-                            modifier = Modifier.fillMaxWidth(),
-                            value = username,
-                            onValueChange = { username = it },
-                            label = { Text(text = "Username") },
-                            singleLine = true,
-                            trailingIcon = {
-                                if (username.isNotBlank())
-                                    IconButton(onClick = { username = "" }) {
-                                        Icon(imageVector = Icons.Filled.Clear, contentDescription = "")
-                                    }
-                            }
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        OutlinedTextField(
-                            modifier = Modifier.fillMaxWidth(),
-                            value = password,
-                            onValueChange = { password = it },
-                            label = { Text(text = "Password") },
-                            singleLine = true,
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
-                            visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                            trailingIcon = {
-                                IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_google),
+                        contentDescription = "",
+                        tint = Color.Unspecified,
+                        modifier = Modifier.size(26.dp)
+                    )
+                    Spacer(modifier = Modifier.width(20.dp))
+                    Text(text = "Continue with Google", color = PrimaryColor, fontSize = 16.sp)
+                }
+            }
+
+
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 70.dp),
+                shape = BottomBoxShape.medium
+            ) {
+
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = "Log In with Email",
+                        color = LightTextColor,
+                        fontFamily = gothicA1,
+                        fontSize = 12.sp,
+                        modifier = Modifier.padding(top = 16.dp)
+                    )
+
+                    OutlinedTextField(
+                        value = email, onValueChange = {
+                            email = it
+                        },
+                        label = {
+                            Text(text = "Email Address", color = PrimaryColor)
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 20.dp)
+                            .padding(top = 10.dp),
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            unfocusedBorderColor = PrimaryColor,
+                            textColor = PrimaryColor
+
+                        ),
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType =
+                            KeyboardType.Email
+                        ),
+                        singleLine = true,
+                        leadingIcon = {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_email),
+                                contentDescription = "",
+                                tint = PrimaryColor,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
+                    )
+
+                    OutlinedTextField(
+                        value = password, onValueChange = {
+                            password = it
+                        },
+                        label = {
+                            Text(text = "Password", color = PrimaryColor)
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 20.dp)
+                            .padding(top = 10.dp),
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            unfocusedBorderColor = PrimaryColor,
+                            textColor = PrimaryColor
+                        ),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        singleLine = true,
+                        visualTransformation = if (!isPasswordOpen) PasswordVisualTransformation() else VisualTransformation.None,
+                        leadingIcon = {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_password),
+                                contentDescription = "",
+                                tint = PrimaryColor,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        },
+                        trailingIcon = {
+                            IconButton(onClick = { isPasswordOpen = !isPasswordOpen }) {
+                                if (!isPasswordOpen) {
                                     Icon(
-                                        imageVector = if (isPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                                        contentDescription = "Password Toggle"
+                                        painter = painterResource(id = R.drawable.ic_eye_open),
+                                        contentDescription = "",
+                                        tint = PrimaryColor,
+                                        modifier = Modifier.size(24.dp)
+                                    )
+                                } else {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_eye_close),
+                                        contentDescription = "",
+                                        tint = PrimaryColor,
+                                        modifier = Modifier.size(24.dp)
                                     )
                                 }
                             }
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Button(
-                            onClick = {},
-                            enabled = isFormValid,
-                            modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(16.dp)
-                        ) {
-                            Text(text = "Log In")
                         }
-                        Spacer(modifier = Modifier.weight(1f))
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            TextButton(onClick = {}) {
-                                Text(text = "Sign Up")
-                            }
-                            TextButton(onClick = { }) {
-                                Text(text = "Forgot Password?", color = Color.Gray)
-                            }
-                        }
+                    )
+
+                    Button(
+                        onClick = {},
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 20.dp)
+                            .padding(top = 20.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            PrimaryColor,
+                            contentColor = Color.White
+                        ),
+                        contentPadding = PaddingValues(vertical = 14.dp)
+                    ) {
+
+                        Text(text = "Login", fontFamily = gothicA1)
                     }
+
+
+                    TextButton(
+                        onClick = {},
+                        contentPadding = PaddingValues(vertical = 0.dp)
+                    ) {
+                        Text(
+                            text = "Forgot Password ?",
+                            color = LightTextColor,
+                            fontFamily = gothicA1,
+                            fontSize = 12.sp,
+                            modifier = Modifier.padding(top = 26.dp)
+                        )
+                    }
+                    TextButton(
+                        onClick = {},
+                        contentPadding = PaddingValues(vertical = 0.dp)
+                    ) {
+                        Text(
+                            text = "Don't have an Account ? Sign Up",
+                            color = LightTextColor,
+                            fontFamily = gothicA1,
+                            fontSize = 12.sp,
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(20.dp))
                 }
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    DefaultTheme {
-        SignInScreen()
     }
 }
