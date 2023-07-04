@@ -49,6 +49,7 @@ import com.example.smarthydro.R
 import com.example.smarthydro.R.*
 import com.example.smarthydro.ui.theme.*
 
+// https://www.youtube.com/watch?v=pSjefs6jlhg&t=8
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview
