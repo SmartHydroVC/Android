@@ -165,6 +165,7 @@ fun Buttons(state: UiState, onClick: () -> Unit) {
         },
         enabled = state.inProgress,
         shape = RoundedCornerShape(24.dp),
+        modifier = Modifier.padding(start = 190.dp, bottom = 50.dp),
         border = BorderStroke(width = 2.dp, color = MaterialTheme.colorScheme.onSurface),
     ) {
         Text(
@@ -179,6 +180,7 @@ fun Buttons(state: UiState, onClick: () -> Unit) {
         },
         enabled = state.inProgress,
         shape = RoundedCornerShape(24.dp),
+        modifier = Modifier.padding(end = 190.dp, bottom = 50.dp),
         border = BorderStroke(width = 2.dp, color = MaterialTheme.colorScheme.onSurface),
     ) {
         Text(
