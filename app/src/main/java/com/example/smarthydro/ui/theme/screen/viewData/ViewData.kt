@@ -101,13 +101,13 @@ fun Animatable<Float, AnimationVector1D>.toUiState(maxSpeed: Float) = UiState(
 )
 @Preview
 @Composable
-fun SpeedTestScreen() {
+fun ViewDataScreen() {
     val coroutineScope = rememberCoroutineScope()
     val animation = remember { Animatable(0f) }
     val maxSpeed = remember { mutableStateOf(0f) }
     maxSpeed.value = max(maxSpeed.value, animation.value * 100f)
 
-    SpeedTestScreen(animation.toUiState(maxSpeed.value)) {
+    ViewDataScreen(animation.toUiState(maxSpeed.value)) {
         coroutineScope.launch {
             maxSpeed.value = 0f
             startAnimation(animation)
@@ -116,7 +116,7 @@ fun SpeedTestScreen() {
 }
 
 @Composable
-private fun SpeedTestScreen(state: UiState, onClick: () -> Unit) {
+private fun ViewDataScreen(state: UiState, onClick: () -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
