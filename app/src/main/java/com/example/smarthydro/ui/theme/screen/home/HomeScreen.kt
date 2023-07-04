@@ -38,7 +38,7 @@ import com.example.smarthydro.ui.theme.*
 fun HomeScreen() {
     Box(
         modifier = Modifier
-            .background(DeepBlue)
+            .background(Color.White)
             .fillMaxSize()
     ) {
         Column {
@@ -305,7 +305,7 @@ fun FeatureItem(
         ) {
             Text(
                 text = feature.title,
-                style = MaterialTheme.typography.headlineMedium,
+                style = MaterialTheme.typography.headlineSmall,
                 lineHeight = 26.sp,
                 modifier = Modifier.align(Alignment.TopStart)
             )

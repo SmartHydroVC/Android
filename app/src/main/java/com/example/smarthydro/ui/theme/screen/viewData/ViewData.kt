@@ -39,9 +39,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.smarthydro.ui.theme.BackgroundColor
 import com.example.smarthydro.ui.theme.DarkGradient
 import com.example.smarthydro.ui.theme.GreenGradient
 import com.example.smarthydro.ui.theme.LightGreen1
+import com.example.smarthydro.ui.theme.PrimaryColor
 import com.patrykandpatrick.vico.compose.axis.horizontal.bottomAxis
 import com.patrykandpatrick.vico.compose.axis.vertical.startAxis
 import com.patrykandpatrick.vico.compose.chart.Chart
@@ -121,7 +123,7 @@ private fun ViewDataScreen(state: UiState, onClick: () -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
-            .background(DarkGradient),
+            .background(Color.White),
         verticalArrangement = Arrangement.SpaceBetween,
     ) {
         Header()
@@ -163,7 +165,7 @@ fun SpeedValue(value: String) {
         Text(
             text = value,
             fontSize = 45.sp,
-            color = Color.White,
+            color = Color.Black,
             fontWeight = FontWeight.Bold
         )
         Text("C", style = MaterialTheme.typography.headlineMedium)
@@ -209,7 +211,7 @@ fun DrawScope.drawArcs(progress: Float, maxValue: Float) {
     fun drawBlur() {
         for (i in 0..20) {
             drawArc(
-                color = Color.Green.copy(alpha = i / 900f),
+                color = PrimaryColor.copy(alpha = i / 900f),
                 startAngle = startAngle,
                 sweepAngle = sweepAngle,
                 useCenter = false,
@@ -222,7 +224,7 @@ fun DrawScope.drawArcs(progress: Float, maxValue: Float) {
 
     fun drawStroke() {
         drawArc(
-            color = Color.Green,
+            color = PrimaryColor,
             startAngle = startAngle,
             sweepAngle = sweepAngle,
             useCenter = false,
