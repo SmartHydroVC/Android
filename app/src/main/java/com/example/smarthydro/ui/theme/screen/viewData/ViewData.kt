@@ -12,12 +12,17 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
@@ -37,6 +42,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -119,6 +125,25 @@ fun ViewDataScreen() {
 }
 
 @Composable
+fun ButtonSend(text:String){
+    ElevatedButton(
+        onClick = {
+        },
+        modifier = Modifier.width(40.dp),
+        contentPadding = PaddingValues(0.dp)
+    ) {
+        Text(
+            text = text,
+            fontSize = 13.sp,
+            fontWeight = FontWeight.SemiBold,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+    }
+
+}
+
+@Composable
 private fun ViewDataScreen(state: UiState, onClick: () -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -129,7 +154,7 @@ private fun ViewDataScreen(state: UiState, onClick: () -> Unit) {
     ) {
         Header()
         RegularLineChart()
-        SpeedIndicator(state = state, onClick = onClick)
+        ButtonSend("Send")
     }
 }
 
