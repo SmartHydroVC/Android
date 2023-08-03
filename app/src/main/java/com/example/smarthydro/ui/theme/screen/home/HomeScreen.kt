@@ -35,7 +35,7 @@ import com.example.smarthydro.R
 import com.example.smarthydro.models.SensorModel
 import com.example.smarthydro.ui.theme.*
 import com.example.smarthydro.viewmodels.SensorViewModel
-
+private const val GET_SENSOR_DATA_DELAY_MS: Long = 15 * 1000
 // https://youtu.be/g5-wzZUnIbQ
 @ExperimentalFoundationApi
 @Composable
@@ -43,7 +43,7 @@ fun HomeScreen(viewModel: SensorViewModel) {
     val sensorData by viewModel.sensorData.observeAsState(SensorModel())
 
     LaunchedEffect(Unit) {
-        viewModel.fetchSensorData()
+        viewModel.fetchSensorPeriodically(GET_SENSOR_DATA_DELAY_MS)
     }
     Box(
         modifier = Modifier
