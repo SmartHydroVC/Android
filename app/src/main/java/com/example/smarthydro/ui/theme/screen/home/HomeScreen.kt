@@ -13,10 +13,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,14 +30,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
 import com.example.smarthydro.R
+import com.example.smarthydro.models.SensorModel
 import com.example.smarthydro.ui.theme.*
+import com.example.smarthydro.viewmodels.SensorViewModel
 
 // https://youtu.be/g5-wzZUnIbQ
 @ExperimentalFoundationApi
 @Composable
-@Preview
-fun HomeScreen() {
+fun HomeScreen(viewModel: SensorViewModel) {
+    val sensorData by viewModel.sensorData.observeAsState(SensorModel())
+
+    LaunchedEffect(Unit) {
+        viewModel.fetchSensorData()
+    }
     Box(
         modifier = Modifier
             .background(Color.White)
@@ -43,7 +52,7 @@ fun HomeScreen() {
     ) {
         Column {
             GreetingSection()
-            ChipSection(chips = listOf("Water Lvl: 10m", "pH Lvl: 7pH", "Temperature: 28C","Humidity: 12"))
+            ChipSection(chips = listOf("Water Lvl: 10m", "pH Lvl: ${sensorData.pH}", "Temperature: ${sensorData.temperature}","Humidity: ${sensorData.humidity}"))
             FeatureSection(
                 features = listOf(
                     Feature(
