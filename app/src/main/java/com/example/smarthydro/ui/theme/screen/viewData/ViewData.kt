@@ -1,36 +1,35 @@
 package com.example.smarthydro.ui.theme.screen.viewData
 
 import android.graphics.Typeface
-import androidx.compose.animation.core.*
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.AnimationVector1D
+import androidx.compose.animation.core.CubicBezierEasing
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.keyframes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -43,20 +42,15 @@ import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.smarthydro.R
-import com.example.smarthydro.ui.theme.DarkGradient
-import com.example.smarthydro.ui.theme.GreenGradient
-import com.example.smarthydro.ui.theme.LightGreen1
-import com.example.smarthydro.ui.theme.screen.ReadingType
-import com.example.smarthydro.ui.theme.BackgroundColor
-import com.example.smarthydro.ui.theme.DarkGradient
+import com.example.smarthydro.ui.theme.DeepBlue
 import com.example.smarthydro.ui.theme.GreenGradient
 import com.example.smarthydro.ui.theme.LightGreen1
 import com.example.smarthydro.ui.theme.PrimaryColor
+import com.example.smarthydro.ui.theme.screen.ReadingType
 import com.patrykandpatrick.vico.compose.axis.horizontal.bottomAxis
 import com.patrykandpatrick.vico.compose.axis.vertical.startAxis
 import com.patrykandpatrick.vico.compose.chart.Chart
@@ -115,7 +109,7 @@ fun Animatable<Float, AnimationVector1D>.toUiState(maxSpeed: Float) = UiState(
 )
 //@Preview
 @Composable
-fun SpeedTestScreen(/*reading: ReadingType*/readingString: String) {
+fun SpeedTestScreen(readingString: String) {
     val coroutineScope = rememberCoroutineScope()
     val animation = remember { Animatable(0f) }
     val maxSpeed = remember { mutableStateOf(0f) }
@@ -170,7 +164,7 @@ private fun SpeedTestScreen(state: UiState,readingString:String, onClick: () -> 
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White),
+            .background(DeepBlue),
         verticalArrangement = Arrangement.SpaceBetween,
     ) {
         val readingType = getReadingUnit(readingString = readingString)
@@ -245,7 +239,7 @@ fun SpeedValue(value: String, unit: String) {
         Text(
             text = value,
             fontSize = 45.sp,
-            color = Color.Black,
+            color = Color.White,
             fontWeight = FontWeight.Bold
         )
         //Measurement Unit change here

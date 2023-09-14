@@ -48,7 +48,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.smarthydro.Destination
-import com.example.smarthydro.R
+//import com.example.smarthydro.R
 import com.example.smarthydro.ui.theme.AquaBlue
 import com.example.smarthydro.ui.theme.Beige1
 import com.example.smarthydro.ui.theme.Beige2
@@ -72,22 +72,24 @@ import com.example.smarthydro.ui.theme.Red1
 import com.example.smarthydro.ui.theme.Red2
 import com.example.smarthydro.ui.theme.Red3
 import com.example.smarthydro.ui.theme.TextWhite
-
-// https://youtu.be/g5-wzZUnIbQ
-@ExperimentalFoundationApi
-@Composable
-//@Preview
-fun HomeScreen(navController: NavHostController) {
 import androidx.lifecycle.ViewModel
 import com.example.smarthydro.R
 import com.example.smarthydro.models.SensorModel
 import com.example.smarthydro.ui.theme.*
 import com.example.smarthydro.viewmodels.SensorViewModel
 private const val GET_SENSOR_DATA_DELAY_MS: Long = 15 * 1000
+
+/*
 // https://youtu.be/g5-wzZUnIbQ
 @ExperimentalFoundationApi
 @Composable
-fun HomeScreen(viewModel: SensorViewModel) {
+//@Preview
+fun HomeScreen(navController: NavHostController) {} */
+
+// https://youtu.be/g5-wzZUnIbQ
+@ExperimentalFoundationApi
+@Composable
+fun HomeScreen(viewModel: SensorViewModel,navController: NavHostController) {
     val sensorData by viewModel.sensorData.observeAsState(SensorModel())
 
     LaunchedEffect(Unit) {
@@ -95,7 +97,7 @@ fun HomeScreen(viewModel: SensorViewModel) {
     }
     Box(
         modifier = Modifier
-            .background(Color.White)
+            .background(DeepBlue)
             .fillMaxSize()
     ) {
         Column {

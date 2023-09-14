@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -13,6 +14,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.smarthydro.ui.theme.SmartHydroTheme
 import com.example.smarthydro.ui.theme.screen.home.HomeScreen
 import com.example.smarthydro.ui.theme.screen.viewData.SpeedTestScreen
+import com.example.smarthydro.ui.theme.screen.login.LoginScreen
+import com.example.smarthydro.viewmodels.SensorViewModel
 
 
 //https://www.youtube.com/watch?v=hGg0HjcoP9w
@@ -22,8 +25,7 @@ sealed class Destination(val route:String){
         fun createRoute(readingType: String) = "viewData/$readingType"
     }
 }
-import com.example.smarthydro.ui.theme.screen.login.LoginScreen
-import com.example.smarthydro.viewmodels.SensorViewModel
+
 
 class MainActivity : ComponentActivity() {
     private val viewModel: SensorViewModel by viewModels()
@@ -34,7 +36,7 @@ class MainActivity : ComponentActivity() {
             SmartHydroTheme {
                 val navController = rememberNavController()
                 // HomeScreen()
-                NavAppHost(navController = navController)
+                NavAppHost(navController = navController, viewModel = viewModel)
                 //HomeScreen(navController)
             }
         }
@@ -44,9 +46,10 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun NavAppHost(navController: NavHostController){
+fun NavAppHost(navController: NavHostController, viewModel: SensorViewModel){
+
     NavHost(navController = navController, startDestination = "home" ){
-        composable(Destination.home.route){ HomeScreen(navController)}
+        composable(Destination.home.route){ HomeScreen(viewModel = viewModel, navController)}
         composable(Destination.viewData.route){ navBackStackEntry ->
             val readingType = navBackStackEntry.arguments?.getString("readingType")
             if (readingType == null){
