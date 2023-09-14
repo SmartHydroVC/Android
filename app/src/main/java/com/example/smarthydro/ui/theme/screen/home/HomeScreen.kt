@@ -30,6 +30,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -72,9 +78,24 @@ import com.example.smarthydro.ui.theme.TextWhite
 @Composable
 //@Preview
 fun HomeScreen(navController: NavHostController) {
+import androidx.lifecycle.ViewModel
+import com.example.smarthydro.R
+import com.example.smarthydro.models.SensorModel
+import com.example.smarthydro.ui.theme.*
+import com.example.smarthydro.viewmodels.SensorViewModel
+private const val GET_SENSOR_DATA_DELAY_MS: Long = 15 * 1000
+// https://youtu.be/g5-wzZUnIbQ
+@ExperimentalFoundationApi
+@Composable
+fun HomeScreen(viewModel: SensorViewModel) {
+    val sensorData by viewModel.sensorData.observeAsState(SensorModel())
+
+    LaunchedEffect(Unit) {
+        viewModel.fetchSensorPeriodically(GET_SENSOR_DATA_DELAY_MS)
+    }
     Box(
         modifier = Modifier
-            .background(DeepBlue)
+            .background(Color.White)
             .fillMaxSize()
     ) {
         Column {
@@ -366,7 +387,7 @@ fun FeatureItem(
         ) {
             Text(
                 text = feature.title,
-                style = MaterialTheme.typography.headlineMedium,
+                style = MaterialTheme.typography.headlineSmall,
                 lineHeight = 26.sp,
                 modifier = Modifier.align(Alignment.TopStart)
             )

@@ -9,6 +9,28 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -21,6 +43,7 @@ import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -29,6 +52,11 @@ import com.example.smarthydro.ui.theme.DarkGradient
 import com.example.smarthydro.ui.theme.GreenGradient
 import com.example.smarthydro.ui.theme.LightGreen1
 import com.example.smarthydro.ui.theme.screen.ReadingType
+import com.example.smarthydro.ui.theme.BackgroundColor
+import com.example.smarthydro.ui.theme.DarkGradient
+import com.example.smarthydro.ui.theme.GreenGradient
+import com.example.smarthydro.ui.theme.LightGreen1
+import com.example.smarthydro.ui.theme.PrimaryColor
 import com.patrykandpatrick.vico.compose.axis.horizontal.bottomAxis
 import com.patrykandpatrick.vico.compose.axis.vertical.startAxis
 import com.patrykandpatrick.vico.compose.chart.Chart
@@ -142,7 +170,7 @@ private fun SpeedTestScreen(state: UiState,readingString:String, onClick: () -> 
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
-            .background(DarkGradient),
+            .background(Color.White),
         verticalArrangement = Arrangement.SpaceBetween,
     ) {
         val readingType = getReadingUnit(readingString = readingString)
@@ -217,7 +245,7 @@ fun SpeedValue(value: String, unit: String) {
         Text(
             text = value,
             fontSize = 45.sp,
-            color = Color.White,
+            color = Color.Black,
             fontWeight = FontWeight.Bold
         )
         //Measurement Unit change here
@@ -264,7 +292,7 @@ fun DrawScope.drawArcs(progress: Float, maxValue: Float) {
     fun drawBlur() {
         for (i in 0..20) {
             drawArc(
-                color = Color.Green.copy(alpha = i / 900f),
+                color = PrimaryColor.copy(alpha = i / 900f),
                 startAngle = startAngle,
                 sweepAngle = sweepAngle,
                 useCenter = false,
@@ -277,7 +305,7 @@ fun DrawScope.drawArcs(progress: Float, maxValue: Float) {
 
     fun drawStroke() {
         drawArc(
-            color = Color.Green,
+            color = PrimaryColor,
             startAngle = startAngle,
             sweepAngle = sweepAngle,
             useCenter = false,

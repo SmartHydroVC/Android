@@ -3,6 +3,7 @@ package com.example.smarthydro
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
@@ -21,8 +22,11 @@ sealed class Destination(val route:String){
         fun createRoute(readingType: String) = "viewData/$readingType"
     }
 }
+import com.example.smarthydro.ui.theme.screen.login.LoginScreen
+import com.example.smarthydro.viewmodels.SensorViewModel
 
 class MainActivity : ComponentActivity() {
+    private val viewModel: SensorViewModel by viewModels()
     @OptIn(ExperimentalFoundationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
