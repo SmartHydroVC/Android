@@ -4,15 +4,23 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.smarthydro.ui.theme.SmartHydroTheme
 import com.example.smarthydro.ui.theme.screen.home.HomeScreen
+import com.example.smarthydro.ui.theme.screen.viewData.SpeedTestScreen
+
+
+//https://www.youtube.com/watch?v=hGg0HjcoP9w
+sealed class Destination(val route:String){
+    object home : Destination("home")
+    object viewData: Destination("viewData/{readingType}"){
+        fun createRoute(readingType: String) = "viewData/$readingType"
+    }
+}
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalFoundationApi::class)
@@ -20,9 +28,30 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             SmartHydroTheme {
-                HomeScreen()
+                val navController = rememberNavController()
+                // HomeScreen()
+                NavAppHost(navController = navController)
+                //HomeScreen(navController)
             }
         }
     }
 }
 
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun NavAppHost(navController: NavHostController){
+    NavHost(navController = navController, startDestination = "home" ){
+        composable(Destination.home.route){ HomeScreen(navController)}
+        composable(Destination.viewData.route){ navBackStackEntry ->
+            val readingType = navBackStackEntry.arguments?.getString("readingType")
+            if (readingType == null){
+                //Display Messge
+            }
+            else
+            {
+                SpeedTestScreen(readingType)
+            }
+        }
+    }
+}
