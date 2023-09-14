@@ -1,14 +1,14 @@
 package com.example.smarthydro.ui.theme.screen.viewData
 
 import android.graphics.Typeface
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.AnimationVector1D
-import androidx.compose.animation.core.CubicBezierEasing
-import androidx.compose.animation.core.LinearOutSlowInEasing
-import androidx.compose.animation.core.keyframes
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,11 +41,17 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.smarthydro.R
+import com.example.smarthydro.ui.theme.DarkGradient
+import com.example.smarthydro.ui.theme.GreenGradient
+import com.example.smarthydro.ui.theme.LightGreen1
+import com.example.smarthydro.ui.theme.screen.ReadingType
 import com.example.smarthydro.ui.theme.BackgroundColor
 import com.example.smarthydro.ui.theme.DarkGradient
 import com.example.smarthydro.ui.theme.GreenGradient
@@ -85,9 +91,9 @@ class UiState(
     val arcValue: Float = 0f,
     val inProgress: Boolean = false
 )
-
+private var powerState : Boolean = true;
 suspend fun startAnimation(animation: Animatable<Float, AnimationVector1D>) {
-    animation.animateTo(0.84f, keyframes {
+    animation.animateTo(1.00f, keyframes {
         durationMillis = 9000
         0f at 0 with CubicBezierEasing(0f, 1.5f, 0.8f, 1f)
         0.72f at 1000 with CubicBezierEasing(0.2f, -1.5f, 0f, 1f)
@@ -96,8 +102,7 @@ suspend fun startAnimation(animation: Animatable<Float, AnimationVector1D>) {
         0.82f at 4000 with CubicBezierEasing(0.2f, -2f, 0f, 1f)
         0.85f at 5000 with CubicBezierEasing(0.2f, -2f, 0f, 1f)
         0.89f at 6000 with CubicBezierEasing(0.2f, -1.2f, 0f, 1f)
-        0.82f at 7500 with LinearOutSlowInEasing
-        // Helo
+        1.00f at 7500 with LinearOutSlowInEasing
     })
 }
 
@@ -108,15 +113,15 @@ fun Animatable<Float, AnimationVector1D>.toUiState(maxSpeed: Float) = UiState(
     maxSpeed = if (maxSpeed > 0f) "%.1f mbps".format(maxSpeed) else "-",
     inProgress = isRunning
 )
-@Preview
+//@Preview
 @Composable
-fun ViewDataScreen() {
+fun SpeedTestScreen(/*reading: ReadingType*/readingString: String) {
     val coroutineScope = rememberCoroutineScope()
     val animation = remember { Animatable(0f) }
     val maxSpeed = remember { mutableStateOf(0f) }
     maxSpeed.value = max(maxSpeed.value, animation.value * 100f)
 
-    ViewDataScreen(animation.toUiState(maxSpeed.value)) {
+    SpeedTestScreen(animation.toUiState(maxSpeed.value),readingString ) {
         coroutineScope.launch {
             maxSpeed.value = 0f
             startAnimation(animation)
@@ -124,27 +129,43 @@ fun ViewDataScreen() {
     }
 }
 
-@Composable
-fun ButtonSend(text:String){
-    ElevatedButton(
-        onClick = {
-        },
-        modifier = Modifier.width(40.dp),
-        contentPadding = PaddingValues(0.dp)
-    ) {
-        Text(
-            text = text,
-            fontSize = 13.sp,
-            fontWeight = FontWeight.SemiBold,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
+private fun getReadingUnit(readingString: String):ReadingType{
+
+    var readingType = ReadingType(readingString,"")
+
+    when (readingString) {
+        "Temperature" -> {
+            readingType.heading = "Temperature"
+            readingType.unit = "C"
+        }
+        "Water" -> {
+            readingType.heading = "Water Flow"
+            readingType.unit = "mm"
+        }
+        "pH" -> {
+            readingType.heading = "pH Level"
+            readingType.unit = "pH"
+        }
+        "Humidity" -> {
+            readingType.heading = "Humidity"
+            readingType.unit = "RH" // RH = Relative Humidity
+        }
+        "EC" -> {
+            readingType.heading = "EC Level"
+            readingType.unit = "ms/cm" // RH = Relative Humidity
+        }
+        "Light" -> {
+            readingType.heading = "Light"
+            readingType.unit = "lux" // RH = Relative Humidity
+        }
+        else -> {}
     }
 
+    return readingType
 }
 
 @Composable
-private fun ViewDataScreen(state: UiState, onClick: () -> Unit) {
+private fun SpeedTestScreen(state: UiState,readingString:String, onClick: () -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -152,23 +173,28 @@ private fun ViewDataScreen(state: UiState, onClick: () -> Unit) {
             .background(Color.White),
         verticalArrangement = Arrangement.SpaceBetween,
     ) {
-        Header()
+        val readingType = getReadingUnit(readingString = readingString)
+        Header(readingType.heading)
         RegularLineChart()
-        ButtonSend("Send")
+        SpeedIndicator(state = state, onClick = onClick,readingType.unit)
+
     }
 }
 
+//Pass data reading header here
 @Composable
-fun Header() {
+fun Header(heading:String) {
     Text(
-        text = "Temperature",
+        //Heading Value Change
+        text = heading,
         modifier = Modifier.padding(top = 52.dp, bottom = 16.dp),
         style = MaterialTheme.typography.headlineLarge
     )
 }
 
+//Pass Unit value here
 @Composable
-fun SpeedIndicator(state: UiState, onClick: () -> Unit) {
+fun SpeedIndicator(state: UiState, onClick: () -> Unit, unit: String) {
     Box(
         contentAlignment = Alignment.BottomCenter,
         modifier = Modifier
@@ -176,47 +202,41 @@ fun SpeedIndicator(state: UiState, onClick: () -> Unit) {
             .aspectRatio(1f)
     ) {
         CircularSpeedIndicator(state.arcValue, 240f)
-        SpeedValue(state.speed)
-        Buttons(state, onClick)
+        // StartButton(!state.inProgress, onClick)
+        IconButtonOnOff(onClick);
+        SpeedValue(state.speed,unit)
     }
 }
 
 @Composable
-fun Buttons(state: UiState, onClick: () -> Unit) {
-    Button(
+fun IconButtonOnOff(onClick: () -> Unit) {
+    var iconColor by remember { mutableStateOf(Color.Green) }
+    IconButton(
+        modifier = Modifier
+            .size(100.dp)
+            .padding(top = 40.dp),
         onClick = {
-            if (state.inProgress) {
+            powerState = !powerState
+            if (powerState) {
+                iconColor = Color.Green
+                onClick()
+            }else {
+                iconColor = Color.Red
             }
-        },
-        enabled = state.inProgress,
-        shape = RoundedCornerShape(24.dp),
-        modifier = Modifier.padding(start = 190.dp, bottom = 50.dp),
-        border = BorderStroke(width = 2.dp, color = MaterialTheme.colorScheme.onSurface),
-    ) {
-        Text(
-            text = "+",
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
-        )
-    }
-    Button(
-        onClick = {
-            if (state.inProgress) {
-            }
-        },
-        enabled = state.inProgress,
-        shape = RoundedCornerShape(24.dp),
-        modifier = Modifier.padding(end = 190.dp, bottom = 50.dp),
-        border = BorderStroke(width = 2.dp, color = MaterialTheme.colorScheme.onSurface),
-    ) {
-        Text(
-            text = "-",
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
+        })
+    {
+        Icon(
+            painter = painterResource(id = R.drawable.ic_power),
+            contentDescription = "Option to turn on or off the component",
+            tint = iconColor,
+            modifier = Modifier.size(size = 100.dp)
         )
     }
 }
 
+//Pass same measurement unit from Speed indicator her
 @Composable
-fun SpeedValue(value: String) {
+fun SpeedValue(value: String, unit: String) {
     Column(
         Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -228,7 +248,8 @@ fun SpeedValue(value: String) {
             color = Color.Black,
             fontWeight = FontWeight.Bold
         )
-        Text("C", style = MaterialTheme.typography.headlineMedium)
+        //Measurement Unit change here
+        Text(unit, style = MaterialTheme.typography.headlineMedium)
     }
 }
 
@@ -243,7 +264,7 @@ fun StartButton(isEnabled: Boolean, onClick: () -> Unit) {
 
         ) {
         Text(
-            text = "START",
+            text = "asd",
             modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
         )
     }

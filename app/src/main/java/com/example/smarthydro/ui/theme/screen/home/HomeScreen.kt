@@ -1,11 +1,23 @@
 package com.example.smarthydro.ui.theme.screen.home
 
-import androidx.compose.runtime.Composable
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -13,6 +25,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,9 +44,40 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import com.example.smarthydro.Destination
+import com.example.smarthydro.R
+import com.example.smarthydro.ui.theme.AquaBlue
+import com.example.smarthydro.ui.theme.Beige1
+import com.example.smarthydro.ui.theme.Beige2
+import com.example.smarthydro.ui.theme.Beige3
+import com.example.smarthydro.ui.theme.BlueViolet1
+import com.example.smarthydro.ui.theme.BlueViolet2
+import com.example.smarthydro.ui.theme.BlueViolet3
+import com.example.smarthydro.ui.theme.ButtonBlue
+import com.example.smarthydro.ui.theme.DarkerButtonBlue
+import com.example.smarthydro.ui.theme.DeepBlue
+import com.example.smarthydro.ui.theme.LightGreen1
+import com.example.smarthydro.ui.theme.LightGreen2
+import com.example.smarthydro.ui.theme.LightGreen3
+import com.example.smarthydro.ui.theme.OrangeYellow1
+import com.example.smarthydro.ui.theme.OrangeYellow2
+import com.example.smarthydro.ui.theme.OrangeYellow3
+import com.example.smarthydro.ui.theme.Purple200
+import com.example.smarthydro.ui.theme.Purple500
+import com.example.smarthydro.ui.theme.Purple700
+import com.example.smarthydro.ui.theme.Red1
+import com.example.smarthydro.ui.theme.Red2
+import com.example.smarthydro.ui.theme.Red3
+import com.example.smarthydro.ui.theme.TextWhite
+
+// https://youtu.be/g5-wzZUnIbQ
+@ExperimentalFoundationApi
+@Composable
+//@Preview
+fun HomeScreen(navController: NavHostController) {
 import androidx.lifecycle.ViewModel
 import com.example.smarthydro.R
 import com.example.smarthydro.models.SensorModel
@@ -52,18 +100,18 @@ fun HomeScreen(viewModel: SensorViewModel) {
     ) {
         Column {
             GreetingSection()
-            ChipSection(chips = listOf("Water Lvl: 10m", "pH Lvl: ${sensorData.pH}", "Temperature: ${sensorData.temperature}","Humidity: ${sensorData.humidity}"))
+            //ChipSection(chips = listOf("Water Lvl: 10m", "pH Lvl: 7pH", "Temperature: 28C","Humidity: 12"))
             FeatureSection(
                 features = listOf(
                     Feature(
-                        title = "Water Lvl",
+                        title = "Water",
                         R.drawable.ic_waterlv,
                         BlueViolet1,
                         BlueViolet2,
                         BlueViolet3
                     ),
                     Feature(
-                        title = "pH Lvl",
+                        title = "pH",
                         R.drawable.ic_phlv,
                         LightGreen1,
                         LightGreen2,
@@ -82,20 +130,36 @@ fun HomeScreen(viewModel: SensorViewModel) {
                         Beige1,
                         Beige2,
                         Beige3
-                    )
-                )
+                    ),
+                    Feature(
+                        title = "EC",
+                        R.drawable.ic_ec,
+                        Purple200,
+                        Purple500,
+                        Purple700
+                    ),
+                    Feature(
+                        title = "Light",
+                        R.drawable.ic_light,
+                        Red1,
+                        Red2,
+                        Red3
+                    ),
+                ),
+                navController
             )
         }
-        BottomMenu(items = listOf(
-            BottomMenuContent("HOME", R.drawable.ic_home),
-            BottomMenuContent("WATER", R.drawable.ic_waterlv),
-            BottomMenuContent("pH", R.drawable.ic_phlv),
-            BottomMenuContent("TEMP", R.drawable.ic_temp),
-            BottomMenuContent("HUMIDITY", R.drawable.ic_humidity),
-        ), modifier = Modifier.align(Alignment.BottomCenter))
+        /* BottomMenu(items = listOf(
+             BottomMenuContent("HOME", R.drawable.ic_home),
+             BottomMenuContent("WATER", R.drawable.ic_waterlv),
+             BottomMenuContent("pH", R.drawable.ic_phlv),
+             BottomMenuContent("TEMP", R.drawable.ic_temp),
+             BottomMenuContent("HUMIDITY", R.drawable.ic_humidity),
+         ), modifier = Modifier.align(Alignment.BottomCenter),navController=navController) */
     }
 }
 
+/*
 @Composable
 fun BottomMenu(
     items: List<BottomMenuContent>,
@@ -103,7 +167,8 @@ fun BottomMenu(
     activeHighlightColor: Color = ButtonBlue,
     activeTextColor: Color = Color.White,
     inactiveTextColor: Color = AquaBlue,
-    initialSelectedItemIndex: Int = 0
+    initialSelectedItemIndex: Int = 0,
+    navController: NavHostController
 ) {
     var selectedItemIndex by remember {
         mutableStateOf(initialSelectedItemIndex)
@@ -122,14 +187,16 @@ fun BottomMenu(
                 isSelected = index == selectedItemIndex,
                 activeHighlightColor = activeHighlightColor,
                 activeTextColor = activeTextColor,
-                inactiveTextColor = inactiveTextColor
+                inactiveTextColor = inactiveTextColor,
+                navController = navController
             ) {
                 selectedItemIndex = index
             }
         }
     }
-}
+} */
 
+/*
 @Composable
 fun BottomMenuItem(
     item: BottomMenuContent,
@@ -137,6 +204,7 @@ fun BottomMenuItem(
     activeHighlightColor: Color = ButtonBlue,
     activeTextColor: Color = Color.White,
     inactiveTextColor: Color = AquaBlue,
+    navController: NavHostController,
     onItemClick: () -> Unit
 ) {
     Column(
@@ -144,6 +212,7 @@ fun BottomMenuItem(
         verticalArrangement = Arrangement.Center,
         modifier = Modifier.clickable {
             onItemClick()
+            navController.navigate(Destination.viewData.createRoute(item.title))
         }
     ) {
         Box(
@@ -167,35 +236,11 @@ fun BottomMenuItem(
     }
 }
 
-@Composable
-fun GreetingSection(
-    name: String = "User"
-) {
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(15.dp)
-    ) {
-        Column(
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = "Hello, $name",
-                style = MaterialTheme.typography.headlineLarge
-            )
-            Text(
-                text = "We wish you have a good day!",
-                style = MaterialTheme.typography.bodyLarge
-            )
-        }
-    }
-}
 
 @Composable
 fun ChipSection(
-    chips: List<String>
+    chips: List<String>,
+
 ) {
     var selectedChipIndex by remember {
         mutableStateOf(0)
@@ -223,13 +268,41 @@ fun ChipSection(
         }
     }
 }
+*/
+
+@Composable
+fun GreetingSection(
+    name: String = "User"
+) {
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(15.dp)
+    ) {
+        Column(
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = "Hello, $name",
+                style = MaterialTheme.typography.headlineLarge
+            )
+            Text(
+                text = "We wish you have a good day!",
+                style = MaterialTheme.typography.bodyLarge
+            )
+        }
+    }
+}
 
 @ExperimentalFoundationApi
 @Composable
-fun FeatureSection(features: List<Feature>) {
+fun FeatureSection(features: List<Feature>, navController: NavHostController) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
             text = "Features",
+            color = Color.White,
             style = MaterialTheme.typography.displayLarge,
             modifier = Modifier.padding(15.dp,15.dp,15.dp,20.dp)
         )
@@ -239,7 +312,7 @@ fun FeatureSection(features: List<Feature>) {
             modifier = Modifier.fillMaxHeight()
         ) {
             items(features.size) {
-                FeatureItem(feature = features[it])
+                FeatureItem(feature = features[it],navController)
             }
         }
     }
@@ -247,7 +320,7 @@ fun FeatureSection(features: List<Feature>) {
 
 @Composable
 fun FeatureItem(
-    feature: Feature
+    feature: Feature, navController: NavHostController
 ) {
     BoxWithConstraints(
         modifier = Modifier
@@ -332,6 +405,7 @@ fun FeatureItem(
                 modifier = Modifier
                     .clickable {
                         // Handle the click
+                        navController.navigate(Destination.viewData.createRoute(feature.title))
                     }
                     .align(Alignment.BottomEnd)
                     .clip(RoundedCornerShape(10.dp))
