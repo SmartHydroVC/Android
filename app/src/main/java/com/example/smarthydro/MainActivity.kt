@@ -15,6 +15,7 @@ import com.example.smarthydro.ui.theme.SmartHydroTheme
 import com.example.smarthydro.ui.theme.screen.home.HomeScreen
 import com.example.smarthydro.ui.theme.screen.viewData.SpeedTestScreen
 import com.example.smarthydro.ui.theme.screen.login.LoginScreen
+import com.example.smarthydro.viewmodels.ComponentViewModel
 import com.example.smarthydro.viewmodels.SensorViewModel
 
 
@@ -29,6 +30,7 @@ sealed class Destination(val route:String){
 
 class MainActivity : ComponentActivity() {
     private val viewModel: SensorViewModel by viewModels()
+    private val component: ComponentViewModel by viewModels()
     @OptIn(ExperimentalFoundationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +38,7 @@ class MainActivity : ComponentActivity() {
             SmartHydroTheme {
                 val navController = rememberNavController()
                 // HomeScreen()
-                NavAppHost(navController = navController, viewModel = viewModel)
+                NavAppHost(navController = navController, viewModel = viewModel, component)
                 //HomeScreen(navController)
             }
         }
@@ -46,7 +48,7 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun NavAppHost(navController: NavHostController, viewModel: SensorViewModel){
+fun NavAppHost(navController: NavHostController, viewModel: SensorViewModel, componentViewModel: ComponentViewModel){
 
     NavHost(navController = navController, startDestination = "home" ){
         composable(Destination.home.route){ HomeScreen(viewModel = viewModel, navController)}
@@ -57,7 +59,7 @@ fun NavAppHost(navController: NavHostController, viewModel: SensorViewModel){
             }
             else
             {
-                SpeedTestScreen(readingType)
+                SpeedTestScreen(readingType, componentViewModel)
             }
         }
     }

@@ -45,12 +45,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.smarthydro.R
+import com.example.smarthydro.repositories.ComponentRepository
+import com.example.smarthydro.services.ComponentService
 import com.example.smarthydro.ui.theme.DeepBlue
 import com.example.smarthydro.ui.theme.GreenGradient
 import com.example.smarthydro.ui.theme.LightGreen1
 import com.example.smarthydro.ui.theme.PrimaryColor
 import com.example.smarthydro.ui.theme.screen.ReadingType
+import com.example.smarthydro.viewmodels.ComponentViewModel
 import com.patrykandpatrick.vico.compose.axis.horizontal.bottomAxis
 import com.patrykandpatrick.vico.compose.axis.vertical.startAxis
 import com.patrykandpatrick.vico.compose.chart.Chart
@@ -86,6 +91,8 @@ class UiState(
     val inProgress: Boolean = false
 )
 private var powerState : Boolean = true;
+
+private var readingType1: ReadingType = ReadingType("","");
 suspend fun startAnimation(animation: Animatable<Float, AnimationVector1D>) {
     animation.animateTo(1.00f, keyframes {
         durationMillis = 9000
@@ -109,13 +116,13 @@ fun Animatable<Float, AnimationVector1D>.toUiState(maxSpeed: Float) = UiState(
 )
 //@Preview
 @Composable
-fun SpeedTestScreen(readingString: String) {
+fun SpeedTestScreen(readingString: String, component: ComponentViewModel) {
     val coroutineScope = rememberCoroutineScope()
     val animation = remember { Animatable(0f) }
     val maxSpeed = remember { mutableStateOf(0f) }
     maxSpeed.value = max(maxSpeed.value, animation.value * 100f)
 
-    SpeedTestScreen(animation.toUiState(maxSpeed.value),readingString ) {
+    SpeedTestScreen(animation.toUiState(maxSpeed.value),readingString,component ) {
         coroutineScope.launch {
             maxSpeed.value = 0f
             startAnimation(animation)
@@ -125,7 +132,7 @@ fun SpeedTestScreen(readingString: String) {
 
 private fun getReadingUnit(readingString: String):ReadingType{
 
-    var readingType = ReadingType(readingString,"")
+     var readingType = ReadingType(readingString,"")
 
     when (readingString) {
         "Temperature" -> {
@@ -159,7 +166,7 @@ private fun getReadingUnit(readingString: String):ReadingType{
 }
 
 @Composable
-private fun SpeedTestScreen(state: UiState,readingString:String, onClick: () -> Unit) {
+private fun SpeedTestScreen(state: UiState,readingString:String, component: ComponentViewModel, onClick: () -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -167,10 +174,10 @@ private fun SpeedTestScreen(state: UiState,readingString:String, onClick: () -> 
             .background(DeepBlue),
         verticalArrangement = Arrangement.SpaceBetween,
     ) {
-        val readingType = getReadingUnit(readingString = readingString)
-        Header(readingType.heading)
+        readingType1 = getReadingUnit(readingString = readingString)
+        Header(readingType1.heading)
         RegularLineChart()
-        SpeedIndicator(state = state, onClick = onClick,readingType.unit)
+        SpeedIndicator(state = state, onClick = onClick,readingType1.unit, component)
 
     }
 }
@@ -188,7 +195,7 @@ fun Header(heading:String) {
 
 //Pass Unit value here
 @Composable
-fun SpeedIndicator(state: UiState, onClick: () -> Unit, unit: String) {
+fun SpeedIndicator(state: UiState, onClick: () -> Unit, unit: String, component: ComponentViewModel) {
     Box(
         contentAlignment = Alignment.BottomCenter,
         modifier = Modifier
@@ -197,20 +204,38 @@ fun SpeedIndicator(state: UiState, onClick: () -> Unit, unit: String) {
     ) {
         CircularSpeedIndicator(state.arcValue, 240f)
         // StartButton(!state.inProgress, onClick)
-        IconButtonOnOff(onClick);
+        IconButtonOnOff(onClick, component);
         SpeedValue(state.speed,unit)
     }
 }
 
 @Composable
-fun IconButtonOnOff(onClick: () -> Unit) {
+fun IconButtonOnOff(onClick: () -> Unit, viewModel: ComponentViewModel) {
     var iconColor by remember { mutableStateOf(Color.Green) }
+
     IconButton(
         modifier = Modifier
             .size(100.dp)
             .padding(top = 40.dp),
         onClick = {
             powerState = !powerState
+
+            when (readingType1.heading) {
+                "Temperature" -> {
+                    viewModel.setFan()
+                }
+                "Light" -> {
+                    viewModel.setLight()
+                }
+                "Humidity" -> {
+                    viewModel.setExtractor()
+                }
+                "Pump" -> {
+                    viewModel.setPump()
+                }
+                else -> {}
+            }
+
             if (powerState) {
                 iconColor = Color.Green
                 onClick()
