@@ -113,7 +113,7 @@ fun HomeScreen(viewModel: SensorViewModel,navController: NavHostController) {
                         BlueViolet3
                     ),
                     Feature(
-                        title = "pH",
+                        title = "PH",
                         R.drawable.ic_phlv,
                         LightGreen1,
                         LightGreen2,

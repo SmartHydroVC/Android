@@ -230,7 +230,7 @@ fun IconButtonOnOff(onClick: () -> Unit, viewModel: ComponentViewModel) {
                 "Humidity" -> {
                     viewModel.setExtractor()
                 }
-                "Pump" -> {
+                "Water Flow" -> {
                     viewModel.setPump()
                 }
                 else -> {}
