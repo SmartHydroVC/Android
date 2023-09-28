@@ -26,7 +26,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -49,22 +48,14 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.smarthydro.R
-<<<<<<< Updated upstream
 import com.example.smarthydro.repositories.ComponentRepository
 import com.example.smarthydro.services.ComponentService
-=======
-import com.example.smarthydro.models.SensorModel
->>>>>>> Stashed changes
 import com.example.smarthydro.ui.theme.DeepBlue
 import com.example.smarthydro.ui.theme.GreenGradient
 import com.example.smarthydro.ui.theme.LightGreen1
 import com.example.smarthydro.ui.theme.PrimaryColor
 import com.example.smarthydro.ui.theme.screen.ReadingType
-<<<<<<< Updated upstream
 import com.example.smarthydro.viewmodels.ComponentViewModel
-=======
-import com.example.smarthydro.viewmodels.SensorViewModel
->>>>>>> Stashed changes
 import com.patrykandpatrick.vico.compose.axis.horizontal.bottomAxis
 import com.patrykandpatrick.vico.compose.axis.vertical.startAxis
 import com.patrykandpatrick.vico.compose.chart.Chart
@@ -125,23 +116,13 @@ fun Animatable<Float, AnimationVector1D>.toUiState(maxSpeed: Float) = UiState(
 )
 //@Preview
 @Composable
-<<<<<<< Updated upstream
 fun SpeedTestScreen(readingString: String, component: ComponentViewModel) {
-=======
-fun SpeedTestScreen(readingString: String,viewModel: SensorViewModel) {
->>>>>>> Stashed changes
     val coroutineScope = rememberCoroutineScope()
-
-
     val animation = remember { Animatable(0f) }
     val maxSpeed = remember { mutableStateOf(0f) }
     maxSpeed.value = max(maxSpeed.value, animation.value * 100f)
 
-<<<<<<< Updated upstream
     SpeedTestScreen(animation.toUiState(maxSpeed.value),readingString,component ) {
-=======
-    SpeedTestScreen(animation.toUiState(maxSpeed.value),readingString, viewModel = viewModel ) {
->>>>>>> Stashed changes
         coroutineScope.launch {
             maxSpeed.value = 0f
             startAnimation(animation)
@@ -149,21 +130,14 @@ fun SpeedTestScreen(readingString: String,viewModel: SensorViewModel) {
     }
 }
 
-@Composable
-private fun getReadingUnit(readingString: String, viewModel: SensorViewModel):ReadingType{
+private fun getReadingUnit(readingString: String):ReadingType{
 
-<<<<<<< Updated upstream
      var readingType = ReadingType(readingString,"")
-=======
-    var readingType = ReadingType(readingString,"",1f)
-    val sensorData by viewModel.sensorData.observeAsState(SensorModel())
->>>>>>> Stashed changes
 
     when (readingString) {
         "Temperature" -> {
             readingType.heading = "Temperature"
             readingType.unit = "C"
-            readingType.value = sensorData.temperature.toFloat()
         }
         "Water" -> {
             readingType.heading = "Water Flow"
@@ -172,17 +146,14 @@ private fun getReadingUnit(readingString: String, viewModel: SensorViewModel):Re
         "pH" -> {
             readingType.heading = "pH Level"
             readingType.unit = "pH"
-            readingType.value = sensorData.pH.toFloat()
         }
         "Humidity" -> {
             readingType.heading = "Humidity"
             readingType.unit = "RH" // RH = Relative Humidity
-            readingType.value = sensorData.humidity.toFloat()
         }
         "EC" -> {
             readingType.heading = "EC Level"
             readingType.unit = "ms/cm" // RH = Relative Humidity
-            readingType.value = sensorData.eC.toFloat()
         }
         "Light" -> {
             readingType.heading = "Light"
@@ -195,13 +166,7 @@ private fun getReadingUnit(readingString: String, viewModel: SensorViewModel):Re
 }
 
 @Composable
-<<<<<<< Updated upstream
 private fun SpeedTestScreen(state: UiState,readingString:String, component: ComponentViewModel, onClick: () -> Unit) {
-=======
-private fun SpeedTestScreen(state: UiState,readingString:String,viewModel: SensorViewModel, onClick: () -> Unit) {
- 
-
->>>>>>> Stashed changes
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -209,17 +174,10 @@ private fun SpeedTestScreen(state: UiState,readingString:String,viewModel: Senso
             .background(DeepBlue),
         verticalArrangement = Arrangement.SpaceBetween,
     ) {
-<<<<<<< Updated upstream
         readingType1 = getReadingUnit(readingString = readingString)
         Header(readingType1.heading)
         RegularLineChart()
         SpeedIndicator(state = state, onClick = onClick,readingType1.unit, component)
-=======
-        val readingType = getReadingUnit(readingString = readingString, viewModel = viewModel)
-        Header(readingType.heading)
-        RegularLineChart()
-        SpeedIndicator(state = state, onClick = onClick,readingType.unit,readingType.value.toString())
->>>>>>> Stashed changes
 
     }
 }
@@ -237,11 +195,7 @@ fun Header(heading:String) {
 
 //Pass Unit value here
 @Composable
-<<<<<<< Updated upstream
 fun SpeedIndicator(state: UiState, onClick: () -> Unit, unit: String, component: ComponentViewModel) {
-=======
-fun SpeedIndicator(state: UiState, onClick: () -> Unit, unit: String,  value: String) {
->>>>>>> Stashed changes
     Box(
         contentAlignment = Alignment.BottomCenter,
         modifier = Modifier
@@ -250,13 +204,8 @@ fun SpeedIndicator(state: UiState, onClick: () -> Unit, unit: String,  value: St
     ) {
         CircularSpeedIndicator(state.arcValue, 240f)
         // StartButton(!state.inProgress, onClick)
-<<<<<<< Updated upstream
         IconButtonOnOff(onClick, component);
         SpeedValue(state.speed,unit)
-=======
-        IconButtonOnOff(onClick);
-        SpeedValue(value,unit)
->>>>>>> Stashed changes
     }
 }
 

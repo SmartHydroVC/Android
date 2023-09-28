@@ -59,11 +59,7 @@ fun NavAppHost(navController: NavHostController, viewModel: SensorViewModel, com
             }
             else
             {
-<<<<<<< Updated upstream
                 SpeedTestScreen(readingType, componentViewModel)
-=======
-                SpeedTestScreen(readingType,viewModel=viewModel)
->>>>>>> Stashed changes
             }
         }
     }
