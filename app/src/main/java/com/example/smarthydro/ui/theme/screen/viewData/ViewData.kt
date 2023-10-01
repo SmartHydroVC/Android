@@ -48,6 +48,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.smarthydro.R
+import com.example.smarthydro.models.NewSensorModel
+import com.example.smarthydro.models.NewSensorModelItem
 import com.example.smarthydro.repositories.ComponentRepository
 import com.example.smarthydro.services.ComponentService
 import com.example.smarthydro.ui.theme.DeepBlue
@@ -56,6 +58,7 @@ import com.example.smarthydro.ui.theme.LightGreen1
 import com.example.smarthydro.ui.theme.PrimaryColor
 import com.example.smarthydro.ui.theme.screen.ReadingType
 import com.example.smarthydro.viewmodels.ComponentViewModel
+import com.example.smarthydro.viewmodels.SensorViewModel
 import com.patrykandpatrick.vico.compose.axis.horizontal.bottomAxis
 import com.patrykandpatrick.vico.compose.axis.vertical.startAxis
 import com.patrykandpatrick.vico.compose.chart.Chart
@@ -92,10 +95,10 @@ class UiState(
 )
 private var powerState : Boolean = true;
 
-private var readingType1: ReadingType = ReadingType("","");
+private var readingType1: ReadingType = ReadingType("","", "");
 suspend fun startAnimation(animation: Animatable<Float, AnimationVector1D>) {
     animation.animateTo(1.00f, keyframes {
-        durationMillis = 9000
+        /*durationMillis = 9000
         0f at 0 with CubicBezierEasing(0f, 1.5f, 0.8f, 1f)
         0.72f at 1000 with CubicBezierEasing(0.2f, -1.5f, 0f, 1f)
         0.76f at 2000 with CubicBezierEasing(0.2f, -2f, 0f, 1f)
@@ -103,13 +106,13 @@ suspend fun startAnimation(animation: Animatable<Float, AnimationVector1D>) {
         0.82f at 4000 with CubicBezierEasing(0.2f, -2f, 0f, 1f)
         0.85f at 5000 with CubicBezierEasing(0.2f, -2f, 0f, 1f)
         0.89f at 6000 with CubicBezierEasing(0.2f, -1.2f, 0f, 1f)
-        1.00f at 7500 with LinearOutSlowInEasing
+        1.00f at 7500 with LinearOutSlowInEasing*/
     })
 }
 
 fun Animatable<Float, AnimationVector1D>.toUiState(maxSpeed: Float) = UiState(
     arcValue = value,
-    speed = "%.1f".format(value * 100),
+    speed = "%.1f".format(value * 50),
     ping = if (value > 0.2f) "${(value * 15).roundToInt()} ms" else "-",
     maxSpeed = if (maxSpeed > 0f) "%.1f mbps".format(maxSpeed) else "-",
     inProgress = isRunning
@@ -132,31 +135,39 @@ fun SpeedTestScreen(readingString: String, component: ComponentViewModel) {
 
 private fun getReadingUnit(readingString: String):ReadingType{
 
-     var readingType = ReadingType(readingString,"")
+     var readingType = ReadingType(readingString, "","")
 
     when (readingString) {
         "Temperature" -> {
+            val sensors = SensorViewModel()
+            val sensorList = sensors.sensorData
             readingType.heading = "Temperature"
+            readingType.value = "${sensorList}"
             readingType.unit = "C"
         }
         "Water" -> {
             readingType.heading = "Water Flow"
+            readingType.value = ""
             readingType.unit = "mm"
         }
         "pH" -> {
             readingType.heading = "pH Level"
+            readingType.value = ""
             readingType.unit = "pH"
         }
         "Humidity" -> {
             readingType.heading = "Humidity"
+            readingType.value = ""
             readingType.unit = "RH" // RH = Relative Humidity
         }
         "EC" -> {
             readingType.heading = "EC Level"
+            readingType.value = ""
             readingType.unit = "ms/cm" // RH = Relative Humidity
         }
         "Light" -> {
             readingType.heading = "Light"
+            readingType.value = ""
             readingType.unit = "lux" // RH = Relative Humidity
         }
         else -> {}

@@ -1,5 +1,6 @@
 package com.example.smarthydro.services
 
+import com.example.smarthydro.models.NewSensorModelItem
 import com.example.smarthydro.models.SensorModel
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -21,8 +22,8 @@ object SensorService{
 }
 
 interface ISensors {
-    @GET("M")
-    suspend fun getSensorData(): SensorModel
+    @GET("/r/n/r/n")
+    suspend fun getSensorData(): List<NewSensorModelItem>
 }
 
 
