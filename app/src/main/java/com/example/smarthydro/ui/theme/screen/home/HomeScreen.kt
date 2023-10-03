@@ -76,6 +76,8 @@ import androidx.lifecycle.ViewModel
 import com.example.smarthydro.R
 import com.example.smarthydro.models.SensorModel
 import com.example.smarthydro.ui.theme.*
+import com.example.smarthydro.ui.theme.screen.ReadingType
+import com.example.smarthydro.viewmodels.ReadingViewModel
 import com.example.smarthydro.viewmodels.SensorViewModel
 private const val GET_SENSOR_DATA_DELAY_MS: Long = 15 * 1000
 
@@ -89,7 +91,7 @@ fun HomeScreen(navController: NavHostController) {} */
 // https://youtu.be/g5-wzZUnIbQ
 @ExperimentalFoundationApi
 @Composable
-fun HomeScreen(viewModel: SensorViewModel,navController: NavHostController) {
+fun HomeScreen(viewModel: SensorViewModel,navController: NavHostController, readingViewModel: ReadingViewModel) {
     val sensorData by viewModel.sensorData.observeAsState(SensorModel())
 
     LaunchedEffect(Unit) {
@@ -148,7 +150,7 @@ fun HomeScreen(viewModel: SensorViewModel,navController: NavHostController) {
                         Red3
                     ),
                 ),
-                navController
+                navController,readingViewModel
             )
         }
         /* BottomMenu(items = listOf(
@@ -300,7 +302,7 @@ fun GreetingSection(
 
 @ExperimentalFoundationApi
 @Composable
-fun FeatureSection(features: List<Feature>, navController: NavHostController) {
+fun FeatureSection(features: List<Feature>, navController: NavHostController, readingViewModel: ReadingViewModel) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
             text = "Features",
@@ -314,7 +316,7 @@ fun FeatureSection(features: List<Feature>, navController: NavHostController) {
             modifier = Modifier.fillMaxHeight()
         ) {
             items(features.size) {
-                FeatureItem(feature = features[it],navController)
+                FeatureItem(feature = features[it],navController, readingViewModel = readingViewModel)
             }
         }
     }
@@ -322,7 +324,7 @@ fun FeatureSection(features: List<Feature>, navController: NavHostController) {
 
 @Composable
 fun FeatureItem(
-    feature: Feature, navController: NavHostController
+    feature: Feature, navController: NavHostController, readingViewModel: ReadingViewModel
 ) {
     BoxWithConstraints(
         modifier = Modifier
@@ -407,7 +409,9 @@ fun FeatureItem(
                 modifier = Modifier
                     .clickable {
                         // Handle the click
-                        navController.navigate(Destination.viewData.createRoute(feature.title))
+
+                        readingViewModel.setReadingType(ReadingType(feature.title,"",""))
+                        navController.navigate("viewData")
                     }
                     .align(Alignment.BottomEnd)
                     .clip(RoundedCornerShape(10.dp))

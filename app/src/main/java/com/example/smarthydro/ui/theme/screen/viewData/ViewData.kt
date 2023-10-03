@@ -58,6 +58,7 @@ import com.example.smarthydro.ui.theme.LightGreen1
 import com.example.smarthydro.ui.theme.PrimaryColor
 import com.example.smarthydro.ui.theme.screen.ReadingType
 import com.example.smarthydro.viewmodels.ComponentViewModel
+import com.example.smarthydro.viewmodels.ReadingViewModel
 import com.example.smarthydro.viewmodels.SensorViewModel
 import com.patrykandpatrick.vico.compose.axis.horizontal.bottomAxis
 import com.patrykandpatrick.vico.compose.axis.vertical.startAxis
@@ -119,13 +120,15 @@ fun Animatable<Float, AnimationVector1D>.toUiState(maxSpeed: Float) = UiState(
 )
 //@Preview
 @Composable
-fun SpeedTestScreen(readingString: String, component: ComponentViewModel) {
+fun SpeedTestScreen(component: ComponentViewModel, readingViewModel: ReadingViewModel) {
     val coroutineScope = rememberCoroutineScope()
     val animation = remember { Animatable(0f) }
     val maxSpeed = remember { mutableStateOf(0f) }
     maxSpeed.value = max(maxSpeed.value, animation.value * 100f)
 
-    SpeedTestScreen(animation.toUiState(maxSpeed.value),readingString,component ) {
+    readingType1 = readingViewModel.getReadingType()!!
+
+    SpeedTestScreen(animation.toUiState(maxSpeed.value), readingType1.heading,component ) {
         coroutineScope.launch {
             maxSpeed.value = 0f
             startAnimation(animation)
