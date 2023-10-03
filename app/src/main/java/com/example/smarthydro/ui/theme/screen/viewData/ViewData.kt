@@ -166,12 +166,12 @@ private fun getReadingUnit(readingString: String):ReadingType{
         "EC" -> {
             readingType.heading = "EC Level"
             readingType.value = ""
-            readingType.unit = "ms/cm" // RH = Relative Humidity
+            readingType.unit = "ms/cm"
         }
         "Light" -> {
             readingType.heading = "Light"
             readingType.value = ""
-            readingType.unit = "lux" // RH = Relative Humidity
+            readingType.unit = "lux"
         }
         else -> {}
     }

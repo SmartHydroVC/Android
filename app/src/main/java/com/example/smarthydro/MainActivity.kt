@@ -53,7 +53,6 @@ fun NavAppHost(navController: NavHostController, viewModel: SensorViewModel, com
 
     NavHost(navController = navController, startDestination = "home" ){
         composable(Destination.home.route){ HomeScreen(viewModel = viewModel, navController, readingViewModel = readingViewModel)}
-        composable(Destination.viewData.route){SpeedTestScreen( componentViewModel, readingViewModel = readingViewModel)
-        }
+        composable(Destination.viewData.route){SpeedTestScreen( componentViewModel, readingViewModel = readingViewModel)}
     }
 }
