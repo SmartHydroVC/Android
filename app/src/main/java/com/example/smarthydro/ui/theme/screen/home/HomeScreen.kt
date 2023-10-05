@@ -74,6 +74,7 @@ import com.example.smarthydro.ui.theme.Red3
 import com.example.smarthydro.ui.theme.TextWhite
 import androidx.lifecycle.ViewModel
 import com.example.smarthydro.R
+import com.example.smarthydro.models.NewSensorModelItem
 import com.example.smarthydro.models.SensorModel
 import com.example.smarthydro.ui.theme.*
 import com.example.smarthydro.ui.theme.screen.ReadingType
@@ -87,9 +88,10 @@ private const val GET_SENSOR_DATA_DELAY_MS: Long = 15 * 1000
 @Composable
 fun HomeScreen(viewModel: SensorViewModel,navController: NavHostController, readingViewModel: ReadingViewModel) {
     val sensorData by viewModel.sensorData.observeAsState(SensorModel())
-
+    var data = NewSensorModelItem("","","","",""
+    )
     LaunchedEffect(Unit) {
-        viewModel.fetchSensorPeriodically(GET_SENSOR_DATA_DELAY_MS)
+        viewModel.fetchSensorPeriodically(GET_SENSOR_DATA_DELAY_MS,sensorData)
     }
     Box(
         modifier = Modifier
@@ -143,7 +145,7 @@ fun HomeScreen(viewModel: SensorViewModel,navController: NavHostController, read
                         Red3
                     ),
                 ),
-                navController,readingViewModel
+                navController,readingViewModel, sensorData
             )
         }
     }
@@ -177,7 +179,7 @@ fun GreetingSection(
 
 @ExperimentalFoundationApi
 @Composable
-fun FeatureSection(features: List<Feature>, navController: NavHostController, readingViewModel: ReadingViewModel) {
+fun FeatureSection(features: List<Feature>, navController: NavHostController, readingViewModel: ReadingViewModel, sensorData: SensorModel) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
             text = "Features",
@@ -191,7 +193,7 @@ fun FeatureSection(features: List<Feature>, navController: NavHostController, re
             modifier = Modifier.fillMaxHeight()
         ) {
             items(features.size) {
-                FeatureItem(feature = features[it],navController, readingViewModel = readingViewModel)
+                FeatureItem(feature = features[it],navController, readingViewModel = readingViewModel, sensorData)
             }
         }
     }
@@ -199,7 +201,7 @@ fun FeatureSection(features: List<Feature>, navController: NavHostController, re
 
 @Composable
 fun FeatureItem(
-    feature: Feature, navController: NavHostController, readingViewModel: ReadingViewModel
+    feature: Feature, navController: NavHostController, readingViewModel: ReadingViewModel, sensorData: SensorModel
 ) {
     BoxWithConstraints(
         modifier = Modifier
@@ -285,7 +287,7 @@ fun FeatureItem(
                     .clickable {
                         // Handle the click
 
-                        readingViewModel.setReadingType(ReadingType(feature.title,"",""))
+                        readingViewModel.setReadingType(ReadingType(feature.title,sensorData,""))
                         navController.navigate("viewData")
                     }
                     .align(Alignment.BottomEnd)

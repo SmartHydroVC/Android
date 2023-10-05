@@ -26,6 +26,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -50,6 +51,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.smarthydro.R
 import com.example.smarthydro.models.NewSensorModel
 import com.example.smarthydro.models.NewSensorModelItem
+import com.example.smarthydro.models.SensorModel
 import com.example.smarthydro.repositories.ComponentRepository
 import com.example.smarthydro.services.ComponentService
 import com.example.smarthydro.ui.theme.DeepBlue
@@ -95,8 +97,9 @@ class UiState(
     val inProgress: Boolean = false
 )
 private var powerState : Boolean = true;
+private var readingValue : String= ""
 
-private var readingType1: ReadingType = ReadingType("","", "");
+private var reading: ReadingType = ReadingType("",SensorModel(), "");
 suspend fun startAnimation(animation: Animatable<Float, AnimationVector1D>) {
     animation.animateTo(1.00f, keyframes {
         /*durationMillis = 9000
@@ -113,7 +116,7 @@ suspend fun startAnimation(animation: Animatable<Float, AnimationVector1D>) {
 
 fun Animatable<Float, AnimationVector1D>.toUiState(maxSpeed: Float) = UiState(
     arcValue = value,
-    speed = "%.1f".format(value * 50),
+    speed = "%.1f".format(value),
     ping = if (value > 0.2f) "${(value * 15).roundToInt()} ms" else "-",
     maxSpeed = if (maxSpeed > 0f) "%.1f mbps".format(maxSpeed) else "-",
     inProgress = isRunning
@@ -126,9 +129,9 @@ fun SpeedTestScreen(component: ComponentViewModel, readingViewModel: ReadingView
     val maxSpeed = remember { mutableStateOf(0f) }
     maxSpeed.value = max(maxSpeed.value, animation.value * 100f)
 
-    readingType1 = readingViewModel.getReadingType()!!
+    reading = readingViewModel.getReadingType()!!
 
-    SpeedTestScreen(animation.toUiState(maxSpeed.value), readingType1.heading,component ) {
+    SpeedTestScreen(animation.toUiState(maxSpeed.value), reading.heading,component ) {
         coroutineScope.launch {
             maxSpeed.value = 0f
             startAnimation(animation)
@@ -136,41 +139,46 @@ fun SpeedTestScreen(component: ComponentViewModel, readingViewModel: ReadingView
     }
 }
 
-private fun getReadingUnit(readingString: String):ReadingType{
+private fun getReadingUnit(readingString: String, data: SensorModel):ReadingType{
 
-     var readingType = ReadingType(readingString, "","")
+     var readingType = ReadingType(readingString, SensorModel(),"")
 
     when (readingString) {
         "Temperature" -> {
-            val sensors = SensorViewModel()
-            val sensorList = sensors.sensorData
+
             readingType.heading = "Temperature"
-            readingType.value = "${sensorList}"
+           // readingType.value = ""
+            readingValue = data.temperature
             readingType.unit = "C"
         }
         "Water" -> {
             readingType.heading = "Water Flow"
-            readingType.value = ""
+           // readingType.value = ""
+            readingValue = "0"
             readingType.unit = "mm"
         }
         "pH" -> {
             readingType.heading = "pH Level"
-            readingType.value = ""
+            //readingType.value = ""
+            readingValue = data.pH
             readingType.unit = "pH"
         }
         "Humidity" -> {
             readingType.heading = "Humidity"
-            readingType.value = ""
+           // readingType.value = ""
+            readingValue = data.humidity
             readingType.unit = "RH" // RH = Relative Humidity
         }
         "EC" -> {
             readingType.heading = "EC Level"
-            readingType.value = ""
+            //readingType.value = ""
+            readingValue = data.eC
             readingType.unit = "ms/cm"
         }
         "Light" -> {
             readingType.heading = "Light"
-            readingType.value = ""
+            //readingType.value = ""
+            readingValue = data.light
             readingType.unit = "lux"
         }
         else -> {}
@@ -188,10 +196,10 @@ private fun SpeedTestScreen(state: UiState,readingString:String, component: Comp
             .background(DeepBlue),
         verticalArrangement = Arrangement.SpaceBetween,
     ) {
-        readingType1 = getReadingUnit(readingString = readingString)
-        Header(readingType1.heading)
+        reading = getReadingUnit(readingString = readingString, reading.value)
+        Header(reading.heading)
         RegularLineChart()
-        SpeedIndicator(state = state, onClick = onClick,readingType1.unit, component)
+        SpeedIndicator(state = state, onClick = onClick,reading.unit, component)
 
     }
 }
@@ -219,7 +227,7 @@ fun SpeedIndicator(state: UiState, onClick: () -> Unit, unit: String, component:
         CircularSpeedIndicator(state.arcValue, 240f)
         // StartButton(!state.inProgress, onClick)
         IconButtonOnOff(onClick, component);
-        SpeedValue(state.speed,unit)
+        SpeedValue(readingValue,unit)
     }
 }
 
@@ -234,7 +242,7 @@ fun IconButtonOnOff(onClick: () -> Unit, viewModel: ComponentViewModel) {
         onClick = {
             powerState = !powerState
 
-            when (readingType1.heading) {
+            when (reading.heading) {
                 "Temperature" -> {
                     viewModel.setFan()
                 }
