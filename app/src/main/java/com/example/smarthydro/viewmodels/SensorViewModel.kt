@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.smarthydro.models.NewSensorModel
 import com.example.smarthydro.models.NewSensorModelItem
 import com.example.smarthydro.models.SensorModel
 import com.example.smarthydro.repositories.SensorRepository
@@ -16,8 +17,8 @@ import kotlinx.coroutines.launch
 class SensorViewModel : ViewModel() {
     private val repository = SensorRepository()
 
-    private val _sensorData = MutableLiveData<List<NewSensorModelItem>>()
-    val sensorData: LiveData<List<NewSensorModelItem>> = _sensorData
+    private val _sensorData = MutableLiveData<SensorModel>()
+    val sensorData: LiveData<SensorModel> = _sensorData
 
 
     fun fetchSensorData() {
@@ -30,14 +31,17 @@ class SensorViewModel : ViewModel() {
                 Log.e("SENSOR ERROR", e.message.toString())
             }
         }
+
     }
 
-    fun fetchSensorPeriodically(milliseconds: Long) {
+    fun fetchSensorPeriodically(milliseconds: Long, newData: SensorModel) {
         viewModelScope.launch(Dispatchers.IO) {
             while (isActive) {
                 fetchSensorData()
                 Log.i("FETCHED DATA", "THE DATA HAS BEEN FETCHED")
                 Log.i("DATA", "${sensorData.value}")
+                //var data = sensorData.value!!
+                //newData = data
                 delay(milliseconds)
             }
         }

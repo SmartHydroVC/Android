@@ -21,9 +21,10 @@ object SensorService{
     }
 }
 
+
 interface ISensors {
     @GET("/r/n/r/n")
-    suspend fun getSensorData(): List<NewSensorModelItem>
+    suspend fun getSensorData(): SensorModel
 }
 
 

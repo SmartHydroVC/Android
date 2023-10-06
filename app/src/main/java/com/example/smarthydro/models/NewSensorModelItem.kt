@@ -1,9 +1,9 @@
 package com.example.smarthydro.models
 
 data class NewSensorModelItem(
-    val EC: String,
-    val Humidity: String,
-    val Light: String,
-    val PH: String,
-    val Temperature: String
+    var EC: String,
+    var Humidity: String,
+    var Light: String,
+    var PH: String,
+    var Temperature: String
 )

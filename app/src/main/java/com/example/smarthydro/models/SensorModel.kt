@@ -8,10 +8,11 @@ data class SensorModel(
     val eC: String = "",
     @SerializedName("Humidity")
     val humidity: String = "",
+    @SerializedName("Light")
+    val light: String = "",
     @SerializedName("PH")
     val pH: String = "",
     @SerializedName("Temperature")
     val temperature: String = "",
-    @SerializedName("Light Sensor")
-    val light: String = ""
+
 )

@@ -74,26 +74,24 @@ import com.example.smarthydro.ui.theme.Red3
 import com.example.smarthydro.ui.theme.TextWhite
 import androidx.lifecycle.ViewModel
 import com.example.smarthydro.R
+import com.example.smarthydro.models.NewSensorModelItem
 import com.example.smarthydro.models.SensorModel
 import com.example.smarthydro.ui.theme.*
+import com.example.smarthydro.ui.theme.screen.ReadingType
+import com.example.smarthydro.viewmodels.ReadingViewModel
 import com.example.smarthydro.viewmodels.SensorViewModel
 private const val GET_SENSOR_DATA_DELAY_MS: Long = 15 * 1000
 
-/*
-// https://youtu.be/g5-wzZUnIbQ
-@ExperimentalFoundationApi
-@Composable
-//@Preview
-fun HomeScreen(navController: NavHostController) {} */
 
 // https://youtu.be/g5-wzZUnIbQ
 @ExperimentalFoundationApi
 @Composable
-fun HomeScreen(viewModel: SensorViewModel,navController: NavHostController) {
+fun HomeScreen(viewModel: SensorViewModel,navController: NavHostController, readingViewModel: ReadingViewModel) {
     val sensorData by viewModel.sensorData.observeAsState(SensorModel())
-
+    var data = NewSensorModelItem("","","","",""
+    )
     LaunchedEffect(Unit) {
-        viewModel.fetchSensorPeriodically(GET_SENSOR_DATA_DELAY_MS)
+        viewModel.fetchSensorPeriodically(GET_SENSOR_DATA_DELAY_MS,sensorData)
     }
     Box(
         modifier = Modifier
@@ -102,7 +100,6 @@ fun HomeScreen(viewModel: SensorViewModel,navController: NavHostController) {
     ) {
         Column {
             GreetingSection()
-            //ChipSection(chips = listOf("Water Lvl: 10m", "pH Lvl: 7pH", "Temperature: 28C","Humidity: 12"))
             FeatureSection(
                 features = listOf(
                     Feature(
@@ -148,129 +145,11 @@ fun HomeScreen(viewModel: SensorViewModel,navController: NavHostController) {
                         Red3
                     ),
                 ),
-                navController
+                navController,readingViewModel, sensorData
             )
         }
-        /* BottomMenu(items = listOf(
-             BottomMenuContent("HOME", R.drawable.ic_home),
-             BottomMenuContent("WATER", R.drawable.ic_waterlv),
-             BottomMenuContent("pH", R.drawable.ic_phlv),
-             BottomMenuContent("TEMP", R.drawable.ic_temp),
-             BottomMenuContent("HUMIDITY", R.drawable.ic_humidity),
-         ), modifier = Modifier.align(Alignment.BottomCenter),navController=navController) */
     }
 }
-
-/*
-@Composable
-fun BottomMenu(
-    items: List<BottomMenuContent>,
-    modifier: Modifier = Modifier,
-    activeHighlightColor: Color = ButtonBlue,
-    activeTextColor: Color = Color.White,
-    inactiveTextColor: Color = AquaBlue,
-    initialSelectedItemIndex: Int = 0,
-    navController: NavHostController
-) {
-    var selectedItemIndex by remember {
-        mutableStateOf(initialSelectedItemIndex)
-    }
-    Row(
-        horizontalArrangement = Arrangement.SpaceAround,
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
-            .fillMaxWidth()
-            .background(DeepBlue)
-            .padding(15.dp)
-    ) {
-        items.forEachIndexed { index, item ->
-            BottomMenuItem(
-                item = item,
-                isSelected = index == selectedItemIndex,
-                activeHighlightColor = activeHighlightColor,
-                activeTextColor = activeTextColor,
-                inactiveTextColor = inactiveTextColor,
-                navController = navController
-            ) {
-                selectedItemIndex = index
-            }
-        }
-    }
-} */
-
-/*
-@Composable
-fun BottomMenuItem(
-    item: BottomMenuContent,
-    isSelected: Boolean = false,
-    activeHighlightColor: Color = ButtonBlue,
-    activeTextColor: Color = Color.White,
-    inactiveTextColor: Color = AquaBlue,
-    navController: NavHostController,
-    onItemClick: () -> Unit
-) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-        modifier = Modifier.clickable {
-            onItemClick()
-            navController.navigate(Destination.viewData.createRoute(item.title))
-        }
-    ) {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .clip(RoundedCornerShape(10.dp))
-                .background(if (isSelected) activeHighlightColor else Color.Transparent)
-                .padding(10.dp)
-        ) {
-            Icon(
-                painter = painterResource(id = item.iconId),
-                contentDescription = item.title,
-                tint = if (isSelected) activeTextColor else inactiveTextColor,
-                modifier = Modifier.size(20.dp)
-            )
-        }
-        Text(
-            text = item.title,
-            color = if(isSelected) activeTextColor else inactiveTextColor
-        )
-    }
-}
-
-
-@Composable
-fun ChipSection(
-    chips: List<String>,
-
-) {
-    var selectedChipIndex by remember {
-        mutableStateOf(0)
-    }
-    LazyRow {
-        items(chips.size) {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .padding(start = 15.dp, top = 15.dp, bottom = 15.dp)
-                    .clickable {
-                        selectedChipIndex = it
-                    }
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(
-                        if (selectedChipIndex == it) ButtonBlue
-                        else DarkerButtonBlue
-                    )
-                    .padding(15.dp)
-                    .height(50.dp)
-                    .width(150.dp)
-            ) {
-                Text(text = chips[it], color = TextWhite)
-            }
-        }
-    }
-}
-*/
 
 @Composable
 fun GreetingSection(
@@ -300,7 +179,7 @@ fun GreetingSection(
 
 @ExperimentalFoundationApi
 @Composable
-fun FeatureSection(features: List<Feature>, navController: NavHostController) {
+fun FeatureSection(features: List<Feature>, navController: NavHostController, readingViewModel: ReadingViewModel, sensorData: SensorModel) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
             text = "Features",
@@ -314,7 +193,7 @@ fun FeatureSection(features: List<Feature>, navController: NavHostController) {
             modifier = Modifier.fillMaxHeight()
         ) {
             items(features.size) {
-                FeatureItem(feature = features[it],navController)
+                FeatureItem(feature = features[it],navController, readingViewModel = readingViewModel, sensorData)
             }
         }
     }
@@ -322,7 +201,7 @@ fun FeatureSection(features: List<Feature>, navController: NavHostController) {
 
 @Composable
 fun FeatureItem(
-    feature: Feature, navController: NavHostController
+    feature: Feature, navController: NavHostController, readingViewModel: ReadingViewModel, sensorData: SensorModel
 ) {
     BoxWithConstraints(
         modifier = Modifier
@@ -407,7 +286,9 @@ fun FeatureItem(
                 modifier = Modifier
                     .clickable {
                         // Handle the click
-                        navController.navigate(Destination.viewData.createRoute(feature.title))
+
+                        readingViewModel.setReadingType(ReadingType(feature.title,sensorData,""))
+                        navController.navigate("viewData")
                     }
                     .align(Alignment.BottomEnd)
                     .clip(RoundedCornerShape(10.dp))

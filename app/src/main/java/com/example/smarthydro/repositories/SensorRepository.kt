@@ -8,7 +8,7 @@ import com.example.smarthydro.services.SensorService
 class SensorRepository {
     private val sensorService = SensorService.buildService()
 
-    suspend fun getSensorData(): List<NewSensorModelItem> {
+    suspend fun getSensorData(): SensorModel {
         return sensorService.getSensorData()
     }
 }
