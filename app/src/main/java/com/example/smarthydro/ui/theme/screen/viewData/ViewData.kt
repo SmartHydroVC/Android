@@ -123,15 +123,16 @@ fun Animatable<Float, AnimationVector1D>.toUiState(maxSpeed: Float) = UiState(
 )
 //@Preview
 @Composable
-fun SpeedTestScreen(component: ComponentViewModel, readingViewModel: ReadingViewModel) {
+fun SpeedTestScreen(component: ComponentViewModel, readingViewModel: ReadingViewModel, sensorViewModel: SensorViewModel) {
     val coroutineScope = rememberCoroutineScope()
     val animation = remember { Animatable(0f) }
     val maxSpeed = remember { mutableStateOf(0f) }
+    val sensorData by sensorViewModel.sensorData.observeAsState(SensorModel())
     maxSpeed.value = max(maxSpeed.value, animation.value * 100f)
 
     reading = readingViewModel.getReadingType()!!
 
-    SpeedTestScreen(animation.toUiState(maxSpeed.value), reading.heading,component ) {
+    SpeedTestScreen(animation.toUiState(maxSpeed.value), reading.heading, component, sensorData ) {
         coroutineScope.launch {
             maxSpeed.value = 0f
             startAnimation(animation)
@@ -188,7 +189,7 @@ private fun getReadingUnit(readingString: String, data: SensorModel):ReadingType
 }
 
 @Composable
-private fun SpeedTestScreen(state: UiState,readingString:String, component: ComponentViewModel, onClick: () -> Unit) {
+private fun SpeedTestScreen(state: UiState,readingString:String, component: ComponentViewModel, sensorModel: SensorModel, onClick: () -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -196,7 +197,7 @@ private fun SpeedTestScreen(state: UiState,readingString:String, component: Comp
             .background(DeepBlue),
         verticalArrangement = Arrangement.SpaceBetween,
     ) {
-        reading = getReadingUnit(readingString = readingString, reading.value)
+        reading = getReadingUnit(readingString = readingString, sensorModel)
         Header(reading.heading)
         RegularLineChart()
         SpeedIndicator(state = state, onClick = onClick,reading.unit, component)

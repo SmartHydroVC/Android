@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -14,7 +13,6 @@ import androidx.navigation.compose.rememberNavController
 import com.example.smarthydro.ui.theme.SmartHydroTheme
 import com.example.smarthydro.ui.theme.screen.home.HomeScreen
 import com.example.smarthydro.ui.theme.screen.viewData.SpeedTestScreen
-import com.example.smarthydro.ui.theme.screen.login.LoginScreen
 import com.example.smarthydro.viewmodels.ComponentViewModel
 import com.example.smarthydro.viewmodels.ReadingViewModel
 import com.example.smarthydro.viewmodels.SensorViewModel
@@ -28,7 +26,7 @@ sealed class Destination(val route:String){
 
 
 class MainActivity : ComponentActivity() {
-    private val viewModel: SensorViewModel by viewModels()
+    private val sensorViewModel: SensorViewModel by viewModels()
     private val component: ComponentViewModel by viewModels()
     private val reading : ReadingViewModel by viewModels()
     @OptIn(ExperimentalFoundationApi::class)
@@ -38,7 +36,7 @@ class MainActivity : ComponentActivity() {
             SmartHydroTheme {
                 val navController = rememberNavController()
                 // HomeScreen()
-                NavAppHost(navController = navController, viewModel = viewModel, component, reading)
+                NavAppHost(navController = navController, sensorViewModel = sensorViewModel, component, reading)
                 //HomeScreen(navController)
             }
         }
@@ -48,11 +46,11 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun NavAppHost(navController: NavHostController, viewModel: SensorViewModel, componentViewModel: ComponentViewModel
-,readingViewModel: ReadingViewModel){
+fun NavAppHost(navController: NavHostController, sensorViewModel: SensorViewModel, componentViewModel: ComponentViewModel
+               , readingViewModel: ReadingViewModel){
 
     NavHost(navController = navController, startDestination = "home" ){
-        composable(Destination.home.route){ HomeScreen(viewModel = viewModel, navController, readingViewModel = readingViewModel)}
-        composable(Destination.viewData.route){SpeedTestScreen( componentViewModel, readingViewModel = readingViewModel)}
+        composable(Destination.home.route){ HomeScreen(viewModel = sensorViewModel, navController, readingViewModel = readingViewModel)}
+        composable(Destination.viewData.route){SpeedTestScreen( componentViewModel, readingViewModel = readingViewModel, sensorViewModel = sensorViewModel)}
     }
 }
