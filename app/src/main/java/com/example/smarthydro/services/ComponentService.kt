@@ -29,8 +29,8 @@ interface IComponent {
     suspend fun toggleExtractor()
     @GET("pump")
     suspend fun togglePump()
-    @GET("phUp")
+    @GET("ph")
     suspend fun togglePh()
-    @GET("ecUp")
+    @GET("ec")
     suspend fun toggleEc()
 }
