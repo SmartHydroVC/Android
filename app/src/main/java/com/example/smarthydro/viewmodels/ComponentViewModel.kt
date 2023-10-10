@@ -1,16 +1,9 @@
 package com.example.smarthydro.viewmodels
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.smarthydro.models.SensorModel
 import com.example.smarthydro.repositories.ComponentRepository
-import com.example.smarthydro.repositories.SensorRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class ComponentViewModel : ViewModel() {
@@ -19,9 +12,9 @@ class ComponentViewModel : ViewModel() {
     fun setLight() {
         viewModelScope.launch {
             try {
-                val data = repository.toggleLight()
+                repository.toggleLight()
             } catch (e: Exception) {
-                Log.e("COMPONENT ERROR", e.message.toString())
+                Log.e("LIGHT ERROR", e.message.toString())
             }
         }
     }
@@ -29,9 +22,9 @@ class ComponentViewModel : ViewModel() {
     fun setPump() {
         viewModelScope.launch {
             try {
-                val data = repository.togglePump()
+                repository.togglePump()
             } catch (e: Exception) {
-                Log.e("COMPONENT ERROR", e.message.toString())
+                Log.e("PUMP ERROR", e.message.toString())
             }
         }
     }
@@ -39,9 +32,9 @@ class ComponentViewModel : ViewModel() {
     fun setExtractor() {
         viewModelScope.launch {
             try {
-                val data = repository.toggleExtractor()
+                repository.toggleExtractor()
             } catch (e: Exception) {
-                Log.e("COMPONENT ERROR", e.message.toString())
+                Log.e("EXTRACTOR ERROR", e.message.toString())
             }
         }
     }
@@ -50,9 +43,9 @@ class ComponentViewModel : ViewModel() {
     fun setFan() {
         viewModelScope.launch {
             try {
-                val data = repository.toggleFan()
+                repository.toggleFan()
             } catch (e: Exception) {
-                Log.e("COMPONENT ERROR", e.message.toString())
+                Log.e("FAN ERROR", e.message.toString())
             }
         }
     }

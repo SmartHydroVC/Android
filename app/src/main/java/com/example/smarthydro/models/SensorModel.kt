@@ -14,5 +14,7 @@ data class SensorModel(
     val pH: String = "",
     @SerializedName("Temperature")
     val temperature: String = "",
+    @SerializedName("FlowRate")
+    val flowRate: String = ""
 
 )

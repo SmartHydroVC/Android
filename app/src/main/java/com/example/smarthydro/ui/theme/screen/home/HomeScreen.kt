@@ -14,11 +14,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,14 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,9 +36,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.smarthydro.Destination
-//import com.example.smarthydro.R
-import com.example.smarthydro.ui.theme.AquaBlue
 import com.example.smarthydro.ui.theme.Beige1
 import com.example.smarthydro.ui.theme.Beige2
 import com.example.smarthydro.ui.theme.Beige3
@@ -57,7 +43,6 @@ import com.example.smarthydro.ui.theme.BlueViolet1
 import com.example.smarthydro.ui.theme.BlueViolet2
 import com.example.smarthydro.ui.theme.BlueViolet3
 import com.example.smarthydro.ui.theme.ButtonBlue
-import com.example.smarthydro.ui.theme.DarkerButtonBlue
 import com.example.smarthydro.ui.theme.DeepBlue
 import com.example.smarthydro.ui.theme.LightGreen1
 import com.example.smarthydro.ui.theme.LightGreen2
@@ -72,11 +57,8 @@ import com.example.smarthydro.ui.theme.Red1
 import com.example.smarthydro.ui.theme.Red2
 import com.example.smarthydro.ui.theme.Red3
 import com.example.smarthydro.ui.theme.TextWhite
-import androidx.lifecycle.ViewModel
 import com.example.smarthydro.R
-import com.example.smarthydro.models.NewSensorModelItem
 import com.example.smarthydro.models.SensorModel
-import com.example.smarthydro.ui.theme.*
 import com.example.smarthydro.ui.theme.screen.ReadingType
 import com.example.smarthydro.viewmodels.ReadingViewModel
 import com.example.smarthydro.viewmodels.SensorViewModel
@@ -88,10 +70,8 @@ private const val GET_SENSOR_DATA_DELAY_MS: Long = 15 * 1000
 @Composable
 fun HomeScreen(viewModel: SensorViewModel,navController: NavHostController, readingViewModel: ReadingViewModel) {
     val sensorData by viewModel.sensorData.observeAsState(SensorModel())
-    var data = NewSensorModelItem("","","","",""
-    )
     LaunchedEffect(Unit) {
-        viewModel.fetchSensorPeriodically(GET_SENSOR_DATA_DELAY_MS,sensorData)
+        viewModel.fetchSensorPeriodically(GET_SENSOR_DATA_DELAY_MS)
     }
     Box(
         modifier = Modifier
@@ -286,7 +266,6 @@ fun FeatureItem(
                 modifier = Modifier
                     .clickable {
                         // Handle the click
-
                         readingViewModel.setReadingType(ReadingType(feature.title,sensorData,""))
                         navController.navigate("viewData")
                     }

@@ -20,8 +20,8 @@ import com.example.smarthydro.viewmodels.SensorViewModel
 
 //https://www.youtube.com/watch?v=hGg0HjcoP9w
 sealed class Destination(val route:String){
-    object home : Destination("home")
-    object viewData: Destination("viewData")
+    object Home : Destination("home")
+    object ViewData: Destination("viewData")
 }
 
 
@@ -29,15 +29,13 @@ class MainActivity : ComponentActivity() {
     private val sensorViewModel: SensorViewModel by viewModels()
     private val component: ComponentViewModel by viewModels()
     private val reading : ReadingViewModel by viewModels()
-    @OptIn(ExperimentalFoundationApi::class)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             SmartHydroTheme {
                 val navController = rememberNavController()
-                // HomeScreen()
                 NavAppHost(navController = navController, sensorViewModel = sensorViewModel, component, reading)
-                //HomeScreen(navController)
             }
         }
     }
@@ -50,7 +48,7 @@ fun NavAppHost(navController: NavHostController, sensorViewModel: SensorViewMode
                , readingViewModel: ReadingViewModel){
 
     NavHost(navController = navController, startDestination = "home" ){
-        composable(Destination.home.route){ HomeScreen(viewModel = sensorViewModel, navController, readingViewModel = readingViewModel)}
-        composable(Destination.viewData.route){SpeedTestScreen( componentViewModel, readingViewModel = readingViewModel, sensorViewModel = sensorViewModel)}
+        composable(Destination.Home.route){ HomeScreen(viewModel = sensorViewModel, navController, readingViewModel = readingViewModel)}
+        composable(Destination.ViewData.route){SpeedTestScreen( componentViewModel, readingViewModel = readingViewModel, sensorViewModel = sensorViewModel)}
     }
 }
