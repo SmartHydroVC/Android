@@ -20,8 +20,6 @@ object ComponentService {
     }
 }
 
-
-
 interface IComponent {
     @GET("light")
     suspend fun toggleLight()

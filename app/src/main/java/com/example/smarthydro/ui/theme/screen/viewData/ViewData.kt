@@ -3,8 +3,6 @@ package com.example.smarthydro.ui.theme.screen.viewData
 import android.graphics.Typeface
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
-import androidx.compose.animation.core.CubicBezierEasing
-import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.keyframes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
@@ -46,14 +44,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.smarthydro.R
-import com.example.smarthydro.models.NewSensorModel
-import com.example.smarthydro.models.NewSensorModelItem
 import com.example.smarthydro.models.SensorModel
-import com.example.smarthydro.repositories.ComponentRepository
-import com.example.smarthydro.services.ComponentService
 import com.example.smarthydro.ui.theme.DeepBlue
 import com.example.smarthydro.ui.theme.GreenGradient
 import com.example.smarthydro.ui.theme.LightGreen1
@@ -102,15 +94,7 @@ private var readingValue : String= ""
 private var reading: ReadingType = ReadingType("",SensorModel(), "");
 suspend fun startAnimation(animation: Animatable<Float, AnimationVector1D>) {
     animation.animateTo(1.00f, keyframes {
-        /*durationMillis = 9000
-        0f at 0 with CubicBezierEasing(0f, 1.5f, 0.8f, 1f)
-        0.72f at 1000 with CubicBezierEasing(0.2f, -1.5f, 0f, 1f)
-        0.76f at 2000 with CubicBezierEasing(0.2f, -2f, 0f, 1f)
-        0.78f at 3000 with CubicBezierEasing(0.2f, -1.5f, 0f, 1f)
-        0.82f at 4000 with CubicBezierEasing(0.2f, -2f, 0f, 1f)
-        0.85f at 5000 with CubicBezierEasing(0.2f, -2f, 0f, 1f)
-        0.89f at 6000 with CubicBezierEasing(0.2f, -1.2f, 0f, 1f)
-        1.00f at 7500 with LinearOutSlowInEasing*/
+
     })
 }
 
@@ -142,43 +126,37 @@ fun SpeedTestScreen(component: ComponentViewModel, readingViewModel: ReadingView
 
 private fun getReadingUnit(readingString: String, data: SensorModel):ReadingType{
 
-     var readingType = ReadingType(readingString, SensorModel(),"")
+     val readingType = ReadingType(readingString, SensorModel(),"")
 
     when (readingString) {
         "Temperature" -> {
 
             readingType.heading = "Temperature"
-           // readingType.value = ""
             readingValue = data.temperature
             readingType.unit = "C"
         }
         "Water" -> {
             readingType.heading = "Water Flow"
-           // readingType.value = ""
-            readingValue = "0"
+            readingValue = data.flowRate
             readingType.unit = "mm"
         }
         "pH" -> {
             readingType.heading = "pH Level"
-            //readingType.value = ""
             readingValue = data.pH
             readingType.unit = "pH"
         }
         "Humidity" -> {
             readingType.heading = "Humidity"
-           // readingType.value = ""
             readingValue = data.humidity
             readingType.unit = "RH" // RH = Relative Humidity
         }
         "EC" -> {
             readingType.heading = "EC Level"
-            //readingType.value = ""
             readingValue = data.eC
             readingType.unit = "ms/cm"
         }
         "Light" -> {
             readingType.heading = "Light"
-            //readingType.value = ""
             readingValue = data.light
             readingType.unit = "lux"
         }
@@ -226,14 +204,13 @@ fun SpeedIndicator(state: UiState, onClick: () -> Unit, unit: String, component:
             .aspectRatio(1f)
     ) {
         CircularSpeedIndicator(state.arcValue, 240f)
-        // StartButton(!state.inProgress, onClick)
         IconButtonOnOff(onClick, component);
         SpeedValue(readingValue,unit)
     }
 }
 
 @Composable
-fun IconButtonOnOff(onClick: () -> Unit, viewModel: ComponentViewModel) {
+fun IconButtonOnOff(onClick: () -> Unit, componentViewModel: ComponentViewModel) {
     var iconColor by remember { mutableStateOf(Color.Green) }
 
     IconButton(
@@ -245,16 +222,16 @@ fun IconButtonOnOff(onClick: () -> Unit, viewModel: ComponentViewModel) {
 
             when (reading.heading) {
                 "Temperature" -> {
-                    viewModel.setFan()
+                    componentViewModel.setFan()
                 }
                 "Light" -> {
-                    viewModel.setLight()
+                    componentViewModel.setLight()
                 }
                 "Humidity" -> {
-                    viewModel.setExtractor()
+                    componentViewModel.setExtractor()
                 }
                 "Water Flow" -> {
-                    viewModel.setPump()
+                    componentViewModel.setPump()
                 }
                 else -> {}
             }
@@ -292,23 +269,6 @@ fun SpeedValue(value: String, unit: String) {
         )
         //Measurement Unit change here
         Text(unit, style = MaterialTheme.typography.headlineMedium)
-    }
-}
-
-@Composable
-fun StartButton(isEnabled: Boolean, onClick: () -> Unit) {
-    OutlinedButton(
-        onClick = onClick,
-        modifier = Modifier.padding(bottom = 24.dp),
-        enabled = isEnabled,
-        shape = RoundedCornerShape(24.dp),
-        border = BorderStroke(width = 2.dp, color = MaterialTheme.colorScheme.onSurface),
-
-        ) {
-        Text(
-            text = "asd",
-            modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
-        )
     }
 }
 
