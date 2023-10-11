@@ -1,5 +1,6 @@
 package com.example.smarthydro.ui.theme.screen.viewData
 
+import android.annotation.SuppressLint
 import android.graphics.Typeface
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
@@ -16,12 +17,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -39,11 +37,13 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.modifier.modifierLocalMapOf
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.smarthydro.R
 import com.example.smarthydro.models.SensorModel
 import com.example.smarthydro.ui.theme.DeepBlue
@@ -109,7 +109,7 @@ fun Animatable<Float, AnimationVector1D>.toUiState(maxSpeed: Float) = UiState(
 )
 //@Preview
 @Composable
-fun SpeedTestScreen(component: ComponentViewModel, readingViewModel: ReadingViewModel, sensorViewModel: SensorViewModel) {
+fun SpeedTestScreen(navHostController: NavHostController,component: ComponentViewModel, readingViewModel: ReadingViewModel, sensorViewModel: SensorViewModel) {
     val coroutineScope = rememberCoroutineScope()
     val animation = remember { Animatable(0f) }
     val maxSpeed = remember { mutableStateOf(0f) }
@@ -118,7 +118,8 @@ fun SpeedTestScreen(component: ComponentViewModel, readingViewModel: ReadingView
 
     reading = readingViewModel.getReadingType()!!
 
-    SpeedTestScreen(animation.toUiState(maxSpeed.value), reading.heading, component, sensorData ) {
+
+    SpeedTestScreen(animation.toUiState(maxSpeed.value),navHostController, reading.heading, component, sensorData ) {
         coroutineScope.launch {
             maxSpeed.value = 0f
             startAnimation(animation)
@@ -168,22 +169,50 @@ private fun getReadingUnit(readingString: String, data: SensorModel):ReadingType
     return readingType
 }
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun SpeedTestScreen(state: UiState,readingString:String, component: ComponentViewModel, sensorModel: SensorModel, onClick: () -> Unit) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxSize()
-            .background(DeepBlue),
-        verticalArrangement = Arrangement.SpaceBetween,
-    ) {
-        reading = getReadingUnit(readingString = readingString, sensorModel)
-        Header(reading.heading)
-        RegularLineChart()
-        SpeedIndicator(state = state, onClick = onClick,reading.unit, component)
+private fun SpeedTestScreen(state: UiState,navHostController: NavHostController,readingString:String, component: ComponentViewModel, sensorModel: SensorModel, onClick: () -> Unit) {
 
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title =
+                {
+                    Text(reading.heading)
+                },
+                navigationIcon = {
+                    IconButton(onClick = { /* Handle back action here */
+                        navHostController.navigate("home");
+                    }) {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = "Back"
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.mediumTopAppBarColors( )
+            )
+        }
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxSize()
+                .background(DeepBlue),
+            verticalArrangement = Arrangement.SpaceBetween,
+        ) {
+            reading = getReadingUnit(readingString = readingString, sensorModel)
+            Header(reading.heading)
+            RegularLineChart()
+            SpeedIndicator(state = state, onClick = onClick,reading.unit, component)
     }
+
 }
+}
+
+
 
 //Pass data reading header here
 @Composable
