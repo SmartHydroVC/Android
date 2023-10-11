@@ -25,8 +25,12 @@ interface IComponent {
     suspend fun toggleLight()
     @GET("fan")
     suspend fun toggleFan()
-    @GET("extractor")
+    @GET("extract")
     suspend fun toggleExtractor()
     @GET("pump")
     suspend fun togglePump()
+    @GET("ph")
+    suspend fun togglePh()
+    @GET("ec")
+    suspend fun toggleEc()
 }

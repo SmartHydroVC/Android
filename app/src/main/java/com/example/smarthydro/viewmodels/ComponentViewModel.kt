@@ -38,14 +38,30 @@ class ComponentViewModel : ViewModel() {
             }
         }
     }
-
-
     fun setFan() {
         viewModelScope.launch {
             try {
                 repository.toggleFan()
             } catch (e: Exception) {
                 Log.e("FAN ERROR", e.message.toString())
+            }
+        }
+    }
+    fun setPh() {
+        viewModelScope.launch {
+            try {
+                repository.togglePh()
+            } catch (e: Exception) {
+                Log.e("PH ERROR", e.message.toString())
+            }
+        }
+    }
+    fun setEc() {
+        viewModelScope.launch {
+            try {
+                repository.toggleEc()
+            } catch (e: Exception) {
+                Log.e("EC ERROR", e.message.toString())
             }
         }
     }

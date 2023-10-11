@@ -90,6 +90,8 @@ class UiState(
 )
 private var powerState : Boolean = true;
 private var readingValue : String= ""
+private var toggleEC : String = "mn "
+private var togglePH : String = ""
 
 private var reading: ReadingType = ReadingType("",SensorModel(), "");
 suspend fun startAnimation(animation: Animatable<Float, AnimationVector1D>) {
@@ -138,9 +140,9 @@ private fun getReadingUnit(readingString: String, data: SensorModel):ReadingType
         "Water" -> {
             readingType.heading = "Water Flow"
             readingValue = data.flowRate
-            readingType.unit = "mm"
+            readingType.unit = "L/hr"
         }
-        "pH" -> {
+        "PH" -> {
             readingType.heading = "pH Level"
             readingValue = data.pH
             readingType.unit = "pH"
@@ -232,6 +234,12 @@ fun IconButtonOnOff(onClick: () -> Unit, componentViewModel: ComponentViewModel)
                 }
                 "Water Flow" -> {
                     componentViewModel.setPump()
+                }
+                "pH Level" -> {
+                    componentViewModel.setPh()
+                }
+                "EC Level" -> {
+                    componentViewModel.setEc()
                 }
                 else -> {}
             }
