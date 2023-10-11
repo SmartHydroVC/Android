@@ -142,7 +142,7 @@ private fun getReadingUnit(readingString: String, data: SensorModel):ReadingType
             readingValue = data.flowRate
             readingType.unit = "L/hr"
         }
-        "pH" -> {
+        "PH" -> {
             readingType.heading = "pH Level"
             readingValue = data.pH
             readingType.unit = "pH"
