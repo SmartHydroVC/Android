@@ -173,46 +173,37 @@ private fun getReadingUnit(readingString: String, data: SensorModel):ReadingType
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SpeedTestScreen(state: UiState,navHostController: NavHostController,readingString:String, component: ComponentViewModel, sensorModel: SensorModel, onClick: () -> Unit) {
-
-
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title =
-                {
-                    Text(reading.heading)
-                },
-                navigationIcon = {
-                    IconButton(onClick = { /* Handle back action here */
-                        navHostController.navigate("home");
-                    }) {
-                        Icon(
-                            imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = "Back"
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.mediumTopAppBarColors( )
-            )
-        }
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxSize()
+            .background(DeepBlue)
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
+        Box(
             modifier = Modifier
-                .fillMaxSize()
-                .background(DeepBlue),
-            verticalArrangement = Arrangement.SpaceBetween,
+                .padding(top = 25.dp, bottom = 5.dp)
+                .fillMaxWidth()
+                .background(Color.Transparent), // Make the background transparent
+            contentAlignment = Alignment.TopStart
         ) {
-            reading = getReadingUnit(readingString = readingString, sensorModel)
-            Header(reading.heading)
-            RegularLineChart()
-            SpeedIndicator(state = state, onClick = onClick,reading.unit, component)
+            IconButton(onClick = { /* Handle back action here */
+                navHostController.navigate("home")
+            }) {
+                Icon(
+
+                    imageVector = Icons.Filled.ArrowBack,
+                    contentDescription = "Back",
+                    tint = Color.White // Make the back button black
+                )
+            }
+        }
+
+        reading = getReadingUnit(readingString = readingString, sensorModel)
+        Header(reading.heading)
+        RegularLineChart()
+        SpeedIndicator(state = state, onClick = onClick, reading.unit, component)
     }
-
 }
-}
-
-
 
 //Pass data reading header here
 @Composable
@@ -220,7 +211,8 @@ fun Header(heading:String) {
     Text(
         //Heading Value Change
         text = heading,
-        modifier = Modifier.padding(top = 52.dp, bottom = 16.dp),
+        fontSize = 36.sp,
+        modifier = Modifier.padding(top = 22.dp, bottom = 26.dp),
         style = MaterialTheme.typography.headlineLarge
     )
 }
