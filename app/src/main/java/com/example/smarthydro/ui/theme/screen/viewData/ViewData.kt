@@ -2,6 +2,7 @@ package com.example.smarthydro.ui.theme.screen.viewData
 
 import android.annotation.SuppressLint
 import android.graphics.Typeface
+import android.util.Log
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.keyframes
@@ -381,7 +382,6 @@ fun IconButtonOnOff(onClick: () -> Unit, componentViewModel: ComponentViewModel)
     }
 }
 
-//Pass same measurement unit from Speed indicator her
 @Composable
 fun SpeedValue(value: String, unit: String) {
     Column(
