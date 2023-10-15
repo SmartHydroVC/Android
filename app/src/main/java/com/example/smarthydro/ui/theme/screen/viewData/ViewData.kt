@@ -2,20 +2,13 @@ package com.example.smarthydro.ui.theme.screen.viewData
 
 import android.annotation.SuppressLint
 import android.graphics.Typeface
+import android.util.Log
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.keyframes
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -37,7 +30,6 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.modifier.modifierLocalMapOf
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -88,8 +80,8 @@ class UiState(
     val arcValue: Float = 0f,
     val inProgress: Boolean = false
 )
-private var powerState : Boolean = true;
-private var readingValue : String= ""
+private var powerState : Boolean = true
+private var readingValue : String = ""
 private var toggleEC : String = "mn "
 private var togglePH : String = ""
 
@@ -193,7 +185,7 @@ private fun SpeedTestScreen(state: UiState,navHostController: NavHostController,
 
                     imageVector = Icons.Filled.ArrowBack,
                     contentDescription = "Back",
-                    tint = Color.White // Make the back button black
+                    tint = Color.White // Make the back button white
                 )
             }
         }
@@ -201,7 +193,18 @@ private fun SpeedTestScreen(state: UiState,navHostController: NavHostController,
         reading = getReadingUnit(readingString = readingString, sensorModel)
         Header(reading.heading)
         RegularLineChart()
-        SpeedIndicator(state = state, onClick = onClick, reading.unit, component)
+        when (reading.heading) {
+            "pH Level" -> {
+                LowAndHighIconButtons(state = state, onClick = onClick, reading.unit, component)
+            }
+            "EC Level" -> {
+                LowAndHighIconButtons(state = state, onClick = onClick, reading.unit, component)
+            }
+            else -> {
+                SpeedIndicator(state = state, onClick = onClick, reading.unit, component)
+            }
+        }
+
     }
 }
 
@@ -227,14 +230,117 @@ fun SpeedIndicator(state: UiState, onClick: () -> Unit, unit: String, component:
             .aspectRatio(1f)
     ) {
         CircularSpeedIndicator(state.arcValue, 240f)
-        IconButtonOnOff(onClick, component);
+        IconButtonOnOff(onClick, component)
         SpeedValue(readingValue,unit)
     }
 }
 
 @Composable
+fun LowAndHighIconButtons(state: UiState, onClick: () -> Unit, unit: String, component: ComponentViewModel) {
+    Box(
+        contentAlignment = Alignment.BottomCenter,
+        modifier = Modifier
+            .fillMaxWidth()
+            .aspectRatio(1f)
+    ) {
+        CircularSpeedIndicator(state.arcValue, 240f)
+        ToggleLowButton(onClick, component)
+        ToggleHighButton(onClick, component)
+        SpeedValue(readingValue,unit)
+    }
+}
+
+@Composable
+fun ToggleLowButton(onClick: () -> Unit, componentViewModel: ComponentViewModel) {
+    var iconColor by remember { mutableStateOf(Color.Red) }
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Start
+    ) {
+        Spacer(modifier = Modifier.width(80.dp))
+        IconButton(
+            modifier = Modifier
+                .size(130.dp)
+                .padding(top = 40.dp),
+            onClick = {
+                powerState = !powerState
+
+                when (reading.heading) {
+                    "pH Level" -> {
+                        componentViewModel.setPh()
+                    }
+                    "EC Level" -> {
+                        componentViewModel.setEc()
+                    }
+                    else -> {}
+                }
+
+                if (powerState) {
+                    iconColor = Color.Red
+                    onClick()
+                }else {
+                    iconColor = Color.Green
+                }
+            })
+        {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_arrow_down),
+                contentDescription = "Option to toggle the pump to be lower",
+                tint = iconColor,
+                modifier = Modifier.size(size = 100.dp)
+            )
+        }
+    }
+
+}
+
+@Composable
+fun ToggleHighButton(onClick: () -> Unit, componentViewModel: ComponentViewModel) {
+    var iconColor by remember { mutableStateOf(Color.Red) }
+
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Start
+    ) {
+        Spacer(modifier = Modifier.width(200.dp))
+        IconButton(
+            modifier = Modifier
+                .size(130.dp)
+                .padding(top = 40.dp),
+            onClick = {
+                powerState = !powerState
+
+                when (reading.heading) {
+                    "pH Level" -> {
+                        componentViewModel.setPh()
+                    }
+                    "EC Level" -> {
+                        componentViewModel.setEc()
+                    }
+                    else -> {}
+                }
+
+                if (powerState) {
+                    iconColor = Color.Red
+                    onClick()
+                }else {
+                    iconColor = Color.Green
+                }
+            })
+        {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_arrow_up),
+                contentDescription = "Option to toggle the pump to be higher",
+                tint = iconColor,
+                modifier = Modifier.size(size = 100.dp)
+            )
+        }
+    }
+}
+
+@Composable
 fun IconButtonOnOff(onClick: () -> Unit, componentViewModel: ComponentViewModel) {
-    var iconColor by remember { mutableStateOf(Color.Green) }
+    var iconColor by remember { mutableStateOf(Color.Red) }
 
     IconButton(
         modifier = Modifier
@@ -256,20 +362,14 @@ fun IconButtonOnOff(onClick: () -> Unit, componentViewModel: ComponentViewModel)
                 "Water Flow" -> {
                     componentViewModel.setPump()
                 }
-                "pH Level" -> {
-                    componentViewModel.setPh()
-                }
-                "EC Level" -> {
-                    componentViewModel.setEc()
-                }
                 else -> {}
             }
 
             if (powerState) {
-                iconColor = Color.Green
+                iconColor = Color.Red
                 onClick()
             }else {
-                iconColor = Color.Red
+                iconColor = Color.Green
             }
         })
     {
@@ -282,7 +382,6 @@ fun IconButtonOnOff(onClick: () -> Unit, componentViewModel: ComponentViewModel)
     }
 }
 
-//Pass same measurement unit from Speed indicator her
 @Composable
 fun SpeedValue(value: String, unit: String) {
     Column(
