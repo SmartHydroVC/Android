@@ -17,11 +17,21 @@ class ComponentRepository {
     suspend fun toggleExtractor() {
         return componentService.toggleExtractor()
     }
-    suspend fun togglePh() {
-        return componentService.togglePh()
+
+    suspend fun ecUp() {
+        return componentService.ecUp()
     }
-    suspend fun toggleEc() {
-        return componentService.toggleEc()
+
+    suspend fun ecDown() {
+        return componentService.ecDown()
+    }
+
+    suspend fun phUp() {
+        return componentService.pHUp()
+    }
+
+    suspend fun phDown() {
+        return componentService.pHDown()
     }
 
     suspend fun toggleFan() {

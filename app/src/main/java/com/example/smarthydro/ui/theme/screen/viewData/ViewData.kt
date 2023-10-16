@@ -267,10 +267,10 @@ fun ToggleLowButton(onClick: () -> Unit, componentViewModel: ComponentViewModel)
 
                 when (reading.heading) {
                     "pH Level" -> {
-                        componentViewModel.setPh()
+                        componentViewModel.setPhDown()
                     }
                     "EC Level" -> {
-                        componentViewModel.setEc()
+                        componentViewModel.setEcDown()
                     }
                     else -> {}
                 }
@@ -312,10 +312,10 @@ fun ToggleHighButton(onClick: () -> Unit, componentViewModel: ComponentViewModel
 
                 when (reading.heading) {
                     "pH Level" -> {
-                        componentViewModel.setPh()
+                        componentViewModel.setPhUp()
                     }
                     "EC Level" -> {
-                        componentViewModel.setEc()
+                        componentViewModel.setEcUp()
                     }
                     else -> {}
                 }
