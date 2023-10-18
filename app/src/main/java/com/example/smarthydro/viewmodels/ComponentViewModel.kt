@@ -48,6 +48,16 @@ class ComponentViewModel : ViewModel() {
         }
     }
 
+    fun setPh() {
+        viewModelScope.launch {
+            try {
+                repository.ph()
+            } catch (e: Exception) {
+                Log.e("PH ERROR", e.message.toString())
+            }
+        }
+    }
+
     fun setPhUp() {
         viewModelScope.launch {
             try {
@@ -64,6 +74,16 @@ class ComponentViewModel : ViewModel() {
                 repository.phDown()
             } catch (e: Exception) {
                 Log.e("PH ERROR", e.message.toString())
+            }
+        }
+    }
+
+    fun setEc() {
+        viewModelScope.launch {
+            try {
+                repository.ec()
+            } catch (e: Exception) {
+                Log.e("EC ERROR", e.message.toString())
             }
         }
     }

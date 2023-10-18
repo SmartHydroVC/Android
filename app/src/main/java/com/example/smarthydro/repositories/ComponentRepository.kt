@@ -18,12 +18,20 @@ class ComponentRepository {
         return componentService.toggleExtractor()
     }
 
+    suspend fun ec() {
+        return componentService.ec()
+    }
+
     suspend fun ecUp() {
         return componentService.ecUp()
     }
 
     suspend fun ecDown() {
         return componentService.ecDown()
+    }
+
+    suspend fun ph() {
+        return componentService.pH()
     }
 
     suspend fun phUp() {

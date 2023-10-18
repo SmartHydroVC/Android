@@ -246,6 +246,7 @@ fun LowAndHighIconButtons(state: UiState, onClick: () -> Unit, unit: String, com
         CircularSpeedIndicator(state.arcValue, 240f)
         ToggleLowButton(onClick, component)
         ToggleHighButton(onClick, component)
+        IconButtonOnOff(onClick, component)
         SpeedValue(readingValue,unit)
     }
 }
@@ -258,7 +259,7 @@ fun ToggleLowButton(onClick: () -> Unit, componentViewModel: ComponentViewModel)
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Start
     ) {
-        Spacer(modifier = Modifier.width(80.dp))
+        Spacer(modifier = Modifier.width(30.dp))
         IconButton(
             modifier = Modifier
                 .size(130.dp)
@@ -268,11 +269,9 @@ fun ToggleLowButton(onClick: () -> Unit, componentViewModel: ComponentViewModel)
 
                 when (reading.heading) {
                     "pH Level" -> {
-                        //componentViewModel.setPhDown()
                         openAlertDialogLow.value = true
                     }
                     "EC Level" -> {
-                        //componentViewModel.setEcDown()
                         openAlertDialogLow.value = true
                     }
                     else -> {}
@@ -295,7 +294,6 @@ fun ToggleLowButton(onClick: () -> Unit, componentViewModel: ComponentViewModel)
         }
     }
     LowerSolution(openAlertDialog = openAlertDialogLow, componentViewModel, reading.heading)
-    //openAlertDialogLow.value = false
 }
 
 @Composable
@@ -305,7 +303,7 @@ fun ToggleHighButton(onClick: () -> Unit, componentViewModel: ComponentViewModel
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Start
     ) {
-        Spacer(modifier = Modifier.width(200.dp))
+        Spacer(modifier = Modifier.width(250.dp))
         IconButton(
             modifier = Modifier
                 .size(130.dp)
@@ -315,11 +313,9 @@ fun ToggleHighButton(onClick: () -> Unit, componentViewModel: ComponentViewModel
 
                 when (reading.heading) {
                     "pH Level" -> {
-                        //componentViewModel.setPhUp()
                         openAlertDialogUp.value = true
                     }
                     "EC Level" -> {
-                        //componentViewModel.setEcUp()
                         openAlertDialogUp.value = true
                     }
                     else -> {}
@@ -341,8 +337,35 @@ fun ToggleHighButton(onClick: () -> Unit, componentViewModel: ComponentViewModel
         }
     }
     HigherSolution(openAlertDialog = openAlertDialogUp, componentViewModel, reading.heading)
-    //openAlertDialogUp.value = false
 }
+//
+//@Composable
+//fun DisableSolutions(openAlertDialog: MutableState<Boolean>, componentViewModel: ComponentViewModel, heading: String){
+//    when {
+//        openAlertDialog.value -> {
+//            AlertDialogModel(
+//                onDismissRequest = { openAlertDialog.value = false },
+//                onConfirmation = {
+//                    // Add logic here to handle confirmation.
+//                    when (heading) {
+//                        "pH Level" -> {
+//                            componentViewModel.setPh()
+//                        }
+//                        "EC Level" -> {
+//                            componentViewModel.setEc()
+//                        }
+//                        else -> {
+//                        }
+//                    }
+//                    openAlertDialog.value = false
+//                },
+//                dialogTitle = "Disable Both Pumps",
+//                dialogText = "You are about switch off both the pumps!",
+//                icon = Icons.Default.Info
+//            )
+//        }
+//    }
+//}
 
 @Composable
 fun LowerSolution(openAlertDialog: MutableState<Boolean>, componentViewModel: ComponentViewModel, heading: String){
@@ -399,6 +422,7 @@ fun HigherSolution(openAlertDialog: MutableState<Boolean>, componentViewModel: C
         }
     }
 }
+
 @Composable
 fun IconButtonOnOff(onClick: () -> Unit, componentViewModel: ComponentViewModel) {
     var iconColor by remember { mutableStateOf(Color.Red) }
@@ -422,6 +446,12 @@ fun IconButtonOnOff(onClick: () -> Unit, componentViewModel: ComponentViewModel)
                 }
                 "Water Flow" -> {
                     componentViewModel.setPump()
+                }
+                "pH Level" -> {
+                    componentViewModel.setPh()
+                }
+                "EC Level" -> {
+                    componentViewModel.setEc()
                 }
                 else -> {}
             }
