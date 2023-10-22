@@ -338,34 +338,6 @@ fun ToggleHighButton(onClick: () -> Unit, componentViewModel: ComponentViewModel
     }
     HigherSolution(openAlertDialog = openAlertDialogUp, componentViewModel, reading.heading)
 }
-//
-//@Composable
-//fun DisableSolutions(openAlertDialog: MutableState<Boolean>, componentViewModel: ComponentViewModel, heading: String){
-//    when {
-//        openAlertDialog.value -> {
-//            AlertDialogModel(
-//                onDismissRequest = { openAlertDialog.value = false },
-//                onConfirmation = {
-//                    // Add logic here to handle confirmation.
-//                    when (heading) {
-//                        "pH Level" -> {
-//                            componentViewModel.setPh()
-//                        }
-//                        "EC Level" -> {
-//                            componentViewModel.setEc()
-//                        }
-//                        else -> {
-//                        }
-//                    }
-//                    openAlertDialog.value = false
-//                },
-//                dialogTitle = "Disable Both Pumps",
-//                dialogText = "You are about switch off both the pumps!",
-//                icon = Icons.Default.Info
-//            )
-//        }
-//    }
-//}
 
 @Composable
 fun LowerSolution(openAlertDialog: MutableState<Boolean>, componentViewModel: ComponentViewModel, heading: String){
