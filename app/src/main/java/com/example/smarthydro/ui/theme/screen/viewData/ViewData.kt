@@ -9,7 +9,9 @@ import androidx.compose.animation.core.keyframes
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Info
@@ -101,7 +103,7 @@ fun Animatable<Float, AnimationVector1D>.toUiState(maxSpeed: Float) = UiState(
 )
 //@Preview
 @Composable
-fun SpeedTestScreen(navHostController: NavHostController,component: ComponentViewModel, readingViewModel: ReadingViewModel, sensorViewModel: SensorViewModel) {
+fun SpeedTestScreen(navHostController: NavHostController, component: ComponentViewModel, readingViewModel: ReadingViewModel, sensorViewModel: SensorViewModel) {
     val coroutineScope = rememberCoroutineScope()
     val animation = remember { Animatable(0f) }
     val maxSpeed = remember { mutableStateOf(0f) }
@@ -109,7 +111,6 @@ fun SpeedTestScreen(navHostController: NavHostController,component: ComponentVie
     maxSpeed.value = max(maxSpeed.value, animation.value * 100f)
 
     reading = readingViewModel.getReadingType()!!
-
 
     SpeedTestScreen(animation.toUiState(maxSpeed.value),navHostController, reading.heading, component, sensorData ) {
         coroutineScope.launch {
@@ -169,7 +170,9 @@ private fun SpeedTestScreen(state: UiState,navHostController: NavHostController,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
+            .fillMaxHeight()
             .background(DeepBlue)
+            .verticalScroll(rememberScrollState())
     ) {
         Box(
             modifier = Modifier
@@ -215,7 +218,7 @@ fun Header(heading:String) {
         //Heading Value Change
         text = heading,
         fontSize = 36.sp,
-        modifier = Modifier.padding(top = 22.dp, bottom = 26.dp),
+        modifier = Modifier.padding(top = 8.dp, bottom = 26.dp),
         style = MaterialTheme.typography.headlineLarge
     )
 }
@@ -244,9 +247,18 @@ fun LowAndHighIconButtons(state: UiState, onClick: () -> Unit, unit: String, com
             .aspectRatio(1f)
     ) {
         CircularSpeedIndicator(state.arcValue, 240f)
-        ToggleLowButton(onClick, component)
-        ToggleHighButton(onClick, component)
-        IconButtonOnOff(onClick, component)
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalArrangement = Arrangement.Center)
+        {
+            ToggleLowButton(onClick, component)
+            Spacer(modifier = Modifier.width(24.dp))
+            IconButtonOnOff(onClick, component)
+            Spacer(modifier = Modifier.width(24.dp))
+            ToggleHighButton(onClick, component)
+        }
+
         SpeedValue(readingValue,unit)
     }
 }
@@ -255,15 +267,10 @@ fun LowAndHighIconButtons(state: UiState, onClick: () -> Unit, unit: String, com
 fun ToggleLowButton(onClick: () -> Unit, componentViewModel: ComponentViewModel) {
     var iconColor by remember { mutableStateOf(Color.Red) }
 
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Start
-    ) {
-        Spacer(modifier = Modifier.width(30.dp))
         IconButton(
             modifier = Modifier
-                .size(130.dp)
-                .padding(top = 40.dp),
+                .size(72.dp)
+                .padding(top = 20.dp),
             onClick = {
                 powerState = !powerState
 
@@ -292,22 +299,18 @@ fun ToggleLowButton(onClick: () -> Unit, componentViewModel: ComponentViewModel)
                 modifier = Modifier.size(size = 100.dp)
             )
         }
-    }
+
     LowerSolution(openAlertDialog = openAlertDialogLow, componentViewModel, reading.heading)
 }
 
 @Composable
 fun ToggleHighButton(onClick: () -> Unit, componentViewModel: ComponentViewModel) {
     var iconColor by remember { mutableStateOf(Color.Red) }
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Start
-    ) {
-        Spacer(modifier = Modifier.width(250.dp))
+
         IconButton(
             modifier = Modifier
-                .size(130.dp)
-                .padding(top = 40.dp),
+                .size(72.dp)
+                .padding(top = 20.dp),
             onClick = {
                 powerState = !powerState
 
@@ -335,7 +338,7 @@ fun ToggleHighButton(onClick: () -> Unit, componentViewModel: ComponentViewModel
                 modifier = Modifier.size(size = 100.dp)
             )
         }
-    }
+
     HigherSolution(openAlertDialog = openAlertDialogUp, componentViewModel, reading.heading)
 }
 
@@ -401,8 +404,8 @@ fun IconButtonOnOff(onClick: () -> Unit, componentViewModel: ComponentViewModel)
 
     IconButton(
         modifier = Modifier
-            .size(100.dp)
-            .padding(top = 40.dp),
+            .size(72.dp)
+            .padding(top = 20.dp),
         onClick = {
             powerState = !powerState
 
@@ -425,6 +428,7 @@ fun IconButtonOnOff(onClick: () -> Unit, componentViewModel: ComponentViewModel)
                 "EC Level" -> {
                     componentViewModel.setEc()
                 }
+
                 else -> {}
             }
 
