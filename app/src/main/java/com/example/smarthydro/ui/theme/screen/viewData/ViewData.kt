@@ -9,17 +9,15 @@ import androidx.compose.animation.core.keyframes
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -30,6 +28,7 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -84,6 +83,9 @@ private var powerState : Boolean = true
 private var readingValue : String = ""
 private var toggleEC : String = "mn "
 private var togglePH : String = ""
+val openAlertDialogLow = mutableStateOf(false)
+val openAlertDialogUp = mutableStateOf(false)
+
 
 private var reading: ReadingType = ReadingType("",SensorModel(), "");
 suspend fun startAnimation(animation: Animatable<Float, AnimationVector1D>) {
@@ -101,7 +103,7 @@ fun Animatable<Float, AnimationVector1D>.toUiState(maxSpeed: Float) = UiState(
 )
 //@Preview
 @Composable
-fun SpeedTestScreen(navHostController: NavHostController,component: ComponentViewModel, readingViewModel: ReadingViewModel, sensorViewModel: SensorViewModel) {
+fun SpeedTestScreen(navHostController: NavHostController, component: ComponentViewModel, readingViewModel: ReadingViewModel, sensorViewModel: SensorViewModel) {
     val coroutineScope = rememberCoroutineScope()
     val animation = remember { Animatable(0f) }
     val maxSpeed = remember { mutableStateOf(0f) }
@@ -109,7 +111,6 @@ fun SpeedTestScreen(navHostController: NavHostController,component: ComponentVie
     maxSpeed.value = max(maxSpeed.value, animation.value * 100f)
 
     reading = readingViewModel.getReadingType()!!
-
 
     SpeedTestScreen(animation.toUiState(maxSpeed.value),navHostController, reading.heading, component, sensorData ) {
         coroutineScope.launch {
@@ -169,7 +170,9 @@ private fun SpeedTestScreen(state: UiState,navHostController: NavHostController,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
+            .fillMaxHeight()
             .background(DeepBlue)
+            .verticalScroll(rememberScrollState())
     ) {
         Box(
             modifier = Modifier
@@ -215,7 +218,7 @@ fun Header(heading:String) {
         //Heading Value Change
         text = heading,
         fontSize = 36.sp,
-        modifier = Modifier.padding(top = 22.dp, bottom = 26.dp),
+        modifier = Modifier.padding(top = 8.dp, bottom = 26.dp),
         style = MaterialTheme.typography.headlineLarge
     )
 }
@@ -244,8 +247,18 @@ fun LowAndHighIconButtons(state: UiState, onClick: () -> Unit, unit: String, com
             .aspectRatio(1f)
     ) {
         CircularSpeedIndicator(state.arcValue, 240f)
-        ToggleLowButton(onClick, component)
-        ToggleHighButton(onClick, component)
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalArrangement = Arrangement.Center)
+        {
+            ToggleLowButton(onClick, component)
+            Spacer(modifier = Modifier.width(24.dp))
+            IconButtonOnOff(onClick, component)
+            Spacer(modifier = Modifier.width(24.dp))
+            ToggleHighButton(onClick, component)
+        }
+
         SpeedValue(readingValue,unit)
     }
 }
@@ -253,24 +266,20 @@ fun LowAndHighIconButtons(state: UiState, onClick: () -> Unit, unit: String, com
 @Composable
 fun ToggleLowButton(onClick: () -> Unit, componentViewModel: ComponentViewModel) {
     var iconColor by remember { mutableStateOf(Color.Red) }
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Start
-    ) {
-        Spacer(modifier = Modifier.width(80.dp))
+
         IconButton(
             modifier = Modifier
-                .size(130.dp)
-                .padding(top = 40.dp),
+                .size(72.dp)
+                .padding(top = 20.dp),
             onClick = {
                 powerState = !powerState
 
                 when (reading.heading) {
                     "pH Level" -> {
-                        componentViewModel.setPh()
+                        openAlertDialogLow.value = true
                     }
                     "EC Level" -> {
-                        componentViewModel.setEc()
+                        openAlertDialogLow.value = true
                     }
                     else -> {}
                 }
@@ -290,36 +299,30 @@ fun ToggleLowButton(onClick: () -> Unit, componentViewModel: ComponentViewModel)
                 modifier = Modifier.size(size = 100.dp)
             )
         }
-    }
 
+    LowerSolution(openAlertDialog = openAlertDialogLow, componentViewModel, reading.heading)
 }
 
 @Composable
 fun ToggleHighButton(onClick: () -> Unit, componentViewModel: ComponentViewModel) {
     var iconColor by remember { mutableStateOf(Color.Red) }
 
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Start
-    ) {
-        Spacer(modifier = Modifier.width(200.dp))
         IconButton(
             modifier = Modifier
-                .size(130.dp)
-                .padding(top = 40.dp),
+                .size(72.dp)
+                .padding(top = 20.dp),
             onClick = {
                 powerState = !powerState
 
                 when (reading.heading) {
                     "pH Level" -> {
-                        componentViewModel.setPh()
+                        openAlertDialogUp.value = true
                     }
                     "EC Level" -> {
-                        componentViewModel.setEc()
+                        openAlertDialogUp.value = true
                     }
                     else -> {}
                 }
-
                 if (powerState) {
                     iconColor = Color.Red
                     onClick()
@@ -335,6 +338,63 @@ fun ToggleHighButton(onClick: () -> Unit, componentViewModel: ComponentViewModel
                 modifier = Modifier.size(size = 100.dp)
             )
         }
+
+    HigherSolution(openAlertDialog = openAlertDialogUp, componentViewModel, reading.heading)
+}
+
+@Composable
+fun LowerSolution(openAlertDialog: MutableState<Boolean>, componentViewModel: ComponentViewModel, heading: String){
+    when {
+        openAlertDialog.value -> {
+            AlertDialogModel(
+                onDismissRequest = { openAlertDialog.value = false },
+                onConfirmation = {
+                    //println("Confirmation registered") // Add logic here to handle confirmation.
+                    when (heading) {
+                        "pH Level" -> {
+                            componentViewModel.setPhDown()
+                        }
+                        "EC Level" -> {
+                            componentViewModel.setEcDown()
+                        }
+                        else -> {
+                        }
+                    }
+                    openAlertDialog.value = false
+                },
+                dialogTitle = "Decrease Nutrients",
+                dialogText = "You are about decrease solution for this!",
+                icon = Icons.Default.Info
+            )
+        }
+    }
+}
+
+
+@Composable
+fun HigherSolution(openAlertDialog: MutableState<Boolean>, componentViewModel: ComponentViewModel, heading: String){
+    when {
+        openAlertDialog.value -> {
+            AlertDialogModel(
+                onDismissRequest = { openAlertDialog.value = false },
+                onConfirmation = {
+                    when (heading) {
+                        "pH Level" -> {
+                            componentViewModel.setPhUp()
+                        }
+                        "EC Level" -> {
+                            componentViewModel.setEcUp()
+                        }
+                        else -> {
+                        }
+                    }
+                    openAlertDialog.value = false
+                },
+                dialogTitle = "Increase Nutrients",
+                dialogText = "You are about increase solution for this!",
+                icon = Icons.Default.Info
+            )
+        }
     }
 }
 
@@ -344,8 +404,8 @@ fun IconButtonOnOff(onClick: () -> Unit, componentViewModel: ComponentViewModel)
 
     IconButton(
         modifier = Modifier
-            .size(100.dp)
-            .padding(top = 40.dp),
+            .size(72.dp)
+            .padding(top = 20.dp),
         onClick = {
             powerState = !powerState
 
@@ -362,6 +422,13 @@ fun IconButtonOnOff(onClick: () -> Unit, componentViewModel: ComponentViewModel)
                 "Water Flow" -> {
                     componentViewModel.setPump()
                 }
+                "pH Level" -> {
+                    componentViewModel.setPh()
+                }
+                "EC Level" -> {
+                    componentViewModel.setEc()
+                }
+
                 else -> {}
             }
 
@@ -503,8 +570,6 @@ fun RegularLineChart() {
     )
 }
 
-
-
 @Composable
 internal fun rememberMarker(): Marker {
     val labelBackgroundColor = MaterialTheme.colorScheme.surface
@@ -560,6 +625,50 @@ internal fun rememberMarker(): Marker {
         }
     }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AlertDialogModel(
+    onDismissRequest: () -> Unit,
+    onConfirmation: () -> Unit,
+    dialogTitle: String,
+    dialogText: String,
+    icon: ImageVector,
+) {
+    AlertDialog(
+        icon = {
+            Icon(icon, contentDescription = "Example Icon")
+        },
+        title = {
+            Text(text = dialogTitle)
+        },
+        text = {
+            Text(text = dialogText)
+        },
+        onDismissRequest = {
+            onDismissRequest()
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onConfirmation()
+                }
+            ) {
+                Text("Confirm")
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = {
+                    onDismissRequest()
+                }
+            ) {
+                Text("Dismiss")
+            }
+        }
+    )
+}
+
 
 private const val LABEL_BACKGROUND_SHADOW_RADIUS = 4f
 private const val LABEL_BACKGROUND_SHADOW_DY = 2f

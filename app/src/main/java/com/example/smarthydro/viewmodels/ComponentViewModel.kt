@@ -47,19 +47,61 @@ class ComponentViewModel : ViewModel() {
             }
         }
     }
+
     fun setPh() {
         viewModelScope.launch {
             try {
-                repository.togglePh()
+                repository.ph()
             } catch (e: Exception) {
                 Log.e("PH ERROR", e.message.toString())
             }
         }
     }
+
+    fun setPhUp() {
+        viewModelScope.launch {
+            try {
+                repository.phUp()
+            } catch (e: Exception) {
+                Log.e("PH ERROR", e.message.toString())
+            }
+        }
+    }
+
+    fun setPhDown() {
+        viewModelScope.launch {
+            try {
+                repository.phDown()
+            } catch (e: Exception) {
+                Log.e("PH ERROR", e.message.toString())
+            }
+        }
+    }
+
     fun setEc() {
         viewModelScope.launch {
             try {
-                repository.toggleEc()
+                repository.ec()
+            } catch (e: Exception) {
+                Log.e("EC ERROR", e.message.toString())
+            }
+        }
+    }
+
+    fun setEcUp() {
+        viewModelScope.launch {
+            try {
+                repository.ecUp()
+            } catch (e: Exception) {
+                Log.e("EC ERROR", e.message.toString())
+            }
+        }
+    }
+
+    fun setEcDown() {
+        viewModelScope.launch {
+            try {
+                repository.ecDown()
             } catch (e: Exception) {
                 Log.e("EC ERROR", e.message.toString())
             }

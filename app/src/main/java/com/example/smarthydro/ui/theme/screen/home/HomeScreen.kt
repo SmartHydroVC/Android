@@ -64,7 +64,6 @@ import com.example.smarthydro.viewmodels.ReadingViewModel
 import com.example.smarthydro.viewmodels.SensorViewModel
 private const val GET_SENSOR_DATA_DELAY_MS: Long = 15 * 1000
 
-
 // https://youtu.be/g5-wzZUnIbQ
 @ExperimentalFoundationApi
 @Composable
@@ -133,7 +132,7 @@ fun HomeScreen(viewModel: SensorViewModel,navController: NavHostController, read
 
 @Composable
 fun GreetingSection(
-    name: String = "User"
+    name: String = "Farmer"
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
