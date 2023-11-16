@@ -10,16 +10,23 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -33,6 +40,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -78,8 +86,7 @@ fun HomeScreen(viewModel: SensorViewModel,navController: NavHostController, read
             .fillMaxSize()
     ) {
         Column {
-            GreetingSection()
-            FeatureSection(
+            CardSection(
                 features = listOf(
                     Feature(
                         title = "Water",
@@ -130,35 +137,9 @@ fun HomeScreen(viewModel: SensorViewModel,navController: NavHostController, read
     }
 }
 
-@Composable
-fun GreetingSection(
-    name: String = "Farmer"
-) {
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(15.dp)
-    ) {
-        Column(
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = "Hello, $name",
-                style = MaterialTheme.typography.headlineLarge
-            )
-            Text(
-                text = "We wish you have a good day!",
-                style = MaterialTheme.typography.bodyLarge
-            )
-        }
-    }
-}
-
 @ExperimentalFoundationApi
 @Composable
-fun FeatureSection(features: List<Feature>, navController: NavHostController, readingViewModel: ReadingViewModel, sensorData: SensorModel) {
+fun CardSection(features: List<Feature>, navController: NavHostController, readingViewModel: ReadingViewModel, sensorData: SensorModel) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
             text = "Features",
@@ -172,12 +153,71 @@ fun FeatureSection(features: List<Feature>, navController: NavHostController, re
             modifier = Modifier.fillMaxHeight()
         ) {
             items(features.size) {
-                FeatureItem(feature = features[it],navController, readingViewModel = readingViewModel, sensorData)
+                SensorCard(feature = features[it],navController, readingViewModel = readingViewModel, sensorData)
             }
         }
     }
 }
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun  SensorCard(
+    feature: Feature, navController: NavHostController, readingViewModel: ReadingViewModel, sensorData: SensorModel
+) {
+    Surface(
+        shape = RoundedCornerShape(16.dp),
+        color = Color(0xFFDAE1E7),
+        modifier = Modifier
+            .height(210.dp)
+            .padding(10.dp),
+        shadowElevation = 10.dp,
+        onClick = { /*TODO*/ }
+    ) {
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(2f),
+                verticalArrangement = Arrangement.Center
+            ) {
 
+                Text(
+                    text = "Gift Plant",
+                    fontSize =  24.sp,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.SemiBold
+                )
+
+                Spacer(modifier = Modifier.height(2.dp))
+
+                Row(verticalAlignment = Alignment.CenterVertically) {
+
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_waterlv),
+                        contentDescription = null,
+                        modifier = Modifier.size(width = 100.dp, height = 140.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+            }
+
+            Surface(
+                shape = RoundedCornerShape(16.dp),
+                modifier = Modifier.size(width = 100.dp, height = 140.dp)
+            ) {
+                Text(
+                    text = "Image",
+                    modifier = Modifier.wrapContentSize(),
+                    style = MaterialTheme.typography.titleMedium,
+                )
+            }
+        }
+    }
+}
 @Composable
 fun FeatureItem(
     feature: Feature, navController: NavHostController, readingViewModel: ReadingViewModel, sensorData: SensorModel
