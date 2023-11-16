@@ -90,14 +90,14 @@ fun HomeScreen(viewModel: SensorViewModel,navController: NavHostController, read
                 features = listOf(
                     Feature(
                         title = "Water",
-                        R.drawable.ic_waterlv,
+                        R.drawable.ic_water,
                         BlueViolet1,
                         BlueViolet2,
                         BlueViolet3
                     ),
                     Feature(
-                        title = "PH",
-                        R.drawable.ic_phlv,
+                        title = "Clean Water",
+                        R.drawable.ic_cleanwater,
                         LightGreen1,
                         LightGreen2,
                         LightGreen3
@@ -111,24 +111,24 @@ fun HomeScreen(viewModel: SensorViewModel,navController: NavHostController, read
                     ),
                     Feature(
                         title = "Humidity",
-                        R.drawable.ic_humidity,
+                        R.drawable.ic_fire,
                         Beige1,
                         Beige2,
                         Beige3
                     ),
                     Feature(
-                        title = "EC",
-                        R.drawable.ic_ec,
-                        Purple200,
-                        Purple500,
-                        Purple700
+                        title = "Compost",
+                        R.drawable.ic_plant,
+                        LightGreen1,
+                        LightGreen2,
+                        LightGreen3
                     ),
                     Feature(
-                        title = "Light",
-                        R.drawable.ic_light,
-                        Red1,
-                        Red2,
-                        Red3
+                        title = "Sun Light",
+                        R.drawable.ic_sun,
+                        OrangeYellow1,
+                        OrangeYellow2,
+                        OrangeYellow3
                     ),
                 ),
                 navController,readingViewModel, sensorData
@@ -170,7 +170,11 @@ fun  SensorCard(
             .height(210.dp)
             .padding(10.dp),
         shadowElevation = 10.dp,
-        onClick = { /*TODO*/ }
+        onClick =
+        {
+            readingViewModel.setReadingType(ReadingType(feature.title,sensorData,""))
+            navController.navigate("viewData")
+        }
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
