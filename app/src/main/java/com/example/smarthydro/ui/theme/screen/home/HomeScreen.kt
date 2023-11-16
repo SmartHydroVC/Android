@@ -50,7 +50,6 @@ import com.example.smarthydro.ui.theme.Beige3
 import com.example.smarthydro.ui.theme.BlueViolet1
 import com.example.smarthydro.ui.theme.BlueViolet2
 import com.example.smarthydro.ui.theme.BlueViolet3
-import com.example.smarthydro.ui.theme.ButtonBlue
 import com.example.smarthydro.ui.theme.DeepBlue
 import com.example.smarthydro.ui.theme.LightGreen1
 import com.example.smarthydro.ui.theme.LightGreen2
@@ -58,15 +57,15 @@ import com.example.smarthydro.ui.theme.LightGreen3
 import com.example.smarthydro.ui.theme.OrangeYellow1
 import com.example.smarthydro.ui.theme.OrangeYellow2
 import com.example.smarthydro.ui.theme.OrangeYellow3
-import com.example.smarthydro.ui.theme.Purple200
-import com.example.smarthydro.ui.theme.Purple500
-import com.example.smarthydro.ui.theme.Purple700
 import com.example.smarthydro.ui.theme.Red1
 import com.example.smarthydro.ui.theme.Red2
 import com.example.smarthydro.ui.theme.Red3
 import com.example.smarthydro.ui.theme.TextWhite
 import com.example.smarthydro.R
 import com.example.smarthydro.models.SensorModel
+import com.example.smarthydro.ui.theme.Blue1
+import com.example.smarthydro.ui.theme.Blue2
+import com.example.smarthydro.ui.theme.Blue3
 import com.example.smarthydro.ui.theme.screen.ReadingType
 import com.example.smarthydro.viewmodels.ReadingViewModel
 import com.example.smarthydro.viewmodels.SensorViewModel
@@ -98,16 +97,16 @@ fun HomeScreen(viewModel: SensorViewModel,navController: NavHostController, read
                     Feature(
                         title = "Clean Water",
                         R.drawable.ic_cleanwater,
-                        LightGreen1,
-                        LightGreen2,
-                        LightGreen3
+                        Blue1,
+                        Blue2,
+                        Blue3
                     ),
                     Feature(
                         title = "Temperature",
                         R.drawable.ic_temp,
-                        OrangeYellow1,
-                        OrangeYellow2,
-                        OrangeYellow3
+                        Red1,
+                        Red2,
+                        Red3
                     ),
                     Feature(
                         title = "Humidity",
@@ -159,7 +158,7 @@ fun  SensorCard(
 ) {
     Surface(
         shape = RoundedCornerShape(16.dp),
-        color = Color(0xFFDAE1E7),
+        color = Color(feature.darkColor.value),
         modifier = Modifier
             .height(210.dp)
             .padding(10.dp),
@@ -170,6 +169,21 @@ fun  SensorCard(
             navController.navigate("viewData")
         }
     ) {
+        Canvas(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            val width = size.width
+            val height = size.height
+            drawPath(
+                path = createMediumColoredPath(width, height),
+                color = feature.mediumColor
+            )
+            drawPath(
+                path = createLightColoredPath(width, height),
+                color = feature.lightColor
+            )
+        }
         Row(
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
@@ -218,89 +232,6 @@ fun  SensorCard(
     }
 }
 
-
-@Composable
-fun FeatureItem(
-    feature: Feature, navController: NavHostController, readingViewModel: ReadingViewModel, sensorData: SensorModel
-) {
-    BoxWithConstraints(
-        modifier = Modifier
-            .padding(7.5.dp)
-            .aspectRatio(1f)
-            .clip(RoundedCornerShape(10.dp))
-            .background(feature.darkColor)
-    ) {
-        val width = constraints.maxWidth
-        val height = constraints.maxHeight
-
-
-
-        // Light colored path
-        val lightPoint1 = Offset(0f, height * 0.35f)
-        val lightPoint2 = Offset(width * 0.1f, height * 0.4f)
-        val lightPoint3 = Offset(width * 0.3f, height * 0.35f)
-        val lightPoint4 = Offset(width * 0.65f, height.toFloat())
-        val lightPoint5 = Offset(width * 1.4f, -height.toFloat() / 3f)
-
-        val lightColoredPath = Path().apply {
-            moveTo(lightPoint1.x, lightPoint1.y)
-            standardQuadFromTo(lightPoint1, lightPoint2)
-            standardQuadFromTo(lightPoint2, lightPoint3)
-            standardQuadFromTo(lightPoint3, lightPoint4)
-            standardQuadFromTo(lightPoint4, lightPoint5)
-            lineTo(width.toFloat() + 100f, height.toFloat() + 100f)
-            lineTo(-100f, height.toFloat() + 100f)
-            close()
-        }
-        Canvas(
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
-            drawPath(
-                path = mediumColoredPath,
-                color = feature.mediumColor
-            )
-            drawPath(
-                path = lightColoredPath,
-                color = feature.lightColor
-            )
-        }
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(15.dp)
-        ) {
-            Text(
-                text = feature.title,
-                style = MaterialTheme.typography.headlineSmall,
-                lineHeight = 26.sp,
-                modifier = Modifier.align(Alignment.TopStart)
-            )
-            Icon(
-                painter = painterResource(id = feature.iconId),
-                contentDescription = feature.title,
-                tint = Color.White,
-                modifier = Modifier.align(Alignment.BottomStart)
-            )
-            Text(
-                text = "View",
-                color = TextWhite,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .clickable {
-                        // Handle the click
-                        readingViewModel.setReadingType(ReadingType(feature.title,sensorData,""))
-                        navController.navigate("viewData")
-                    }
-                    .align(Alignment.BottomEnd)
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(ButtonBlue)
-                    .padding(vertical = 6.dp, horizontal = 15.dp)
-            )
-        }
-    }
-}
 private fun createMediumColoredPath(width: Float, height: Float): Path {
     // Medium colored path
     val mediumColoredPoint1 = Offset(0f, height * 0.3f)
@@ -321,6 +252,24 @@ private fun createMediumColoredPath(width: Float, height: Float): Path {
     }
     return mediumColoredPath
 }
-private fun mediumColour(width: Float, height: Float) {
+private fun createLightColoredPath(width: Float, height: Float): Path {
+    // Light colored path
+    val lightPoint1 = Offset(0f, height * 0.35f)
+    val lightPoint2 = Offset(width * 0.1f, height * 0.4f)
+    val lightPoint3 = Offset(width * 0.3f, height * 0.35f)
+    val lightPoint4 = Offset(width * 0.65f, height.toFloat())
+    val lightPoint5 = Offset(width * 1.4f, -height.toFloat() / 3f)
 
+    val lightColoredPath = Path().apply {
+        moveTo(lightPoint1.x, lightPoint1.y)
+        standardQuadFromTo(lightPoint1, lightPoint2)
+        standardQuadFromTo(lightPoint2, lightPoint3)
+        standardQuadFromTo(lightPoint3, lightPoint4)
+        standardQuadFromTo(lightPoint4, lightPoint5)
+        lineTo(width.toFloat() + 100f, height.toFloat() + 100f)
+        lineTo(-100f, height.toFloat() + 100f)
+        close()
+    }
+
+    return lightColoredPath
 }
