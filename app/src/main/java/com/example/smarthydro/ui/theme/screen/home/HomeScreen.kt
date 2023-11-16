@@ -141,14 +141,8 @@ fun HomeScreen(viewModel: SensorViewModel,navController: NavHostController, read
 @Composable
 fun CardSection(features: List<Feature>, navController: NavHostController, readingViewModel: ReadingViewModel, sensorData: SensorModel) {
     Column(modifier = Modifier.fillMaxWidth()) {
-        Text(
-            text = "Features",
-            color = Color.White,
-            style = MaterialTheme.typography.displayLarge,
-            modifier = Modifier.padding(15.dp,15.dp,15.dp,20.dp)
-        )
         LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
+            columns = GridCells.Fixed(1),
             contentPadding = PaddingValues(start = 7.5.dp, end = 7.5.dp, bottom = 100.dp),
             modifier = Modifier.fillMaxHeight()
         ) {
@@ -180,57 +174,6 @@ fun  SensorCard(
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            val width = 150
-            val height = 210
-
-            // Medium colored path
-            val mediumColoredPoint1 = Offset(0f, height * 0.3f)
-            val mediumColoredPoint2 = Offset(width * 0.1f, height * 0.35f)
-            val mediumColoredPoint3 = Offset(width * 0.4f, height * 0.05f)
-            val mediumColoredPoint4 = Offset(width * 0.75f, height * 0.7f)
-            val mediumColoredPoint5 = Offset(width * 1.4f, -height.toFloat())
-
-            val mediumColoredPath = Path().apply {
-                moveTo(mediumColoredPoint1.x, mediumColoredPoint1.y)
-                standardQuadFromTo(mediumColoredPoint1, mediumColoredPoint2)
-                standardQuadFromTo(mediumColoredPoint2, mediumColoredPoint3)
-                standardQuadFromTo(mediumColoredPoint3, mediumColoredPoint4)
-                standardQuadFromTo(mediumColoredPoint4, mediumColoredPoint5)
-                lineTo(width.toFloat() + 100f, height.toFloat() + 100f)
-                lineTo(-100f, height.toFloat() + 100f)
-                close()
-            }
-
-            // Light colored path
-            val lightPoint1 = Offset(0f, height * 0.35f)
-            val lightPoint2 = Offset(width * 0.1f, height * 0.4f)
-            val lightPoint3 = Offset(width * 0.3f, height * 0.35f)
-            val lightPoint4 = Offset(width * 0.65f, height.toFloat())
-            val lightPoint5 = Offset(width * 1.4f, -height.toFloat() / 3f)
-
-            val lightColoredPath = Path().apply {
-                moveTo(lightPoint1.x, lightPoint1.y)
-                standardQuadFromTo(lightPoint1, lightPoint2)
-                standardQuadFromTo(lightPoint2, lightPoint3)
-                standardQuadFromTo(lightPoint3, lightPoint4)
-                standardQuadFromTo(lightPoint4, lightPoint5)
-                lineTo(width.toFloat() + 100f, height.toFloat() + 100f)
-                lineTo(-100f, height.toFloat() + 100f)
-                close()
-            }
-            Canvas(
-                modifier = Modifier
-                    .fillMaxSize()
-            ) {
-                drawPath(
-                    path = mediumColoredPath,
-                    color = feature.mediumColor
-                )
-                drawPath(
-                    path = lightColoredPath,
-                    color = feature.lightColor
-                )
-            }
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -250,7 +193,7 @@ fun  SensorCard(
                 Row(verticalAlignment = Alignment.CenterVertically) {
 
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_waterlv),
+                        painter = painterResource(id = feature.iconId),
                         contentDescription = null,
                         modifier = Modifier.size(width = 100.dp, height = 140.dp)
                     )
@@ -270,9 +213,12 @@ fun  SensorCard(
                     style = MaterialTheme.typography.titleMedium,
                 )
             }
+
         }
     }
 }
+
+
 @Composable
 fun FeatureItem(
     feature: Feature, navController: NavHostController, readingViewModel: ReadingViewModel, sensorData: SensorModel
@@ -287,23 +233,7 @@ fun FeatureItem(
         val width = constraints.maxWidth
         val height = constraints.maxHeight
 
-        // Medium colored path
-        val mediumColoredPoint1 = Offset(0f, height * 0.3f)
-        val mediumColoredPoint2 = Offset(width * 0.1f, height * 0.35f)
-        val mediumColoredPoint3 = Offset(width * 0.4f, height * 0.05f)
-        val mediumColoredPoint4 = Offset(width * 0.75f, height * 0.7f)
-        val mediumColoredPoint5 = Offset(width * 1.4f, -height.toFloat())
 
-        val mediumColoredPath = Path().apply {
-            moveTo(mediumColoredPoint1.x, mediumColoredPoint1.y)
-            standardQuadFromTo(mediumColoredPoint1, mediumColoredPoint2)
-            standardQuadFromTo(mediumColoredPoint2, mediumColoredPoint3)
-            standardQuadFromTo(mediumColoredPoint3, mediumColoredPoint4)
-            standardQuadFromTo(mediumColoredPoint4, mediumColoredPoint5)
-            lineTo(width.toFloat() + 100f, height.toFloat() + 100f)
-            lineTo(-100f, height.toFloat() + 100f)
-            close()
-        }
 
         // Light colored path
         val lightPoint1 = Offset(0f, height * 0.35f)
@@ -370,4 +300,27 @@ fun FeatureItem(
             )
         }
     }
+}
+private fun createMediumColoredPath(width: Float, height: Float): Path {
+    // Medium colored path
+    val mediumColoredPoint1 = Offset(0f, height * 0.3f)
+    val mediumColoredPoint2 = Offset(width * 0.1f, height * 0.35f)
+    val mediumColoredPoint3 = Offset(width * 0.4f, height * 0.05f)
+    val mediumColoredPoint4 = Offset(width * 0.75f, height * 0.7f)
+    val mediumColoredPoint5 = Offset(width * 1.4f, -height.toFloat())
+
+    val mediumColoredPath = Path().apply {
+        moveTo(mediumColoredPoint1.x, mediumColoredPoint1.y)
+        standardQuadFromTo(mediumColoredPoint1, mediumColoredPoint2)
+        standardQuadFromTo(mediumColoredPoint2, mediumColoredPoint3)
+        standardQuadFromTo(mediumColoredPoint3, mediumColoredPoint4)
+        standardQuadFromTo(mediumColoredPoint4, mediumColoredPoint5)
+        lineTo(width.toFloat() + 100f, height.toFloat() + 100f)
+        lineTo(-100f, height.toFloat() + 100f)
+        close()
+    }
+    return mediumColoredPath
+}
+private fun mediumColour(width: Float, height: Float) {
+
 }
