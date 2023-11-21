@@ -59,6 +59,8 @@ import com.example.smarthydro.ui.theme.OrangeYellow3
 import com.example.smarthydro.ui.theme.Red1
 import com.example.smarthydro.ui.theme.Red2
 import com.example.smarthydro.ui.theme.Red3
+import com.example.smarthydro.ui.theme.GreenGood
+import com.example.smarthydro.ui.theme.RedBad
 import com.example.smarthydro.ui.theme.screen.ReadingType
 import com.example.smarthydro.viewmodels.ReadingViewModel
 import com.example.smarthydro.viewmodels.SensorViewModel
@@ -87,7 +89,8 @@ fun HomeScreen(viewModel: SensorViewModel,navController: NavHostController, read
                         BlueViolet1,
                         BlueViolet2,
                         BlueViolet3,
-                        sensorData.flowRate
+                        sensorData.flowRate,
+
                     ),
                     Feature(
                         title = "Clean Water",
@@ -219,6 +222,7 @@ fun  SensorCard(
 
             Surface(
                 shape = RoundedCornerShape(16.dp),
+                color = checkReadingLevel(title = feature.title, readingValue = feature.sensorReading),
                 modifier = Modifier.size(width = 100.dp, height = 140.dp)
             ) {
                 Text(
@@ -273,3 +277,21 @@ private fun createLightColoredPath(width: Float, height: Float): Path {
 
     return lightColoredPath
 }
+
+private fun checkReadingLevel(title: String, readingValue: String): Color {
+    val reading = readingValue.toFloatOrNull() ?: 0.0f
+
+    val acceptableRanges = mapOf(
+        "Temperature" to Range(18f, 25f),
+        "Water" to Range(10f, 100f),
+        "Clean Water" to Range(7f, 8f),
+        "Humidity" to Range(65f, 75f),
+        "Compost" to Range(2f, 4f),
+        "Sun Light" to Range(80f, 1000f)
+    )
+
+    val range = acceptableRanges[title]
+    return if (range != null && reading in range.min..range.max) GreenGood else RedBad
+}
+
+data class Range(val min: Float, val max: Float)

@@ -27,6 +27,8 @@ val Red1 = Color(0xfffc879a)
 val Red2 = Color(0xFFBD5D6D)
 val Red3 = Color(0xFF993646)
 val PrimaryColor = Color(0xFFFDA858)
+val GreenGood = Color(0xff50c878 )
+val RedBad = Color(0xFFD2042D)
 
 val GreenGradient = Brush.linearGradient(
     colors = listOf(LightGreen1, LightGreen2),
