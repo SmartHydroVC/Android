@@ -126,7 +126,6 @@ private fun getReadingUnit(readingString: String, data: SensorModel):ReadingType
 
     when (readingString) {
         "Temperature" -> {
-
             readingType.heading = "Temperature"
             readingValue = data.temperature
             readingType.unit = "C"
