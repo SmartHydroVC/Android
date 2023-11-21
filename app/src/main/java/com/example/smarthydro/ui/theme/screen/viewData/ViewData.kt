@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -67,6 +68,18 @@ import com.patrykandpatrick.vico.core.entry.entryModelOf
 import com.patrykandpatrick.vico.core.extension.copyColor
 import com.patrykandpatrick.vico.core.marker.Marker
 import kotlinx.coroutines.launch
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.dp
+import com.patrykandpatrick.vico.core.chart.Chart
+
+
 import kotlin.math.floor
 import kotlin.math.max
 import kotlin.math.roundToInt
@@ -194,7 +207,21 @@ private fun SpeedTestScreen(state: UiState,navHostController: NavHostController,
 
         reading = getReadingUnit(readingString = readingString, sensorModel)
         Header(reading.heading)
-        RegularLineChart()
+       
+       // BarChart(values = barChartInputsPercent, xLabels = xAxis)
+        Chart(
+            data = mapOf(
+
+                Pair(0.5f,"M"),
+                Pair(0.6f,"T"),
+                Pair(0.2f,"W"),
+                Pair(0.7f,"T"),
+                Pair(0.8f,"F"),
+                Pair(0.3f,"S"),
+                Pair(0.1f,"S"),
+                ), max_value = 80
+        )
+
         when (reading.heading) {
             "pH Level" -> {
                 LowAndHighIconButtons(state = state, onClick = onClick, reading.unit, component)
@@ -547,13 +574,26 @@ fun DrawScope.drawLines(progress: Float, maxValue: Float, numberOfLines: Int = 4
 
 private val model1 = entryModelOf(5, 10, 11, 20, 10)
 
+
+//Graph Component
+
 @Preview("Line Chart Dark", widthDp = 300)
 @Composable
 fun LineChartDark() {
     Surface(
         shape = RoundedCornerShape(8.dp),
     ) {
-        RegularLineChart()
+        Chart(
+            data = mapOf(
+
+                Pair(1f,"M"),
+                Pair(0.6f,"B"),
+                Pair(0.2f,"C"),
+                Pair(0.7f,"D"),
+                Pair(0.8f,"E"),
+
+                ), max_value = 80
+        )
     }
 }
 
