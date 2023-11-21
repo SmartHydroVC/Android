@@ -223,12 +223,12 @@ fun  SensorCard(
             Surface(
                 shape = RoundedCornerShape(16.dp),
                 color = checkReadingLevel(title = feature.title, readingValue = feature.sensorReading),
-                modifier = Modifier.size(width = 100.dp, height = 140.dp)
+                modifier = Modifier.size(width = 100.dp, height = 100.dp)
             ) {
                 Text(
-                    text = feature.sensorReading,
+                    text = if (feature.sensorReading.isEmpty()) "No Data" else feature.sensorReading,
                     modifier = Modifier.wrapContentSize(),
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleMedium
                 )
             }
 
@@ -261,8 +261,8 @@ private fun createLightColoredPath(width: Float, height: Float): Path {
     val lightPoint1 = Offset(0f, height * 0.35f)
     val lightPoint2 = Offset(width * 0.1f, height * 0.4f)
     val lightPoint3 = Offset(width * 0.3f, height * 0.35f)
-    val lightPoint4 = Offset(width * 0.65f, height.toFloat())
-    val lightPoint5 = Offset(width * 1.4f, -height.toFloat() / 3f)
+    val lightPoint4 = Offset(width * 0.65f, height)
+    val lightPoint5 = Offset(width * 1.4f, -height / 3f)
 
     val lightColoredPath = Path().apply {
         moveTo(lightPoint1.x, lightPoint1.y)
@@ -270,8 +270,8 @@ private fun createLightColoredPath(width: Float, height: Float): Path {
         standardQuadFromTo(lightPoint2, lightPoint3)
         standardQuadFromTo(lightPoint3, lightPoint4)
         standardQuadFromTo(lightPoint4, lightPoint5)
-        lineTo(width.toFloat() + 100f, height.toFloat() + 100f)
-        lineTo(-100f, height.toFloat() + 100f)
+        lineTo(width + 100f, height + 100f)
+        lineTo(-100f, height + 100f)
         close()
     }
 
