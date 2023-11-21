@@ -82,63 +82,65 @@ fun HomeScreen(viewModel: SensorViewModel,navController: NavHostController, read
     ) {
         Column {
             CardSection(
-                features = listOf(
-                    Feature(
-                        title = "Water",
-                        R.drawable.ic_water,
-                        BlueViolet1,
-                        BlueViolet2,
-                        BlueViolet3,
-                        sensorData.flowRate,
-
-                    ),
-                    Feature(
-                        title = "Clean Water",
-                        R.drawable.ic_cleanwater,
-                        Blue1,
-                        Blue2,
-                        Blue3,
-                        sensorData.pH
-                    ),
-                    Feature(
-                        title = "Temperature",
-                        R.drawable.ic_temp,
-                        Red1,
-                        Red2,
-                        Red3,
-                        sensorData.temperature
-                    ),
-                    Feature(
-                        title = "Humidity",
-                        R.drawable.ic_fire,
-                        Beige1,
-                        Beige2,
-                        Beige3,
-                        sensorData.humidity
-                    ),
-                    Feature(
-                        title = "Compost",
-                        R.drawable.ic_plant,
-                        LightGreen1,
-                        LightGreen2,
-                        LightGreen3,
-                        sensorData.eC
-                    ),
-                    Feature(
-                        title = "Sun Light",
-                        R.drawable.ic_sun,
-                        OrangeYellow1,
-                        OrangeYellow2,
-                        OrangeYellow3,
-                        sensorData.light
-                    ),
-                ),
+                features  = getFeatures(sensorData),
                 navController,readingViewModel, sensorData
             )
         }
     }
 }
+private fun getFeatures(sensorData: SensorModel): List<Feature> {
+    return listOf(
+            Feature(
+                title = "Water",
+                R.drawable.ic_water,
+                BlueViolet1,
+                BlueViolet2,
+                BlueViolet3,
+                sensorData.flowRate,
 
+                ),
+            Feature(
+                title = "Clean Water",
+                R.drawable.ic_cleanwater,
+                Blue1,
+                Blue2,
+                Blue3,
+                sensorData.pH
+            ),
+            Feature(
+                title = "Temperature",
+                R.drawable.ic_temp,
+                Red1,
+                Red2,
+                Red3,
+                sensorData.temperature
+            ),
+            Feature(
+                title = "Humidity",
+                R.drawable.ic_fire,
+                Beige1,
+                Beige2,
+                Beige3,
+                sensorData.humidity
+            ),
+            Feature(
+                title = "Compost",
+                R.drawable.ic_plant,
+                LightGreen1,
+                LightGreen2,
+                LightGreen3,
+                sensorData.eC
+            ),
+            Feature(
+                title = "Sun Light",
+                R.drawable.ic_sun,
+                OrangeYellow1,
+                OrangeYellow2,
+                OrangeYellow3,
+                sensorData.light
+            ),
+        )
+}
 @ExperimentalFoundationApi
 @Composable
 fun CardSection(features: List<Feature>, navController: NavHostController, readingViewModel: ReadingViewModel, sensorData: SensorModel) {
