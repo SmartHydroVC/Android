@@ -86,42 +86,48 @@ fun HomeScreen(viewModel: SensorViewModel,navController: NavHostController, read
                         R.drawable.ic_water,
                         BlueViolet1,
                         BlueViolet2,
-                        BlueViolet3
+                        BlueViolet3,
+                        sensorData.flowRate
                     ),
                     Feature(
                         title = "Clean Water",
                         R.drawable.ic_cleanwater,
                         Blue1,
                         Blue2,
-                        Blue3
+                        Blue3,
+                        sensorData.pH
                     ),
                     Feature(
                         title = "Temperature",
                         R.drawable.ic_temp,
                         Red1,
                         Red2,
-                        Red3
+                        Red3,
+                        sensorData.temperature
                     ),
                     Feature(
                         title = "Humidity",
                         R.drawable.ic_fire,
                         Beige1,
                         Beige2,
-                        Beige3
+                        Beige3,
+                        sensorData.humidity
                     ),
                     Feature(
                         title = "Compost",
                         R.drawable.ic_plant,
                         LightGreen1,
                         LightGreen2,
-                        LightGreen3
+                        LightGreen3,
+                        sensorData.eC
                     ),
                     Feature(
                         title = "Sun Light",
                         R.drawable.ic_sun,
                         OrangeYellow1,
                         OrangeYellow2,
-                        OrangeYellow3
+                        OrangeYellow3,
+                        sensorData.light
                     ),
                 ),
                 navController,readingViewModel, sensorData
@@ -216,7 +222,7 @@ fun  SensorCard(
                 modifier = Modifier.size(width = 100.dp, height = 140.dp)
             ) {
                 Text(
-                    text = "Reading",
+                    text = feature.sensorReading,
                     modifier = Modifier.wrapContentSize(),
                     style = MaterialTheme.typography.titleMedium,
                 )
