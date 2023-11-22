@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.smarthydro.R
+import com.example.smarthydro.animations.OnOffAnimation
 import com.example.smarthydro.models.Reading
 import com.example.smarthydro.models.SensorModel
 import com.example.smarthydro.models.getReadingUnit
@@ -37,41 +38,21 @@ import com.example.smarthydro.viewmodels.ReadingViewModel
 import com.example.smarthydro.viewmodels.SensorViewModel
 import kotlinx.coroutines.launch
 
-class UiState(
-    val arcValue: Float = 0f
-)
+
 val openAlertDialog = mutableStateOf(false)
 var powerState : Boolean = true
 var reading: Reading = Reading("",SensorModel(), "","");
 
-suspend fun startAnimation(animation: Animatable<Float, AnimationVector1D>) {
-    animation.animateTo(1.00f, keyframes {
-
-    })
-}
-
-fun Animatable<Float, AnimationVector1D>.toUiState() = UiState(
-    arcValue = value
-)
-
 @Composable
 fun ViewDataScreen(navHostController: NavHostController, component: ComponentViewModel, readingViewModel: ReadingViewModel, sensorViewModel: SensorViewModel) {
-    val coroutineScope = rememberCoroutineScope()
-    val animation = remember { Animatable(0f) }
     val sensorData by sensorViewModel.sensorData.observeAsState(SensorModel())
-
     reading = readingViewModel.getReadingType()!!
-
-    ViewDataScreen(animation.toUiState(),navHostController, reading.heading, component, sensorData ) {
-        coroutineScope.launch {
-            startAnimation(animation)
-        }
-    }
+    ViewDataScreen(navHostController, reading.heading, component, sensorData )
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-private fun ViewDataScreen(state: UiState,navHostController: NavHostController,readingString:String, component: ComponentViewModel, sensorModel: SensorModel, onClick: () -> Unit) {
+private fun ViewDataScreen(navHostController: NavHostController,readingString:String, component: ComponentViewModel, sensorModel: SensorModel) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -101,11 +82,9 @@ private fun ViewDataScreen(state: UiState,navHostController: NavHostController,r
 
         reading = getReadingUnit(readingString = readingString, sensorModel)
         Header(reading.heading)
-       
-       // BarChart(values = barChartInputsPercent, xLabels = xAxis)
+
         Chart(
             data = mapOf(
-
                 Pair(0.5f,"M"),
                 Pair(0.6f,"T"),
                 Pair(0.2f,"W"),
@@ -117,9 +96,9 @@ private fun ViewDataScreen(state: UiState,navHostController: NavHostController,r
         )
 
         if (reading.heading == stringResource(R.string.ph) || reading.heading == stringResource(R.string.ec))
-            DataControlSection(state = state, onClick = onClick, reading.unit, component, true)
+            DataControlSection(reading.unit, component, true)
         else
-            DataControlSection(state = state, onClick = onClick, reading.unit, component, false)
+            DataControlSection(reading.unit, component, false)
     }
 }
 
@@ -135,8 +114,6 @@ fun Header(heading:String) {
 
 @Composable
 private fun DataControlSection(
-    state: UiState,
-    onClick: () -> Unit,
     unit: String,
     component: ComponentViewModel,
     isPhOrEc: Boolean
@@ -147,15 +124,14 @@ private fun DataControlSection(
             .fillMaxWidth()
             .aspectRatio(1f)
     ) {
-        SpeedIndicator().CircularSpeedIndicator(state.arcValue, 240f)
-        ControlButtonsRow(onClick, component, isPhOrEc)
+        SpeedIndicator().CircularSpeedIndicator(OnOffAnimation.UiState().arcValue, 240f)
+        ControlButtonsRow(component, isPhOrEc)
         DataValue(reading.readingValue, unit)
     }
 }
 
 @Composable
 private fun ControlButtonsRow(
-    onClick: () -> Unit,
     component: ComponentViewModel,
     isPhOrEc: Boolean
 ) {
@@ -165,56 +141,16 @@ private fun ControlButtonsRow(
             .padding(16.dp),
         horizontalArrangement = Arrangement.Center
     ) {
+        val buttons = ToggleButtonUtils()
         if (isPhOrEc) {
-            ToggleButtonUtils().ToggleButton(onClick, component, R.drawable.ic_arrow_up)
+            buttons.ToggleButton(component, R.drawable.ic_arrow_up)
             Spacer(modifier = Modifier.width(24.dp))
-            IconButtonOnOff(onClick, component)
+            buttons.IconButtonOnOff(component)
             Spacer(modifier = Modifier.width(24.dp))
-            ToggleButtonUtils().ToggleButton(onClick, component, R.drawable.ic_arrow_down)
+            buttons.ToggleButton(component, R.drawable.ic_arrow_down)
         } else {
-            IconButtonOnOff(onClick, component)
+            buttons.IconButtonOnOff(component)
         }
-    }
-}
-
-fun changeIconColorBasedOnPowerState(powerState: Boolean, onClick: () -> Unit): Color {
-    return if (powerState) {
-        Color.Red
-    } else {
-        onClick()
-        Color.Green
-    }
-}
-
-
-fun getAlertDialogValue(heading: String): Boolean {
-    if (heading == "Clean Water"|| heading == "Compost")
-        return true
-
-    return false
-}
-
-
-@Composable
-fun IconButtonOnOff(onClick: () -> Unit, componentViewModel: ComponentViewModel) {
-    var iconColor by remember { mutableStateOf(Color.Red) }
-
-    IconButton(
-        modifier = Modifier
-            .size(72.dp)
-            .padding(top = 20.dp),
-        onClick = {
-            powerState = !powerState
-            ControlComponentUtils(componentViewModel).controlComponent(reading.heading)
-            iconColor = changeIconColorBasedOnPowerState(powerState, onClick)
-        })
-    {
-        Icon(
-            painter = painterResource(id = R.drawable.ic_power),
-            contentDescription = "Option to turn on or off the component",
-            tint = iconColor,
-            modifier = Modifier.size(size = 100.dp)
-        )
     }
 }
 
@@ -231,28 +167,6 @@ fun DataValue(value: String, unit: String) {
             color = Color.White,
             fontWeight = FontWeight.Bold
         )
-        //Measurement Unit change here
         Text(unit, style = MaterialTheme.typography.headlineMedium)
-    }
-}
-
-
-@Preview("Line Chart Dark", widthDp = 300)
-@Composable
-fun LineChartDark() {
-    Surface(
-        shape = RoundedCornerShape(8.dp),
-    ) {
-        Chart(
-            data = mapOf(
-
-                Pair(1f, "M"),
-                Pair(0.6f, "B"),
-                Pair(0.2f, "C"),
-                Pair(0.7f, "D"),
-                Pair(0.8f, "E"),
-
-                ), max_value = 80
-        )
     }
 }
