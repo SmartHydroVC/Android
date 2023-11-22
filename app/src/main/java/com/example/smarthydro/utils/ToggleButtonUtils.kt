@@ -37,7 +37,7 @@ class ToggleButtonUtils {
                 powerState = !powerState
                 openAlertDialog.value = getAlertDialogValue(reading.heading)
                 ControlComponentUtils(componentViewModel).controlComponent(reading.heading)
-                iconColor = changeIconColorBasedOnPowerState(powerState)
+                iconColor = changeIconColorBasedOnPowerState(powerState,onClick)
             })
         {
             Icon(
@@ -69,7 +69,7 @@ class ToggleButtonUtils {
     }
 
     @Composable
-    fun IconButtonOnOff(componentViewModel: ComponentViewModel) {
+    fun IconButtonOnOff(onClick: () -> Unit, componentViewModel: ComponentViewModel) {
         var iconColor by remember { mutableStateOf(Color.Red) }
 
         IconButton(
@@ -79,7 +79,7 @@ class ToggleButtonUtils {
             onClick = {
                 powerState = !powerState
                 ControlComponentUtils(componentViewModel).controlComponent(reading.heading)
-                iconColor = changeIconColorBasedOnPowerState(powerState)
+                iconColor = changeIconColorBasedOnPowerState(powerState,onClick)
             })
         {
             Icon(
@@ -91,11 +91,14 @@ class ToggleButtonUtils {
         }
     }
 
-    private fun changeIconColorBasedOnPowerState(powerState: Boolean): Color {
+    private fun changeIconColorBasedOnPowerState(powerState: Boolean, onClick: () -> Unit): Color {
         return if (powerState)
             Color.Red
-        else
+        else{
+            onClick()
             Color.Green
+        }
+
     }
 
 

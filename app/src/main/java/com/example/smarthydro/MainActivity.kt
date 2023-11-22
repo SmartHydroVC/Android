@@ -26,16 +26,16 @@ sealed class Destination(val route:String){
 
 
 class MainActivity : ComponentActivity() {
-    private val sensorViewModel: SensorViewModel by viewModels()
-    private val component: ComponentViewModel by viewModels()
-    private val reading : ReadingViewModel by viewModels()
+    private val sensorViewModel by viewModels<SensorViewModel>()
+    private val componentViewModel by viewModels<ComponentViewModel>()
+    private val readingViewModel by viewModels<ReadingViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             SmartHydroTheme {
                 val navController = rememberNavController()
-                NavAppHost(navController = navController, sensorViewModel = sensorViewModel, component, reading)
+                NavAppHost(navController = navController, sensorViewModel = sensorViewModel, componentViewModel, readingViewModel)
             }
         }
     }
@@ -44,11 +44,18 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun NavAppHost(navController: NavHostController, sensorViewModel: SensorViewModel, componentViewModel: ComponentViewModel
-               , readingViewModel: ReadingViewModel){
-
+fun NavAppHost(
+    navController: NavHostController,
+    sensorViewModel: SensorViewModel,
+    componentViewModel: ComponentViewModel,
+    readingViewModel: ReadingViewModel)
+{
     NavHost(navController = navController, startDestination = "home" ){
-        composable(Destination.Home.route){ HomeScreen(viewModel = sensorViewModel, navController, readingViewModel = readingViewModel)}
-        composable(Destination.ViewData.route){ViewDataScreen( navController,componentViewModel, readingViewModel = readingViewModel, sensorViewModel = sensorViewModel)}
+        composable(Destination.Home.route) {
+            HomeScreen(viewModel = sensorViewModel, navController, readingViewModel = readingViewModel)
+        }
+        composable(Destination.ViewData.route){
+            ViewDataScreen( navController,componentViewModel, readingViewModel = readingViewModel, sensorViewModel = sensorViewModel)
+        }
     }
 }

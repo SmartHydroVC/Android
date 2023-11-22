@@ -18,7 +18,6 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,7 +29,6 @@ import com.example.smarthydro.models.Reading
 import com.example.smarthydro.models.SensorModel
 import com.example.smarthydro.models.getReadingUnit
 import com.example.smarthydro.ui.theme.DeepBlue
-import com.example.smarthydro.utils.ControlComponentUtils
 import com.example.smarthydro.utils.ToggleButtonUtils
 import com.example.smarthydro.viewmodels.ComponentViewModel
 import com.example.smarthydro.viewmodels.ReadingViewModel
@@ -165,56 +163,16 @@ private fun ControlButtonsRow(
             .padding(16.dp),
         horizontalArrangement = Arrangement.Center
     ) {
+        val toggleButtons = ToggleButtonUtils()
         if (isPhOrEc) {
-            ToggleButtonUtils().ToggleButton(onClick, component, R.drawable.ic_arrow_up)
+            toggleButtons.ToggleButton(onClick, component, R.drawable.ic_arrow_up)
             Spacer(modifier = Modifier.width(24.dp))
-            IconButtonOnOff(onClick, component)
+            toggleButtons.IconButtonOnOff(onClick, component)
             Spacer(modifier = Modifier.width(24.dp))
-            ToggleButtonUtils().ToggleButton(onClick, component, R.drawable.ic_arrow_down)
+            toggleButtons.ToggleButton(onClick, component, R.drawable.ic_arrow_down)
         } else {
-            IconButtonOnOff(onClick, component)
+            toggleButtons.IconButtonOnOff(onClick, component)
         }
-    }
-}
-
-fun changeIconColorBasedOnPowerState(powerState: Boolean, onClick: () -> Unit): Color {
-    return if (powerState) {
-        Color.Red
-    } else {
-        onClick()
-        Color.Green
-    }
-}
-
-
-fun getAlertDialogValue(heading: String): Boolean {
-    if (heading == "Clean Water"|| heading == "Compost")
-        return true
-
-    return false
-}
-
-
-@Composable
-fun IconButtonOnOff(onClick: () -> Unit, componentViewModel: ComponentViewModel) {
-    var iconColor by remember { mutableStateOf(Color.Red) }
-
-    IconButton(
-        modifier = Modifier
-            .size(72.dp)
-            .padding(top = 20.dp),
-        onClick = {
-            powerState = !powerState
-            ControlComponentUtils(componentViewModel).controlComponent(reading.heading)
-            iconColor = changeIconColorBasedOnPowerState(powerState, onClick)
-        })
-    {
-        Icon(
-            painter = painterResource(id = R.drawable.ic_power),
-            contentDescription = "Option to turn on or off the component",
-            tint = iconColor,
-            modifier = Modifier.size(size = 100.dp)
-        )
     }
 }
 
@@ -231,28 +189,6 @@ fun DataValue(value: String, unit: String) {
             color = Color.White,
             fontWeight = FontWeight.Bold
         )
-        //Measurement Unit change here
         Text(unit, style = MaterialTheme.typography.headlineMedium)
-    }
-}
-
-
-@Preview("Line Chart Dark", widthDp = 300)
-@Composable
-fun LineChartDark() {
-    Surface(
-        shape = RoundedCornerShape(8.dp),
-    ) {
-        Chart(
-            data = mapOf(
-
-                Pair(1f, "M"),
-                Pair(0.6f, "B"),
-                Pair(0.2f, "C"),
-                Pair(0.7f, "D"),
-                Pair(0.8f, "E"),
-
-                ), max_value = 80
-        )
     }
 }
