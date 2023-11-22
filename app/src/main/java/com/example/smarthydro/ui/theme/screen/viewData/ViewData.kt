@@ -78,8 +78,6 @@ class UiState(
 
 private var powerState : Boolean = true
 private var readingValue : String = ""
-val openAlertDialogLow = mutableStateOf(false)
-val openAlertDialogUp = mutableStateOf(false)
 val openAlertDialog = mutableStateOf(false)
 
 
@@ -264,7 +262,7 @@ fun ToggleButton(onClick: () -> Unit, componentViewModel: ComponentViewModel, @D
             .padding(top = 20.dp),
         onClick = {
             powerState = !powerState
-            openAlertDialogLow.value = getAlertDialogValue(reading.heading)
+            openAlertDialog.value = getAlertDialogValue(reading.heading)
             iconColor = changeIconColorBasedOnPowerState(powerState, onClick)
         })
     {
@@ -353,7 +351,7 @@ private fun ToggleSolution(
 
 @Composable
 fun IconButtonOnOff(onClick: () -> Unit, componentViewModel: ComponentViewModel) {
-    var iconColor by remember { mutableStateOf(Color.Red) }
+    val iconColor by remember { mutableStateOf(Color.Red) }
 
     IconButton(
         modifier = Modifier
