@@ -12,7 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.smarthydro.ui.theme.SmartHydroTheme
 import com.example.smarthydro.ui.theme.screen.home.HomeScreen
-import com.example.smarthydro.ui.theme.screen.viewData.SpeedTestScreen
+import com.example.smarthydro.ui.theme.screen.viewData.ViewDataScreen
 import com.example.smarthydro.viewmodels.ComponentViewModel
 import com.example.smarthydro.viewmodels.ReadingViewModel
 import com.example.smarthydro.viewmodels.SensorViewModel
@@ -49,6 +49,6 @@ fun NavAppHost(navController: NavHostController, sensorViewModel: SensorViewMode
 
     NavHost(navController = navController, startDestination = "home" ){
         composable(Destination.Home.route){ HomeScreen(viewModel = sensorViewModel, navController, readingViewModel = readingViewModel)}
-        composable(Destination.ViewData.route){SpeedTestScreen( navController,componentViewModel, readingViewModel = readingViewModel, sensorViewModel = sensorViewModel)}
+        composable(Destination.ViewData.route){ViewDataScreen( navController,componentViewModel, readingViewModel = readingViewModel, sensorViewModel = sensorViewModel)}
     }
 }
