@@ -2,7 +2,6 @@ package com.example.smarthydro.ui.theme.screen.viewData
 
 import android.annotation.SuppressLint
 import android.graphics.Typeface
-import android.util.Log
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.keyframes
@@ -32,7 +31,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -46,10 +44,6 @@ import com.example.smarthydro.ui.theme.screen.ReadingType
 import com.example.smarthydro.viewmodels.ComponentViewModel
 import com.example.smarthydro.viewmodels.ReadingViewModel
 import com.example.smarthydro.viewmodels.SensorViewModel
-import com.patrykandpatrick.vico.compose.axis.horizontal.bottomAxis
-import com.patrykandpatrick.vico.compose.axis.vertical.startAxis
-import com.patrykandpatrick.vico.compose.chart.Chart
-import com.patrykandpatrick.vico.compose.chart.line.lineChart
 import com.patrykandpatrick.vico.compose.component.lineComponent
 import com.patrykandpatrick.vico.compose.component.overlayingComponent
 import com.patrykandpatrick.vico.compose.component.shapeComponent
@@ -64,38 +58,22 @@ import com.patrykandpatrick.vico.core.component.shape.Shapes
 import com.patrykandpatrick.vico.core.component.shape.cornered.Corner
 import com.patrykandpatrick.vico.core.component.shape.cornered.MarkerCorneredShape
 import com.patrykandpatrick.vico.core.context.MeasureContext
-import com.patrykandpatrick.vico.core.entry.entryModelOf
 import com.patrykandpatrick.vico.core.extension.copyColor
 import com.patrykandpatrick.vico.core.marker.Marker
 import kotlinx.coroutines.launch
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.graphics.nativeCanvas
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.dp
-import com.patrykandpatrick.vico.core.chart.Chart
 
 
 import kotlin.math.floor
 import kotlin.math.max
-import kotlin.math.roundToInt
 
 // https://www.youtube.com/watch?v=8LuWMYXW6nw
-class UiState(
-    val speed: String = "",
-    val ping: String = "-",
-    val maxSpeed: String = "-",
-    val arcValue: Float = 0f,
-    val inProgress: Boolean = false
-)
+
+private var arcValue: Float = 0f
 private var powerState : Boolean = true
 private var readingValue : String = ""
-private var toggleEC : String = "mn "
-private var togglePH : String = ""
 val openAlertDialogLow = mutableStateOf(false)
 val openAlertDialogUp = mutableStateOf(false)
 
@@ -107,16 +85,11 @@ suspend fun startAnimation(animation: Animatable<Float, AnimationVector1D>) {
     })
 }
 
-fun Animatable<Float, AnimationVector1D>.toUiState(maxSpeed: Float) = UiState(
-    arcValue = value,
-    speed = "%.1f".format(value),
-    ping = if (value > 0.2f) "${(value * 15).roundToInt()} ms" else "-",
-    maxSpeed = if (maxSpeed > 0f) "%.1f mbps".format(maxSpeed) else "-",
-    inProgress = isRunning
-)
+fun Animatable<Float, AnimationVector1D>.toUiState() = { -> arcValue = value }
+
 //@Preview
 @Composable
-fun SpeedTestScreen(navHostController: NavHostController, component: ComponentViewModel, readingViewModel: ReadingViewModel, sensorViewModel: SensorViewModel) {
+fun ViewDataScreen(navHostController: NavHostController, component: ComponentViewModel, readingViewModel: ReadingViewModel, sensorViewModel: SensorViewModel) {
     val coroutineScope = rememberCoroutineScope()
     val animation = remember { Animatable(0f) }
     val maxSpeed = remember { mutableStateOf(0f) }
@@ -125,7 +98,7 @@ fun SpeedTestScreen(navHostController: NavHostController, component: ComponentVi
 
     reading = readingViewModel.getReadingType()!!
 
-    SpeedTestScreen(animation.toUiState(maxSpeed.value),navHostController, reading.heading, component, sensorData ) {
+    ViewDataScreen(animation.toUiState(),navHostController, reading.heading, component, sensorData ) {
         coroutineScope.launch {
             maxSpeed.value = 0f
             startAnimation(animation)
@@ -175,9 +148,8 @@ private fun getReadingUnit(readingString: String, data: SensorModel):ReadingType
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun SpeedTestScreen(state: UiState,navHostController: NavHostController,readingString:String, component: ComponentViewModel, sensorModel: SensorModel, onClick: () -> Unit) {
+private fun ViewDataScreen(state: UiState,navHostController: NavHostController,readingString:String, component: ComponentViewModel, sensorModel: SensorModel, onClick: () -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -190,17 +162,17 @@ private fun SpeedTestScreen(state: UiState,navHostController: NavHostController,
             modifier = Modifier
                 .padding(top = 25.dp, bottom = 5.dp)
                 .fillMaxWidth()
-                .background(Color.Transparent), // Make the background transparent
+                .background(Color.Transparent),
             contentAlignment = Alignment.TopStart
         ) {
-            IconButton(onClick = { /* Handle back action here */
+            IconButton(onClick = {
                 navHostController.navigate("home")
             }) {
                 Icon(
 
                     imageVector = Icons.Filled.ArrowBack,
                     contentDescription = "Back",
-                    tint = Color.White // Make the back button white
+                    tint = Color.White
                 )
             }
         }
@@ -237,11 +209,9 @@ private fun SpeedTestScreen(state: UiState,navHostController: NavHostController,
     }
 }
 
-//Pass data reading header here
 @Composable
 fun Header(heading:String) {
     Text(
-        //Heading Value Change
         text = heading,
         fontSize = 36.sp,
         modifier = Modifier.padding(top = 8.dp, bottom = 26.dp),
@@ -249,7 +219,6 @@ fun Header(heading:String) {
     )
 }
 
-//Pass Unit value here
 @Composable
 fun SpeedIndicator(state: UiState, onClick: () -> Unit, unit: String, component: ComponentViewModel) {
     Box(
@@ -572,11 +541,6 @@ fun DrawScope.drawLines(progress: Float, maxValue: Float, numberOfLines: Int = 4
     }
 }
 
-private val model1 = entryModelOf(5, 10, 11, 20, 10)
-
-
-//Graph Component
-
 @Preview("Line Chart Dark", widthDp = 300)
 @Composable
 fun LineChartDark() {
@@ -595,18 +559,6 @@ fun LineChartDark() {
                 ), max_value = 80
         )
     }
-}
-
-@Composable
-fun RegularLineChart() {
-    Chart(
-        chart = lineChart(),
-        model = model1,
-        startAxis = startAxis(),
-        bottomAxis = bottomAxis(),
-        isZoomEnabled = true,
-        marker = rememberMarker(),
-    )
 }
 
 @Composable
