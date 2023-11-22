@@ -80,6 +80,7 @@ private var powerState : Boolean = true
 private var readingValue : String = ""
 val openAlertDialogLow = mutableStateOf(false)
 val openAlertDialogUp = mutableStateOf(false)
+val openAlertDialog = mutableStateOf(false)
 
 
 private var reading: ReadingType = ReadingType("",SensorModel(), "");
@@ -274,10 +275,25 @@ fun ToggleButton(onClick: () -> Unit, componentViewModel: ComponentViewModel, @D
             modifier = Modifier.size(size = 100.dp)
         )
     }
+
     if (iconId == R.drawable.ic_arrow_up)
-        HigherSolution(openAlertDialog = openAlertDialogUp, componentViewModel, reading.heading)
+        ToggleSolution(
+            openAlertDialog = openAlertDialog,
+            componentViewModel =componentViewModel,
+            heading =reading.heading,
+            dialogTitle ="Decrease Nutrients",
+            dialogText ="You are about decrease solution for this!",
+            toggleUp = false
+        )
     else if (iconId == R.drawable.ic_arrow_down)
-        LowerSolution(openAlertDialog = openAlertDialogLow, componentViewModel, reading.heading)
+        ToggleSolution(
+            openAlertDialog = openAlertDialog,
+            componentViewModel =componentViewModel,
+            heading =reading.heading,
+            dialogTitle ="Increase Nutrients",
+            dialogText ="You are about increase solution for this!",
+            toggleUp = true
+        )
 }
 
 private fun changeIconColorBasedOnPowerState(powerState : Boolean, onClick: () -> Unit) : Color
@@ -297,36 +313,15 @@ private fun getAlertDialogValue(heading: String): Boolean {
 }
 
 @Composable
-fun LowerSolution(openAlertDialog: MutableState<Boolean>, componentViewModel: ComponentViewModel, heading: String){
-    when {
-        openAlertDialog.value -> {
-            AlertDialogModel(
-                onDismissRequest = { openAlertDialog.value = false },
-                onConfirmation = {
-                    //println("Confirmation registered") // Add logic here to handle confirmation.
-                    when (heading) {
-                        "pH Level" -> {
-                            componentViewModel.setPhDown()
-                        }
-                        "EC Level" -> {
-                            componentViewModel.setEcDown()
-                        }
-                        else -> {
-                        }
-                    }
-                    openAlertDialog.value = false
-                },
-                dialogTitle = "Decrease Nutrients",
-                dialogText = "You are about decrease solution for this!",
-                icon = Icons.Default.Info
-            )
-        }
-    }
-}
-
-
-@Composable
-fun HigherSolution(openAlertDialog: MutableState<Boolean>, componentViewModel: ComponentViewModel, heading: String){
+private fun ToggleSolution(
+    openAlertDialog: MutableState<Boolean>,
+    componentViewModel: ComponentViewModel,
+    heading: String,
+    dialogTitle: String,
+    dialogText: String,
+    toggleUp: Boolean
+)
+{
     when {
         openAlertDialog.value -> {
             AlertDialogModel(
@@ -334,18 +329,22 @@ fun HigherSolution(openAlertDialog: MutableState<Boolean>, componentViewModel: C
                 onConfirmation = {
                     when (heading) {
                         "pH Level" -> {
-                            componentViewModel.setPhUp()
+                            if (toggleUp)
+                                componentViewModel.setPhUp()
+                            else
+                                componentViewModel.setPhDown()
                         }
                         "EC Level" -> {
-                            componentViewModel.setEcUp()
-                        }
-                        else -> {
+                            if (toggleUp)
+                                componentViewModel.setEcUp()
+                            else
+                                componentViewModel.setEcDown()
                         }
                     }
                     openAlertDialog.value = false
                 },
-                dialogTitle = "Increase Nutrients",
-                dialogText = "You are about increase solution for this!",
+                dialogTitle = dialogTitle,
+                dialogText = dialogText,
                 icon = Icons.Default.Info
             )
         }
@@ -386,12 +385,7 @@ fun IconButtonOnOff(onClick: () -> Unit, componentViewModel: ComponentViewModel)
                 else -> {}
             }
 
-            if (powerState) {
-                iconColor = Color.Red
-                onClick()
-            }else {
-                iconColor = Color.Green
-            }
+            changeIconColorBasedOnPowerState(powerState, onClick)
         })
     {
         Icon(
