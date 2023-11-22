@@ -2,6 +2,8 @@ package com.example.smarthydro.ui.theme.screen.viewData
 
 import android.annotation.SuppressLint
 import android.graphics.Typeface
+import android.graphics.drawable.Icon
+import androidx.annotation.DrawableRes
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.keyframes
@@ -70,8 +72,10 @@ import kotlin.math.floor
 import kotlin.math.max
 
 // https://www.youtube.com/watch?v=8LuWMYXW6nw
+class UiState(
+    val arcValue: Float = 0f
+)
 
-private var arcValue: Float = 0f
 private var powerState : Boolean = true
 private var readingValue : String = ""
 val openAlertDialogLow = mutableStateOf(false)
@@ -85,9 +89,10 @@ suspend fun startAnimation(animation: Animatable<Float, AnimationVector1D>) {
     })
 }
 
-fun Animatable<Float, AnimationVector1D>.toUiState() = { -> arcValue = value }
+fun Animatable<Float, AnimationVector1D>.toUiState() = UiState(
+    arcValue = value
+)
 
-//@Preview
 @Composable
 fun ViewDataScreen(navHostController: NavHostController, component: ComponentViewModel, readingViewModel: ReadingViewModel, sensorViewModel: SensorViewModel) {
     val coroutineScope = rememberCoroutineScope()
@@ -100,7 +105,6 @@ fun ViewDataScreen(navHostController: NavHostController, component: ComponentVie
 
     ViewDataScreen(animation.toUiState(),navHostController, reading.heading, component, sensorData ) {
         coroutineScope.launch {
-            maxSpeed.value = 0f
             startAnimation(animation)
         }
     }
@@ -194,18 +198,10 @@ private fun ViewDataScreen(state: UiState,navHostController: NavHostController,r
                 ), max_value = 80
         )
 
-        when (reading.heading) {
-            "pH Level" -> {
-                LowAndHighIconButtons(state = state, onClick = onClick, reading.unit, component)
-            }
-            "EC Level" -> {
-                LowAndHighIconButtons(state = state, onClick = onClick, reading.unit, component)
-            }
-            else -> {
-                SpeedIndicator(state = state, onClick = onClick, reading.unit, component)
-            }
-        }
-
+        if (reading.heading == "pH Level" || reading.heading == "EC Level")
+            LowAndHighIconButtons(state = state, onClick = onClick, reading.unit, component)
+        else
+            SpeedIndicator(state = state, onClick = onClick, reading.unit, component)
     }
 }
 
@@ -247,94 +243,57 @@ fun LowAndHighIconButtons(state: UiState, onClick: () -> Unit, unit: String, com
             .padding(16.dp),
         horizontalArrangement = Arrangement.Center)
         {
-            ToggleLowButton(onClick, component)
+            ToggleButton(onClick, component,R.drawable.ic_arrow_up)
             Spacer(modifier = Modifier.width(24.dp))
             IconButtonOnOff(onClick, component)
             Spacer(modifier = Modifier.width(24.dp))
-            ToggleHighButton(onClick, component)
+            ToggleButton(onClick, component,R.drawable.ic_arrow_down)
         }
 
         SpeedValue(readingValue,unit)
     }
 }
-
 @Composable
-fun ToggleLowButton(onClick: () -> Unit, componentViewModel: ComponentViewModel) {
+fun ToggleButton(onClick: () -> Unit, componentViewModel: ComponentViewModel, @DrawableRes iconId: Int) {
     var iconColor by remember { mutableStateOf(Color.Red) }
 
-        IconButton(
-            modifier = Modifier
-                .size(72.dp)
-                .padding(top = 20.dp),
-            onClick = {
-                powerState = !powerState
-
-                when (reading.heading) {
-                    "pH Level" -> {
-                        openAlertDialogLow.value = true
-                    }
-                    "EC Level" -> {
-                        openAlertDialogLow.value = true
-                    }
-                    else -> {}
-                }
-
-                if (powerState) {
-                    iconColor = Color.Red
-                    onClick()
-                }else {
-                    iconColor = Color.Green
-                }
-            })
-        {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_arrow_down),
-                contentDescription = "Option to toggle the pump to be lower",
-                tint = iconColor,
-                modifier = Modifier.size(size = 100.dp)
-            )
-        }
-
-    LowerSolution(openAlertDialog = openAlertDialogLow, componentViewModel, reading.heading)
+    IconButton(
+        modifier = Modifier
+            .size(72.dp)
+            .padding(top = 20.dp),
+        onClick = {
+            powerState = !powerState
+            openAlertDialogLow.value = getAlertDialogValue(reading.heading)
+            iconColor = changeIconColorBasedOnPowerState(powerState, onClick)
+        })
+    {
+        Icon(
+            painter = painterResource(id = iconId),
+            contentDescription = "Option to toggle the pump to be lower or higher",
+            tint = iconColor,
+            modifier = Modifier.size(size = 100.dp)
+        )
+    }
+    if (iconId == R.drawable.ic_arrow_up)
+        HigherSolution(openAlertDialog = openAlertDialogUp, componentViewModel, reading.heading)
+    else if (iconId == R.drawable.ic_arrow_down)
+        LowerSolution(openAlertDialog = openAlertDialogLow, componentViewModel, reading.heading)
 }
 
-@Composable
-fun ToggleHighButton(onClick: () -> Unit, componentViewModel: ComponentViewModel) {
-    var iconColor by remember { mutableStateOf(Color.Red) }
+private fun changeIconColorBasedOnPowerState(powerState : Boolean, onClick: () -> Unit) : Color
+{
+    if (powerState) {
+        onClick()
+        return Color.Red
+    }
+    return Color.Green
+}
 
-        IconButton(
-            modifier = Modifier
-                .size(72.dp)
-                .padding(top = 20.dp),
-            onClick = {
-                powerState = !powerState
+private fun getAlertDialogValue(heading: String): Boolean {
+    if (heading == "pH Level" || heading == "EC Level")
+        return true
 
-                when (reading.heading) {
-                    "pH Level" -> {
-                        openAlertDialogUp.value = true
-                    }
-                    "EC Level" -> {
-                        openAlertDialogUp.value = true
-                    }
-                    else -> {}
-                }
-                if (powerState) {
-                    iconColor = Color.Red
-                    onClick()
-                }else {
-                    iconColor = Color.Green
-                }
-            })
-        {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_arrow_up),
-                contentDescription = "Option to toggle the pump to be higher",
-                tint = iconColor,
-                modifier = Modifier.size(size = 100.dp)
-            )
-        }
-
-    HigherSolution(openAlertDialog = openAlertDialogUp, componentViewModel, reading.heading)
+    return false
 }
 
 @Composable
