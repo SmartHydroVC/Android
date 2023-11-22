@@ -2,13 +2,9 @@ package com.example.smarthydro.ui.theme.screen.viewData
 
 
 import android.annotation.SuppressLint
-import android.content.res.Resources
-import android.graphics.Typeface
-import androidx.annotation.DrawableRes
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.keyframes
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -21,15 +17,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.drawscope.rotate
-import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -37,39 +25,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.smarthydro.utils.AlertDialogUtils
 import com.example.smarthydro.R
 import com.example.smarthydro.models.Reading
 import com.example.smarthydro.models.SensorModel
 import com.example.smarthydro.models.getReadingUnit
 import com.example.smarthydro.ui.theme.DeepBlue
-import com.example.smarthydro.ui.theme.GreenGradient
-import com.example.smarthydro.ui.theme.LightGreen1
-import com.example.smarthydro.ui.theme.PrimaryColor
 import com.example.smarthydro.utils.ControlComponentUtils
 import com.example.smarthydro.utils.ToggleButtonUtils
 import com.example.smarthydro.viewmodels.ComponentViewModel
 import com.example.smarthydro.viewmodels.ReadingViewModel
 import com.example.smarthydro.viewmodels.SensorViewModel
-import com.patrykandpatrick.vico.compose.component.lineComponent
-import com.patrykandpatrick.vico.compose.component.overlayingComponent
-import com.patrykandpatrick.vico.compose.component.shapeComponent
-import com.patrykandpatrick.vico.compose.component.textComponent
-import com.patrykandpatrick.vico.compose.dimensions.dimensionsOf
-import com.patrykandpatrick.vico.core.chart.insets.Insets
-import com.patrykandpatrick.vico.core.chart.segment.SegmentProperties
-import com.patrykandpatrick.vico.core.component.marker.MarkerComponent
-import com.patrykandpatrick.vico.core.component.shape.DashedShape
-import com.patrykandpatrick.vico.core.component.shape.ShapeComponent
-import com.patrykandpatrick.vico.core.component.shape.Shapes
-import com.patrykandpatrick.vico.core.component.shape.cornered.Corner
-import com.patrykandpatrick.vico.core.component.shape.cornered.MarkerCorneredShape
-import com.patrykandpatrick.vico.core.context.MeasureContext
-import com.patrykandpatrick.vico.core.extension.copyColor
-import com.patrykandpatrick.vico.core.marker.Marker
 import kotlinx.coroutines.launch
-import kotlin.math.floor
-import kotlin.math.max
 
 class UiState(
     val arcValue: Float = 0f
@@ -213,9 +179,9 @@ private fun ControlButtonsRow(
 
 fun changeIconColorBasedOnPowerState(powerState: Boolean, onClick: () -> Unit): Color {
     return if (powerState) {
-        onClick()
         Color.Red
     } else {
+        onClick()
         Color.Green
     }
 }
@@ -231,7 +197,7 @@ fun getAlertDialogValue(heading: String): Boolean {
 
 @Composable
 fun IconButtonOnOff(onClick: () -> Unit, componentViewModel: ComponentViewModel) {
-    val iconColor by remember { mutableStateOf(Color.Red) }
+    var iconColor by remember { mutableStateOf(Color.Red) }
 
     IconButton(
         modifier = Modifier
@@ -240,7 +206,7 @@ fun IconButtonOnOff(onClick: () -> Unit, componentViewModel: ComponentViewModel)
         onClick = {
             powerState = !powerState
             ControlComponentUtils(componentViewModel).controlComponent(reading.heading)
-            changeIconColorBasedOnPowerState(powerState, onClick)
+            iconColor = changeIconColorBasedOnPowerState(powerState, onClick)
         })
     {
         Icon(
