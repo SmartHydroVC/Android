@@ -75,8 +75,6 @@ class UiState(
     val arcValue: Float = 0f
 )
 var powerState : Boolean = true
-private var readingValue : String = ""
-val openAlertDialog = mutableStateOf(false)
 var reading: Reading = Reading("",SensorModel(), "","");
 
 suspend fun startAnimation(animation: Animatable<Float, AnimationVector1D>) {
@@ -93,9 +91,7 @@ fun Animatable<Float, AnimationVector1D>.toUiState() = UiState(
 fun ViewDataScreen(navHostController: NavHostController, component: ComponentViewModel, readingViewModel: ReadingViewModel, sensorViewModel: SensorViewModel) {
     val coroutineScope = rememberCoroutineScope()
     val animation = remember { Animatable(0f) }
-    val maxSpeed = remember { mutableStateOf(0f) }
     val sensorData by sensorViewModel.sensorData.observeAsState(SensorModel())
-    maxSpeed.value = max(maxSpeed.value, animation.value * 100f)
 
     reading = readingViewModel.getReadingType()!!
 
@@ -186,7 +182,7 @@ private fun DataControlSection(
     ) {
         SpeedIndicator().CircularSpeedIndicator(state.arcValue, 240f)
         ControlButtonsRow(onClick, component, isPhOrEc)
-        DataValue(readingValue, unit)
+        DataValue(reading.readingValue, unit)
     }
 }
 
