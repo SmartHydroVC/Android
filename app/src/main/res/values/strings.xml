@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Smart Hydro</string>
+    <string name="water">Water</string>
+    <string name="water_level">Water Level</string>
+    <string name="ph">Clean Water</string>
+    <string name="temperature">Temperature</string>
+    <string name="humidity">Humidity</string>
+    <string name="ec">Compost</string>
+    <string name="light">Sun Light</string>
 </resources>

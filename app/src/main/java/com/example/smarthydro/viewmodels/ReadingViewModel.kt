@@ -4,16 +4,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.example.smarthydro.ui.theme.screen.ReadingType
+import com.example.smarthydro.models.Reading
 
 class ReadingViewModel: ViewModel() {
-    private var readingTypeViewModel by mutableStateOf<ReadingType?>(null)
+    private var readingTypeViewModel by mutableStateOf<Reading?>(null)
 
-    fun setReadingType(type: ReadingType){
+    fun setReadingType(type: Reading){
         readingTypeViewModel = type
     }
 
-    fun getReadingType(): ReadingType?{
+    fun getReadingType(): Reading?{
         return readingTypeViewModel
     }
 

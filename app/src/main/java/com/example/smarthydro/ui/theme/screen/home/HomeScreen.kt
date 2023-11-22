@@ -1,5 +1,6 @@
 package com.example.smarthydro.ui.theme.screen.home
 
+import android.content.res.Resources
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -34,11 +35,13 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.smarthydro.R
+import com.example.smarthydro.models.Reading
 import com.example.smarthydro.models.SensorModel
 import com.example.smarthydro.ui.theme.Beige1
 import com.example.smarthydro.ui.theme.Beige2
@@ -61,7 +64,6 @@ import com.example.smarthydro.ui.theme.Red2
 import com.example.smarthydro.ui.theme.Red3
 import com.example.smarthydro.ui.theme.GreenGood
 import com.example.smarthydro.ui.theme.RedBad
-import com.example.smarthydro.ui.theme.screen.ReadingType
 import com.example.smarthydro.viewmodels.ReadingViewModel
 import com.example.smarthydro.viewmodels.SensorViewModel
 
@@ -88,10 +90,11 @@ fun HomeScreen(viewModel: SensorViewModel,navController: NavHostController, read
         }
     }
 }
+
 private fun getFeatures(sensorData: SensorModel): List<Feature> {
     return listOf(
             Feature(
-                title = "Water",
+                title = "Water Level",
                 R.drawable.ic_water,
                 BlueViolet1,
                 BlueViolet2,
@@ -100,7 +103,7 @@ private fun getFeatures(sensorData: SensorModel): List<Feature> {
 
                 ),
             Feature(
-                title = "Clean Water",
+                title =  "Clean Water",
                 R.drawable.ic_cleanwater,
                 Blue1,
                 Blue2,
@@ -108,7 +111,7 @@ private fun getFeatures(sensorData: SensorModel): List<Feature> {
                 sensorData.pH
             ),
             Feature(
-                title = "Temperature",
+                title =  "Temperature",
                 R.drawable.ic_temp,
                 Red1,
                 Red2,
@@ -116,7 +119,7 @@ private fun getFeatures(sensorData: SensorModel): List<Feature> {
                 sensorData.temperature
             ),
             Feature(
-                title = "Humidity",
+                title =  "Humidity",
                 R.drawable.ic_fire,
                 Beige1,
                 Beige2,
@@ -170,7 +173,7 @@ fun  SensorCard(
         shadowElevation = 10.dp,
         onClick =
         {
-            readingViewModel.setReadingType(ReadingType(feature.title,sensorData,""))
+            readingViewModel.setReadingType(Reading(feature.title,sensorData,"",""))
             navController.navigate("viewData")
         }
     ) {
@@ -238,54 +241,13 @@ fun  SensorCard(
     }
 }
 
-private fun createMediumColoredPath(width: Float, height: Float): Path {
-    // Medium colored path
-    val mediumColoredPoint1 = Offset(0f, height * 0.3f)
-    val mediumColoredPoint2 = Offset(width * 0.1f, height * 0.35f)
-    val mediumColoredPoint3 = Offset(width * 0.4f, height * 0.05f)
-    val mediumColoredPoint4 = Offset(width * 0.75f, height * 0.7f)
-    val mediumColoredPoint5 = Offset(width * 1.4f, -height.toFloat())
-
-    val mediumColoredPath = Path().apply {
-        moveTo(mediumColoredPoint1.x, mediumColoredPoint1.y)
-        standardQuadFromTo(mediumColoredPoint1, mediumColoredPoint2)
-        standardQuadFromTo(mediumColoredPoint2, mediumColoredPoint3)
-        standardQuadFromTo(mediumColoredPoint3, mediumColoredPoint4)
-        standardQuadFromTo(mediumColoredPoint4, mediumColoredPoint5)
-        lineTo(width.toFloat() + 100f, height.toFloat() + 100f)
-        lineTo(-100f, height.toFloat() + 100f)
-        close()
-    }
-    return mediumColoredPath
-}
-private fun createLightColoredPath(width: Float, height: Float): Path {
-    // Light colored path
-    val lightPoint1 = Offset(0f, height * 0.35f)
-    val lightPoint2 = Offset(width * 0.1f, height * 0.4f)
-    val lightPoint3 = Offset(width * 0.3f, height * 0.35f)
-    val lightPoint4 = Offset(width * 0.65f, height)
-    val lightPoint5 = Offset(width * 1.4f, -height / 3f)
-
-    val lightColoredPath = Path().apply {
-        moveTo(lightPoint1.x, lightPoint1.y)
-        standardQuadFromTo(lightPoint1, lightPoint2)
-        standardQuadFromTo(lightPoint2, lightPoint3)
-        standardQuadFromTo(lightPoint3, lightPoint4)
-        standardQuadFromTo(lightPoint4, lightPoint5)
-        lineTo(width + 100f, height + 100f)
-        lineTo(-100f, height + 100f)
-        close()
-    }
-
-    return lightColoredPath
-}
 
 private fun checkReadingLevel(title: String, readingValue: String): Color {
     val reading = readingValue.toFloatOrNull() ?: 0.0f
 
     val acceptableRanges = mapOf(
         "Temperature" to Range(18f, 25f),
-        "Water" to Range(10f, 100f),
+        "Water Level" to Range(10f, 100f),
         "Clean Water" to Range(7f, 8f),
         "Humidity" to Range(65f, 75f),
         "Compost" to Range(2f, 4f),
