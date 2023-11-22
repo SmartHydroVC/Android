@@ -21,9 +21,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.smarthydro.ui.theme.LightGreen1
-import com.example.smarthydro.ui.theme.Purple500
-
-//import com.example.customchar.ui.theme.Purple500
 
 @Composable
 fun Chart(
