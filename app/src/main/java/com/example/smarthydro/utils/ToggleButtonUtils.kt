@@ -1,33 +1,32 @@
 package com.example.smarthydro.utils
 
 import androidx.annotation.DrawableRes
-import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.smarthydro.R
-import com.example.smarthydro.animations.OnOffAnimation
 import com.example.smarthydro.ui.theme.screen.viewData.openAlertDialog
 import com.example.smarthydro.ui.theme.screen.viewData.powerState
 import com.example.smarthydro.ui.theme.screen.viewData.reading
 import com.example.smarthydro.viewmodels.ComponentViewModel
-import kotlinx.coroutines.launch
 
 class ToggleButtonUtils {
     @Composable
-    fun ToggleButton(componentViewModel: ComponentViewModel, @DrawableRes iconId: Int) {
+    fun ToggleButton(
+        onClick: () -> Unit,
+        componentViewModel: ComponentViewModel,
+        @DrawableRes iconId: Int
+    ) {
         var iconColor by remember { mutableStateOf(Color.Red) }
 
         IconButton(
