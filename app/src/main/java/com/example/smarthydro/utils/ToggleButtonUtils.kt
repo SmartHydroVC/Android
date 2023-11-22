@@ -93,26 +93,14 @@ class ToggleButtonUtils {
     }
 
     private fun changeIconColorBasedOnPowerState(powerState: Boolean): Color {
-        var color = Color.Red
-        if (powerState) {
-            LaunchedEffect(animation) {
-                launch {
-                    OnOffAnimation().onAnimation(animation)
-                }
-            }
-            color = Color.Red
-        } else {
+        return if (powerState)
+            Color.Red
+        else
             Color.Green
-        }
-
-        return color
     }
 
 
     private fun getAlertDialogValue(heading: String): Boolean {
-        if (heading == "Clean Water"|| heading == "Compost")
-            return true
-
-        return false
+        return heading == "Clean Water"|| heading == "Compost"
     }
 }
