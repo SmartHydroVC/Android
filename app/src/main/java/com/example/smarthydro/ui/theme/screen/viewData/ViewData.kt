@@ -74,6 +74,7 @@ import kotlin.math.max
 class UiState(
     val arcValue: Float = 0f
 )
+val openAlertDialog = mutableStateOf(false)
 var powerState : Boolean = true
 var reading: Reading = Reading("",SensorModel(), "","");
 
