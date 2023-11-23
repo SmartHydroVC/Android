@@ -23,7 +23,6 @@ import com.example.smarthydro.viewmodels.ComponentViewModel
 class ToggleButtonUtils {
     @Composable
     fun ToggleButton(
-        onClick: () -> Unit,
         componentViewModel: ComponentViewModel,
         @DrawableRes iconId: Int
     ) {
@@ -37,7 +36,7 @@ class ToggleButtonUtils {
                 powerState = !powerState
                 openAlertDialog.value = getAlertDialogValue(reading.heading)
                 ControlComponentUtils(componentViewModel).controlComponent(reading.heading)
-                iconColor = changeIconColorBasedOnPowerState(powerState,onClick)
+                iconColor = changeIconColorBasedOnPowerState(powerState)
             })
         {
             Icon(
@@ -69,7 +68,7 @@ class ToggleButtonUtils {
     }
 
     @Composable
-    fun IconButtonOnOff(onClick: () -> Unit, componentViewModel: ComponentViewModel) {
+    fun IconButtonOnOff(componentViewModel: ComponentViewModel) {
         var iconColor by remember { mutableStateOf(Color.Red) }
 
         IconButton(
@@ -79,7 +78,7 @@ class ToggleButtonUtils {
             onClick = {
                 powerState = !powerState
                 ControlComponentUtils(componentViewModel).controlComponent(reading.heading)
-                iconColor = changeIconColorBasedOnPowerState(powerState,onClick)
+                iconColor = changeIconColorBasedOnPowerState(powerState)
             })
         {
             Icon(
@@ -91,14 +90,11 @@ class ToggleButtonUtils {
         }
     }
 
-    private fun changeIconColorBasedOnPowerState(powerState: Boolean, onClick: () -> Unit): Color {
+    private fun changeIconColorBasedOnPowerState(powerState: Boolean): Color {
         return if (powerState)
             Color.Red
-        else{
-            onClick()
+        else
             Color.Green
-        }
-
     }
 
 
