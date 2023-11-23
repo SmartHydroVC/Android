@@ -1,10 +1,6 @@
 package com.example.smarthydro.ui.theme.screen.viewData
 
-
 import android.annotation.SuppressLint
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.AnimationVector1D
-import androidx.compose.animation.core.keyframes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -40,18 +36,26 @@ var powerState : Boolean = true
 var reading: Reading = Reading("",SensorModel(), "","")
 
 
+
 @Preview
 @Composable
 fun BarChart(){
     Surface {
         Column(
+            verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .background(Color.Gray)
-                .height(400.dp)
                 .fillMaxWidth()
-
+                .fillMaxHeight()
         ) {
+            Text(
+                text = "1000",
+                fontSize = 45.sp,
+                color = Color.White,
+                fontWeight = FontWeight.Bold
+            )
+            Text("unit", style = MaterialTheme.typography.headlineMedium)
             Chart(
                 data = mapOf(
                     Pair(0.5f,"M"),
@@ -63,9 +67,108 @@ fun BarChart(){
                     Pair(0.1f,"S"),
                 ), max_value = 80
             )
+            Surface(
+                shape = RoundedCornerShape(16.dp),
+                color = Color(0xFF1E1E1E),
+                modifier = Modifier
+                    .height(210.dp)
+                    .padding(10.dp),
+                shadowElevation = 10.dp,
+            ) {
+                Row(
+                    modifier = Modifier.padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .weight(2f),
+                        verticalArrangement = Arrangement.Center
+                    ) {
+
+                        Text(
+                            text = "feature.title",
+                            fontSize =  24.sp,
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.SemiBold
+                        )
+
+                        Spacer(modifier = Modifier.height(2.dp))
+
+
+                        Spacer(modifier = Modifier.height(4.dp))
+
+                    }
+
+                    Surface(
+                        shape = RoundedCornerShape(16.dp),
+                        modifier = Modifier.size(width = 100.dp, height = 100.dp)
+                    ) {
+                        Text(
+                            text =  "No Data",
+                            modifier = Modifier.wrapContentSize(),
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                    }
+
+                }
+            }
         }
     }
+}
 
+@Preview
+@Composable
+fun DataCard()
+{
+    Surface {
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .background(Color.Gray)
+                .fillMaxWidth()
+                .fillMaxHeight()
+        ) {
+            Text(
+                text = "1000",
+                fontSize = 45.sp,
+                color = Color.White,
+                fontWeight = FontWeight.Bold
+            )
+            Text("unit", style = MaterialTheme.typography.headlineMedium)
+            Surface(
+                shape = RoundedCornerShape(16.dp),
+                color = Color(0xFF1E1E1E),
+                modifier = Modifier
+                    .height(210.dp)
+                    .padding(10.dp),
+                shadowElevation = 10.dp,
+            ) {
+                Row(
+                    modifier = Modifier.padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .weight(2f),
+                        verticalArrangement = Arrangement.Center
+                    ) {
+
+                        Text(
+                            text = "feature.title",
+                            fontSize = 24.sp,
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.SemiBold
+                        )
+
+                        Spacer(modifier = Modifier.height(2.dp))
+                    }
+                }
+            }
+        }
+    }
 }
 
 
@@ -185,8 +288,6 @@ private fun ControlButtonsRow(
 fun DataValue(value: String, unit: String) {
     Column(
         Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = value,
