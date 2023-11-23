@@ -45,26 +45,26 @@ var reading: Reading = Reading("",SensorModel(), "","")
 fun BarChart(){
     Surface {
         Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(10.dp),
             modifier = Modifier
-                .fillMaxSize()
-                .background(DeepBlue)
-                .verticalScroll(rememberScrollState())
+                .background(Color.Gray)
+                .height(300.dp)
         ) {
-            Header("PH")
-            BarChart(values = barChartInputsPercent, xLabels = xAxis)
+            Chart(
+                data = mapOf(
+                    Pair(0.5f,"M"),
+                    Pair(0.6f,"T"),
+                    Pair(0.2f,"W"),
+                    Pair(0.7f,"T"),
+                    Pair(0.8f,"F"),
+                    Pair(0.3f,"S"),
+                    Pair(0.1f,"S"),
+                ), max_value = 80
+            )
         }
     }
-    Chart(
-        data = mapOf(
-            Pair(0.5f,"M"),
-            Pair(0.6f,"T"),
-            Pair(0.2f,"W"),
-            Pair(0.7f,"T"),
-            Pair(0.8f,"F"),
-            Pair(0.3f,"S"),
-            Pair(0.1f,"S"),
-        ), max_value = 80
-    )
+
 }
 
 
