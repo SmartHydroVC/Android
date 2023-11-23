@@ -9,4 +9,8 @@ class SensorRepository {
     suspend fun getSensorData(): SensorModel {
         return sensorService.getSensorData()
     }
+
+    suspend fun getHistoricData(): List<SensorModel>{
+        return sensorService.historicData()
+    }
 }

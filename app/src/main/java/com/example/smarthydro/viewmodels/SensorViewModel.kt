@@ -39,4 +39,11 @@ class SensorViewModel : ViewModel() {
             }
         }
     }
+
+    suspend fun sensorHistory(): List<SensorModel>
+    {
+        val stuff = repository.getHistoricData()
+       return stuff
+
+    }
 }
