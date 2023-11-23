@@ -148,8 +148,8 @@ private fun getReadingUnit(readingString: String, data: SensorModel):ReadingType
             readingValue = data.flowRate
             readingType.unit = "L/hr"
         }
-        "PH" -> {
-            readingType.heading = "pH Level"
+        "Clean Water" -> {
+            readingType.heading = "Clean Water"
             readingValue = data.pH
             readingType.unit = "pH"
         }
@@ -158,13 +158,13 @@ private fun getReadingUnit(readingString: String, data: SensorModel):ReadingType
             readingValue = data.humidity
             readingType.unit = "RH" // RH = Relative Humidity
         }
-        "EC" -> {
-            readingType.heading = "EC Level"
+        "Compost" -> {
+            readingType.heading = "Compost"
             readingValue = data.eC
             readingType.unit = "ms/cm"
         }
-        "Light" -> {
-            readingType.heading = "Light"
+        "Sun Light" -> {
+            readingType.heading = "Sun Light"
             readingValue = data.light
             readingType.unit = "lux"
         }
@@ -223,10 +223,10 @@ private fun SpeedTestScreen(state: UiState,navHostController: NavHostController,
         )
 
         when (reading.heading) {
-            "pH Level" -> {
+            "Clean Water" -> {
                 LowAndHighIconButtons(state = state, onClick = onClick, reading.unit, component)
             }
-            "EC Level" -> {
+            "Compost" -> {
                 LowAndHighIconButtons(state = state, onClick = onClick, reading.unit, component)
             }
             else -> {
@@ -301,10 +301,10 @@ fun ToggleLowButton(onClick: () -> Unit, componentViewModel: ComponentViewModel)
                 powerState = !powerState
 
                 when (reading.heading) {
-                    "pH Level" -> {
+                    "Clean Water" -> {
                         openAlertDialogLow.value = true
                     }
-                    "EC Level" -> {
+                    "Compost" -> {
                         openAlertDialogLow.value = true
                     }
                     else -> {}
@@ -341,10 +341,10 @@ fun ToggleHighButton(onClick: () -> Unit, componentViewModel: ComponentViewModel
                 powerState = !powerState
 
                 when (reading.heading) {
-                    "pH Level" -> {
+                    "Clean Water" -> {
                         openAlertDialogUp.value = true
                     }
-                    "EC Level" -> {
+                    "Compost" -> {
                         openAlertDialogUp.value = true
                     }
                     else -> {}
@@ -377,10 +377,10 @@ fun LowerSolution(openAlertDialog: MutableState<Boolean>, componentViewModel: Co
                 onConfirmation = {
                     //println("Confirmation registered") // Add logic here to handle confirmation.
                     when (heading) {
-                        "pH Level" -> {
+                        "Clean Water" -> {
                             componentViewModel.setPhDown()
                         }
-                        "EC Level" -> {
+                        "Compost" -> {
                             componentViewModel.setEcDown()
                         }
                         else -> {
@@ -405,10 +405,10 @@ fun HigherSolution(openAlertDialog: MutableState<Boolean>, componentViewModel: C
                 onDismissRequest = { openAlertDialog.value = false },
                 onConfirmation = {
                     when (heading) {
-                        "pH Level" -> {
+                        "Clean Water" -> {
                             componentViewModel.setPhUp()
                         }
-                        "EC Level" -> {
+                        "Compost" -> {
                             componentViewModel.setEcUp()
                         }
                         else -> {
@@ -439,7 +439,7 @@ fun IconButtonOnOff(onClick: () -> Unit, componentViewModel: ComponentViewModel)
                 "Temperature" -> {
                     componentViewModel.setFan()
                 }
-                "Light" -> {
+                "Sun Light" -> {
                     componentViewModel.setLight()
                 }
                 "Humidity" -> {
@@ -448,10 +448,10 @@ fun IconButtonOnOff(onClick: () -> Unit, componentViewModel: ComponentViewModel)
                 "Water Flow" -> {
                     componentViewModel.setPump()
                 }
-                "pH Level" -> {
+                "Clean Water" -> {
                     componentViewModel.setPh()
                 }
-                "EC Level" -> {
+                "Compost" -> {
                     componentViewModel.setEc()
                 }
 
