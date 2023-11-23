@@ -173,6 +173,8 @@ private fun ControlButtonsRow(
         } else {
             toggleButtons.IconButtonOnOff(onClick, component)
         }
+
+        DataValue(readingValue,unit)
     }
 }
 
