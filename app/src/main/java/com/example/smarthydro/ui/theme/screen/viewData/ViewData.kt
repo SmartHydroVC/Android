@@ -35,41 +35,49 @@ import com.example.smarthydro.viewmodels.ReadingViewModel
 import com.example.smarthydro.viewmodels.SensorViewModel
 import kotlinx.coroutines.launch
 
-class UiState(
-    val arcValue: Float = 0f
-)
 val openAlertDialog = mutableStateOf(false)
 var powerState : Boolean = true
-var reading: Reading = Reading("",SensorModel(), "","");
+var reading: Reading = Reading("",SensorModel(), "","")
 
-suspend fun startAnimation(animation: Animatable<Float, AnimationVector1D>) {
-    animation.animateTo(1.00f, keyframes {
 
-    })
+@Preview
+@Composable
+fun BarChart(){
+    Surface {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(DeepBlue)
+                .verticalScroll(rememberScrollState())
+        ) {
+            Header("PH")
+            BarChart(values = barChartInputsPercent, xLabels = xAxis)
+        }
+    }
+    Chart(
+        data = mapOf(
+            Pair(0.5f,"M"),
+            Pair(0.6f,"T"),
+            Pair(0.2f,"W"),
+            Pair(0.7f,"T"),
+            Pair(0.8f,"F"),
+            Pair(0.3f,"S"),
+            Pair(0.1f,"S"),
+        ), max_value = 80
+    )
 }
 
-fun Animatable<Float, AnimationVector1D>.toUiState() = UiState(
-    arcValue = value
-)
 
 @Composable
 fun ViewDataScreen(navHostController: NavHostController, component: ComponentViewModel, readingViewModel: ReadingViewModel, sensorViewModel: SensorViewModel) {
-    val coroutineScope = rememberCoroutineScope()
-    val animation = remember { Animatable(0f) }
     val sensorData by sensorViewModel.sensorData.observeAsState(SensorModel())
-
     reading = readingViewModel.getReadingType()!!
-
-    ViewDataScreen(animation.toUiState(),navHostController, reading.heading, component, sensorData ) {
-        coroutineScope.launch {
-            startAnimation(animation)
-        }
-    }
+    ViewDataScreen(navHostController, reading.heading, component, sensorData )
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-private fun ViewDataScreen(state: UiState,navHostController: NavHostController,readingString:String, component: ComponentViewModel, sensorModel: SensorModel, onClick: () -> Unit) {
+private fun ViewDataScreen(navHostController: NavHostController,readingString:String, component: ComponentViewModel, sensorModel: SensorModel) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -115,9 +123,9 @@ private fun ViewDataScreen(state: UiState,navHostController: NavHostController,r
         )
 
         if (reading.heading == stringResource(R.string.ph) || reading.heading == stringResource(R.string.ec))
-            DataControlSection(state = state, onClick = onClick, reading.unit, component, true)
+            DataControlSection(reading.unit, component, true)
         else
-            DataControlSection(state = state, onClick = onClick, reading.unit, component, false)
+            DataControlSection(reading.unit, component, false)
     }
 }
 
@@ -133,8 +141,6 @@ fun Header(heading:String) {
 
 @Composable
 private fun DataControlSection(
-    state: UiState,
-    onClick: () -> Unit,
     unit: String,
     component: ComponentViewModel,
     isPhOrEc: Boolean
@@ -145,15 +151,13 @@ private fun DataControlSection(
             .fillMaxWidth()
             .aspectRatio(1f)
     ) {
-        SpeedIndicator().CircularSpeedIndicator(state.arcValue, 240f)
-        ControlButtonsRow(onClick, component, isPhOrEc)
+        ControlButtonsRow(component, isPhOrEc)
         DataValue(reading.readingValue, unit)
     }
 }
 
 @Composable
 private fun ControlButtonsRow(
-    onClick: () -> Unit,
     component: ComponentViewModel,
     isPhOrEc: Boolean
 ) {
@@ -165,13 +169,13 @@ private fun ControlButtonsRow(
     ) {
         val toggleButtons = ToggleButtonUtils()
         if (isPhOrEc) {
-            toggleButtons.ToggleButton(onClick, component, R.drawable.ic_arrow_up)
+            toggleButtons.ToggleButton(component, R.drawable.ic_arrow_up)
             Spacer(modifier = Modifier.width(24.dp))
-            toggleButtons.IconButtonOnOff(onClick, component)
+            toggleButtons.IconButtonOnOff(component)
             Spacer(modifier = Modifier.width(24.dp))
-            toggleButtons.ToggleButton(onClick, component, R.drawable.ic_arrow_down)
+            toggleButtons.ToggleButton(component, R.drawable.ic_arrow_down)
         } else {
-            toggleButtons.IconButtonOnOff(onClick, component)
+            toggleButtons.IconButtonOnOff(component)
         }
     }
 }
