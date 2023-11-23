@@ -46,10 +46,11 @@ fun BarChart(){
     Surface {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(10.dp),
             modifier = Modifier
                 .background(Color.Gray)
-                .height(300.dp)
+                .height(400.dp)
+                .fillMaxWidth()
+
         ) {
             Chart(
                 data = mapOf(
