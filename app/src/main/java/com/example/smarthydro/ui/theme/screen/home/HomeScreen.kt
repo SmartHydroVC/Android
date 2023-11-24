@@ -71,7 +71,10 @@ private const val GET_SENSOR_DATA_DELAY_MS: Long = 15 * 1000
 fun HomeScreen(viewModel: SensorViewModel,navController: NavHostController, readingViewModel: ReadingViewModel) {
     val sensorData by viewModel.sensorData.observeAsState(SensorModel())
     LaunchedEffect(Unit) {
+
+        val history = viewModel.sensorHistory()
         viewModel.fetchSensorPeriodically(GET_SENSOR_DATA_DELAY_MS)
+
     }
     Box(
         modifier = Modifier
