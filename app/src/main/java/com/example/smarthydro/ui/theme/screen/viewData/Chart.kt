@@ -79,7 +79,7 @@ fun Chart(
                 modifier = Modifier
                     .fillMaxHeight()
                     .width(scaleLineWidth)
-                    .background(LightGreen1)
+                    .background(Color.Black)
             )
 
             // graph
@@ -107,7 +107,7 @@ fun Chart(
                 .padding(horizontal = 20.dp)
                 .fillMaxWidth()
                 .height(scaleLineWidth)
-                .background(LightGreen1)
+                .background(Color.Black)
         )
 
         // Scale X-Axis

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -15,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.smarthydro.R
+import com.example.smarthydro.ui.theme.screen.viewData.OnlineStatus
 import com.example.smarthydro.ui.theme.screen.viewData.openAlertDialog
 import com.example.smarthydro.ui.theme.screen.viewData.powerState
 import com.example.smarthydro.ui.theme.screen.viewData.reading
@@ -26,23 +28,18 @@ class ToggleButtonUtils {
         componentViewModel: ComponentViewModel,
         @DrawableRes iconId: Int
     ) {
-        var iconColor by remember { mutableStateOf(Color.Red) }
-
         IconButton(
             modifier = Modifier
                 .size(72.dp)
                 .padding(top = 20.dp),
             onClick = {
-                powerState = !powerState
                 openAlertDialog.value = getAlertDialogValue(reading.heading)
                 ControlComponentUtils(componentViewModel).controlComponent(reading.heading)
-                iconColor = changeIconColorBasedOnPowerState(powerState)
             })
         {
             Icon(
                 painter = painterResource(id = iconId),
                 contentDescription = "Option to toggle the pump to be lower or higher",
-                tint = iconColor,
                 modifier = Modifier.size(size = 100.dp)
             )
         }
@@ -52,8 +49,8 @@ class ToggleButtonUtils {
                 openAlertDialog = openAlertDialog,
                 componentViewModel =componentViewModel,
                 heading = reading.heading,
-                dialogTitle ="Decrease Nutrients",
-                dialogText ="You are about decrease solution for this!",
+                dialogTitle ="Increase Nutrients",
+                dialogText ="You are about increase solution for this!",
                 toggleUp = false
             )
         else if (iconId == R.drawable.ic_arrow_down)
@@ -68,34 +65,26 @@ class ToggleButtonUtils {
     }
 
     @Composable
-    fun IconButtonOnOff(componentViewModel: ComponentViewModel) {
-        var iconColor by remember { mutableStateOf(Color.Red) }
+    fun IconButtonOnOff(componentViewModel: ComponentViewModel, powerState: MutableState<Boolean>) {
 
         IconButton(
             modifier = Modifier
                 .size(72.dp)
                 .padding(top = 20.dp),
             onClick = {
-                powerState = !powerState
+                powerState.value = !powerState.value
                 ControlComponentUtils(componentViewModel).controlComponent(reading.heading)
-                iconColor = changeIconColorBasedOnPowerState(powerState)
             })
         {
             Icon(
                 painter = painterResource(id = R.drawable.ic_power),
                 contentDescription = "Option to turn on or off the component",
-                tint = iconColor,
                 modifier = Modifier.size(size = 100.dp)
             )
         }
     }
 
-    private fun changeIconColorBasedOnPowerState(powerState: Boolean): Color {
-        return if (powerState)
-            Color.Red
-        else
-            Color.Green
-    }
+
 
 
     private fun getAlertDialogValue(heading: String): Boolean {

@@ -1,9 +1,12 @@
 package com.example.smarthydro.ui.theme.screen.viewData
 
 import android.annotation.SuppressLint
+import android.graphics.drawable.Icon
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -14,6 +17,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,154 +28,16 @@ import com.example.smarthydro.R
 import com.example.smarthydro.models.Reading
 import com.example.smarthydro.models.SensorModel
 import com.example.smarthydro.models.getReadingUnit
+import com.example.smarthydro.ui.theme.DarkerButtonBlue
 import com.example.smarthydro.ui.theme.DeepBlue
 import com.example.smarthydro.utils.ToggleButtonUtils
 import com.example.smarthydro.viewmodels.ComponentViewModel
 import com.example.smarthydro.viewmodels.ReadingViewModel
 import com.example.smarthydro.viewmodels.SensorViewModel
-import kotlinx.coroutines.launch
 
 val openAlertDialog = mutableStateOf(false)
-var powerState : Boolean = true
 var reading: Reading = Reading("",SensorModel(), "","")
-
-
-
-@Preview
-@Composable
-fun BarChart(){
-    Surface {
-        Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .background(Color.Gray)
-                .fillMaxWidth()
-                .fillMaxHeight()
-        ) {
-            Text(
-                text = "1000",
-                fontSize = 45.sp,
-                color = Color.White,
-                fontWeight = FontWeight.Bold
-            )
-            Text("unit", style = MaterialTheme.typography.headlineMedium)
-            Chart(
-                data = mapOf(
-                    Pair(0.5f,"M"),
-                    Pair(0.6f,"T"),
-                    Pair(0.2f,"W"),
-                    Pair(0.7f,"T"),
-                    Pair(0.8f,"F"),
-                    Pair(0.3f,"S"),
-                    Pair(0.1f,"S"),
-                ), max_value = 80
-            )
-            Surface(
-                shape = RoundedCornerShape(16.dp),
-                color = Color(0xFF1E1E1E),
-                modifier = Modifier
-                    .height(210.dp)
-                    .padding(10.dp),
-                shadowElevation = 10.dp,
-            ) {
-                Row(
-                    modifier = Modifier.padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .weight(2f),
-                        verticalArrangement = Arrangement.Center
-                    ) {
-
-                        Text(
-                            text = "feature.title",
-                            fontSize =  24.sp,
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.SemiBold
-                        )
-
-                        Spacer(modifier = Modifier.height(2.dp))
-
-
-                        Spacer(modifier = Modifier.height(4.dp))
-
-                    }
-
-                    Surface(
-                        shape = RoundedCornerShape(16.dp),
-                        modifier = Modifier.size(width = 100.dp, height = 100.dp)
-                    ) {
-                        Text(
-                            text =  "No Data",
-                            modifier = Modifier.wrapContentSize(),
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                    }
-
-                }
-            }
-        }
-    }
-}
-
-@Preview
-@Composable
-fun DataCard()
-{
-    Surface {
-        Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .background(Color.Gray)
-                .fillMaxWidth()
-                .fillMaxHeight()
-        ) {
-            Text(
-                text = "1000",
-                fontSize = 45.sp,
-                color = Color.White,
-                fontWeight = FontWeight.Bold
-            )
-            Text("unit", style = MaterialTheme.typography.headlineMedium)
-            Surface(
-                shape = RoundedCornerShape(16.dp),
-                color = Color(0xFF1E1E1E),
-                modifier = Modifier
-                    .height(210.dp)
-                    .padding(10.dp),
-                shadowElevation = 10.dp,
-            ) {
-                Row(
-                    modifier = Modifier.padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .weight(2f),
-                        verticalArrangement = Arrangement.Center
-                    ) {
-
-                        Text(
-                            text = "feature.title",
-                            fontSize = 24.sp,
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.SemiBold
-                        )
-
-                        Spacer(modifier = Modifier.height(2.dp))
-                    }
-                }
-            }
-        }
-    }
-}
-
-
+val powerState = mutableStateOf(true)
 @Composable
 fun ViewDataScreen(navHostController: NavHostController, component: ComponentViewModel, readingViewModel: ReadingViewModel, sensorViewModel: SensorViewModel) {
     val sensorData by sensorViewModel.sensorData.observeAsState(SensorModel())
@@ -179,29 +45,28 @@ fun ViewDataScreen(navHostController: NavHostController, component: ComponentVie
     ViewDataScreen(navHostController, reading.heading, component, sensorData )
 }
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 private fun ViewDataScreen(navHostController: NavHostController,readingString:String, component: ComponentViewModel, sensorModel: SensorModel) {
+    reading = getReadingUnit(readingString = readingString, sensorModel)
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
+            .background(DarkerButtonBlue)
             .fillMaxHeight()
-            .background(DeepBlue)
             .verticalScroll(rememberScrollState())
     ) {
         Box(
             modifier = Modifier
-                .padding(top = 25.dp, bottom = 5.dp)
-                .fillMaxWidth()
-                .background(Color.Transparent),
-            contentAlignment = Alignment.TopStart
+                .fillMaxWidth(),
+            contentAlignment = Alignment.TopStart,
         ) {
-            IconButton(onClick = {
-                navHostController.navigate("home")
-            }) {
+            IconButton(
+                onClick = {
+                    navHostController.navigate("home")
+                }
+            ) {
                 Icon(
-
                     imageVector = Icons.Filled.ArrowBack,
                     contentDescription = "Back",
                     tint = Color.White
@@ -209,27 +74,66 @@ private fun ViewDataScreen(navHostController: NavHostController,readingString:St
             }
         }
 
-        reading = getReadingUnit(readingString = readingString, sensorModel)
         Header(reading.heading)
-       
-       // BarChart(values = barChartInputsPercent, xLabels = xAxis)
+        DataValue(value = reading.readingValue, unit = reading.unit)
         Chart(
             data = mapOf(
-
-                Pair(0.5f,"M"),
-                Pair(0.6f,"T"),
-                Pair(0.2f,"W"),
-                Pair(0.7f,"T"),
-                Pair(0.8f,"F"),
-                Pair(0.3f,"S"),
-                Pair(0.1f,"S"),
+                Pair(0.5f, "M"),
+                Pair(0.6f, "T"),
+                Pair(0.2f, "W"),
+                Pair(0.7f, "T"),
+                Pair(0.8f, "F"),
+                Pair(0.3f, "S"),
+                Pair(0.1f, "S"),
                 ), max_value = 80
         )
+        Spacer(modifier = Modifier.height(100.dp))
+        DataCard(component = component)
+    }
+}
 
-        if (reading.heading == stringResource(R.string.ph) || reading.heading == stringResource(R.string.ec))
-            DataControlSection(reading.unit, component, true)
-        else
-            DataControlSection(reading.unit, component, false)
+@Composable
+fun DataCard(component: ComponentViewModel) {
+
+    Surface(
+        shape = RoundedCornerShape(16.dp),
+        color = Color.LightGray,
+        modifier = Modifier
+            .height(210.dp)
+            .padding(10.dp),
+        shadowElevation = 10.dp,
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.Center
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                OnlineStatus(
+                    text = if (powerState.value) "Online" else "Offline",
+                    color = if (powerState.value) Color.Green else Color.Red
+                )
+                Spacer(modifier = Modifier.width(150.dp))
+                InfomationText(text = "")
+            }
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Divider(
+                color = Color.Black,
+                thickness = 1.dp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+            )
+            if (reading.heading == stringResource(R.string.ph) || reading.heading == stringResource(R.string.ec))
+                ControlButtonsRow(component = component, isPhOrEc = true, powerState = powerState)
+            else
+                ControlButtonsRow(component = component, isPhOrEc = false, powerState = powerState)
+        }
     }
 }
 
@@ -244,26 +148,38 @@ fun Header(heading:String) {
 }
 
 @Composable
-private fun DataControlSection(
-    unit: String,
-    component: ComponentViewModel,
-    isPhOrEc: Boolean
-) {
+fun InfomationText(text:String){
+    Text(
+        text = text,
+        fontSize = 20.sp,
+        style = MaterialTheme.typography.titleLarge,
+        fontWeight = FontWeight.Bold
+    )
+}
+@Composable
+fun OnlineStatus(text: String, color: Color)
+{
     Box(
-        contentAlignment = Alignment.BottomCenter,
         modifier = Modifier
-            .fillMaxWidth()
-            .aspectRatio(1f)
-    ) {
-        ControlButtonsRow(component, isPhOrEc)
-        DataValue(reading.readingValue, unit)
-    }
+            .size(12.dp)
+            .background(color, CircleShape)
+    )
+
+    Spacer(modifier = Modifier.width(8.dp))
+
+    Text(
+        text = text,
+        fontSize = 20.sp,
+        style = MaterialTheme.typography.titleLarge,
+        fontWeight = FontWeight.Bold
+    )
 }
 
 @Composable
 private fun ControlButtonsRow(
     component: ComponentViewModel,
-    isPhOrEc: Boolean
+    isPhOrEc: Boolean,
+    powerState: MutableState<Boolean>
 ) {
     Row(
         modifier = Modifier
@@ -275,11 +191,11 @@ private fun ControlButtonsRow(
         if (isPhOrEc) {
             toggleButtons.ToggleButton(component, R.drawable.ic_arrow_up)
             Spacer(modifier = Modifier.width(24.dp))
-            toggleButtons.IconButtonOnOff(component)
+            toggleButtons.IconButtonOnOff(component,powerState)
             Spacer(modifier = Modifier.width(24.dp))
             toggleButtons.ToggleButton(component, R.drawable.ic_arrow_down)
         } else {
-            toggleButtons.IconButtonOnOff(component)
+            toggleButtons.IconButtonOnOff(component,powerState)
         }
     }
 }
@@ -288,11 +204,13 @@ private fun ControlButtonsRow(
 fun DataValue(value: String, unit: String) {
     Column(
         Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = value,
             fontSize = 45.sp,
-            color = Color.White,
+            color = Color.Black,
             fontWeight = FontWeight.Bold
         )
         Text(unit, style = MaterialTheme.typography.headlineMedium)

@@ -1,6 +1,5 @@
 package com.example.smarthydro.ui.theme.screen.home
 
-import android.content.res.Resources
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -31,11 +30,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -52,7 +48,8 @@ import com.example.smarthydro.ui.theme.Blue3
 import com.example.smarthydro.ui.theme.BlueViolet1
 import com.example.smarthydro.ui.theme.BlueViolet2
 import com.example.smarthydro.ui.theme.BlueViolet3
-import com.example.smarthydro.ui.theme.DeepBlue
+import com.example.smarthydro.ui.theme.DarkerButtonBlue
+import com.example.smarthydro.ui.theme.GreenGood
 import com.example.smarthydro.ui.theme.LightGreen1
 import com.example.smarthydro.ui.theme.LightGreen2
 import com.example.smarthydro.ui.theme.LightGreen3
@@ -62,7 +59,6 @@ import com.example.smarthydro.ui.theme.OrangeYellow3
 import com.example.smarthydro.ui.theme.Red1
 import com.example.smarthydro.ui.theme.Red2
 import com.example.smarthydro.ui.theme.Red3
-import com.example.smarthydro.ui.theme.GreenGood
 import com.example.smarthydro.ui.theme.RedBad
 import com.example.smarthydro.viewmodels.ReadingViewModel
 import com.example.smarthydro.viewmodels.SensorViewModel
@@ -79,7 +75,7 @@ fun HomeScreen(viewModel: SensorViewModel,navController: NavHostController, read
     }
     Box(
         modifier = Modifier
-            .background(DeepBlue)
+            .background(DarkerButtonBlue)
             .fillMaxSize()
     ) {
         Column {
@@ -99,9 +95,8 @@ private fun getFeatures(sensorData: SensorModel): List<Feature> {
                 BlueViolet1,
                 BlueViolet2,
                 BlueViolet3,
-                sensorData.flowRate,
-
-                ),
+                sensorData.flowRate
+            ),
             Feature(
                 title =  "Clean Water",
                 R.drawable.ic_cleanwater,
