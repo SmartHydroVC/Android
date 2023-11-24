@@ -45,6 +45,49 @@ fun ViewDataScreen(navHostController: NavHostController, component: ComponentVie
     ViewDataScreen(navHostController, reading.heading, component, sensorData )
 }
 
+private fun getReadingUnit(readingString: String, data: SensorModel):ReadingType{
+
+     val readingType = ReadingType(readingString, SensorModel(),"")
+
+    when (readingString) {
+        "Temperature" -> {
+            readingType.heading = "Temperature"
+            readingValue = data.temperature
+            readingType.unit = "C"
+        }
+        "Water" -> {
+            readingType.heading = "Water Flow"
+            readingValue = data.flowRate
+            readingType.unit = "L/hr"
+        }
+        "Clean Water" -> {
+            readingType.heading = "Clean Water"
+            readingValue = data.pH
+            readingType.unit = "pH"
+        }
+        "Humidity" -> {
+            readingType.heading = "Humidity"
+            readingValue = data.humidity
+            readingType.unit = "RH" // RH = Relative Humidity
+        }
+        "Compost" -> {
+            readingType.heading = "Compost"
+            readingValue = data.eC
+            readingType.unit = "ms/cm"
+        }
+        "Sun Light" -> {
+            readingType.heading = "Sun Light"
+            readingValue = data.light
+            readingType.unit = "lux"
+        }
+        else -> {}
+    }
+
+    return readingType
+}
+
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ViewDataScreen(navHostController: NavHostController,readingString:String, component: ComponentViewModel, sensorModel: SensorModel) {
     reading = getReadingUnit(readingString = readingString, sensorModel)
@@ -201,7 +244,58 @@ private fun ControlButtonsRow(
 }
 
 @Composable
-fun DataValue(value: String, unit: String) {
+fun IconButtonOnOff(onClick: () -> Unit, componentViewModel: ComponentViewModel) {
+    var iconColor by remember { mutableStateOf(Color.Red) }
+
+    IconButton(
+        modifier = Modifier
+            .size(72.dp)
+            .padding(top = 20.dp),
+        onClick = {
+            powerState = !powerState
+
+            when (reading.heading) {
+                "Temperature" -> {
+                    componentViewModel.setFan()
+                }
+                "Sun Light" -> {
+                    componentViewModel.setLight()
+                }
+                "Humidity" -> {
+                    componentViewModel.setExtractor()
+                }
+                "Water Flow" -> {
+                    componentViewModel.setPump()
+                }
+                "Clean Water" -> {
+                    componentViewModel.setPh()
+                }
+                "Compost" -> {
+                    componentViewModel.setEc()
+                }
+
+                else -> {}
+            }
+
+            if (powerState) {
+                iconColor = Color.Red
+                onClick()
+            }else {
+                iconColor = Color.Green
+            }
+        })
+    {
+        Icon(
+            painter = painterResource(id = R.drawable.ic_power),
+            contentDescription = "Option to turn on or off the component",
+            tint = iconColor,
+            modifier = Modifier.size(size = 100.dp)
+        )
+    }
+}
+
+@Composable
+fun SpeedValue(value: String, unit: String) {
     Column(
         Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
