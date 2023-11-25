@@ -47,6 +47,7 @@ fun ViewDataScreen(navHostController: NavHostController, component: ComponentVie
     ViewDataScreen(navHostController, reading.heading, component, sensorData )
 }
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 private fun ViewDataScreen(navHostController: NavHostController,readingString:String, component: ComponentViewModel, sensorModel: SensorModel) {
     reading = getReadingUnit(readingString = readingString, sensorModel)
@@ -201,6 +202,7 @@ private fun ControlButtonsRow(
         }
     }
 }
+
 
 @Composable
 fun DataValue(value: String, unit: String) {
