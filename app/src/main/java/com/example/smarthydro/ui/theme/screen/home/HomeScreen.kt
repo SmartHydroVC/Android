@@ -49,6 +49,7 @@ import com.example.smarthydro.ui.theme.BlueViolet1
 import com.example.smarthydro.ui.theme.BlueViolet2
 import com.example.smarthydro.ui.theme.BlueViolet3
 import com.example.smarthydro.ui.theme.DarkerButtonBlue
+import com.example.smarthydro.ui.theme.DeepBlue
 import com.example.smarthydro.ui.theme.GreenGood
 import com.example.smarthydro.ui.theme.LightGreen1
 import com.example.smarthydro.ui.theme.LightGreen2
@@ -75,7 +76,7 @@ fun HomeScreen(viewModel: SensorViewModel,navController: NavHostController, read
     }
     Box(
         modifier = Modifier
-            .background(DarkerButtonBlue)
+            .background(DeepBlue)
             .fillMaxSize()
     ) {
         Column {
@@ -200,7 +201,7 @@ fun  SensorCard(
 
                 Text(
                     text = feature.title,
-                    fontSize =  24.sp,
+                    fontSize = 24.sp,
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.SemiBold
                 )
@@ -219,38 +220,13 @@ fun  SensorCard(
                 Spacer(modifier = Modifier.height(4.dp))
 
             }
-
-            Surface(
-                shape = RoundedCornerShape(16.dp),
-                color = checkReadingLevel(title = feature.title, readingValue = feature.sensorReading),
-                modifier = Modifier.size(width = 100.dp, height = 100.dp)
-            ) {
-                Text(
-                    text = if (feature.sensorReading.isEmpty()) "No Data" else feature.sensorReading,
-                    modifier = Modifier.wrapContentSize(),
-                    style = MaterialTheme.typography.titleMedium
-                )
-            }
-
+            Text(
+                text = if (feature.sensorReading.isEmpty()) "No Data" else feature.sensorReading,
+                modifier = Modifier.wrapContentSize(),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 34.sp
+            )
         }
     }
 }
-
-
-private fun checkReadingLevel(title: String, readingValue: String): Color {
-    val reading = readingValue.toFloatOrNull() ?: 0.0f
-
-    val acceptableRanges = mapOf(
-        "Temperature" to Range(18f, 25f),
-        "Water Level" to Range(10f, 100f),
-        "Clean Water" to Range(7f, 8f),
-        "Humidity" to Range(65f, 75f),
-        "Compost" to Range(2f, 4f),
-        "Sun Light" to Range(80f, 1000f)
-    )
-
-    val range = acceptableRanges[title]
-    return if (range != null && reading in range.min..range.max) GreenGood else RedBad
-}
-
-data class Range(val min: Float, val max: Float)

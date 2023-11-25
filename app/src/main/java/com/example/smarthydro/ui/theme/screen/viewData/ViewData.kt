@@ -30,12 +30,14 @@ import com.example.smarthydro.models.SensorModel
 import com.example.smarthydro.models.getReadingUnit
 import com.example.smarthydro.ui.theme.DarkerButtonBlue
 import com.example.smarthydro.ui.theme.DeepBlue
+import com.example.smarthydro.utils.AlertDialogUtils
 import com.example.smarthydro.utils.ToggleButtonUtils
 import com.example.smarthydro.viewmodels.ComponentViewModel
 import com.example.smarthydro.viewmodels.ReadingViewModel
 import com.example.smarthydro.viewmodels.SensorViewModel
 
-val openAlertDialog = mutableStateOf(false)
+val increaseAlertDialog = mutableStateOf(false)
+val lowerAlertDialog = mutableStateOf(false)
 var reading: Reading = Reading("",SensorModel(), "","")
 val powerState = mutableStateOf(true)
 @Composable
@@ -52,7 +54,7 @@ private fun ViewDataScreen(navHostController: NavHostController,readingString:St
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
-            .background(DarkerButtonBlue)
+            .background(DeepBlue)
             .fillMaxHeight()
             .verticalScroll(rememberScrollState())
     ) {
@@ -112,12 +114,12 @@ fun DataCard(component: ComponentViewModel) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                OnlineStatus(
+                /*OnlineStatus(
                     text = if (powerState.value) "Online" else "Offline",
                     color = if (powerState.value) Color.Green else Color.Red
-                )
-                Spacer(modifier = Modifier.width(150.dp))
-                InfomationText(text = "")
+                )*/
+                /*Spacer(modifier = Modifier.width(150.dp))*/
+                InfomationText(text = "Controls")
             }
 
             Spacer(modifier = Modifier.height(4.dp))
@@ -189,11 +191,11 @@ private fun ControlButtonsRow(
     ) {
         val toggleButtons = ToggleButtonUtils()
         if (isPhOrEc) {
-            toggleButtons.ToggleButton(component, R.drawable.ic_arrow_up)
+            toggleButtons.ToggleButton(component, R.drawable.ic_arrow_up, increaseAlertDialog, "Increase Nutrients", "You are about increase solution for this!", true)
             Spacer(modifier = Modifier.width(24.dp))
             toggleButtons.IconButtonOnOff(component,powerState)
             Spacer(modifier = Modifier.width(24.dp))
-            toggleButtons.ToggleButton(component, R.drawable.ic_arrow_down)
+            toggleButtons.ToggleButton(component, R.drawable.ic_arrow_down, lowerAlertDialog, "Decrease Nutrients", "You are about decrease solution for this!", false)
         } else {
             toggleButtons.IconButtonOnOff(component,powerState)
         }
